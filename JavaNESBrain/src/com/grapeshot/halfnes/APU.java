@@ -293,8 +293,10 @@ public class APU {
                 break;
             case 0x16:
                 // latch controller 1 + 2
+            	
                 nes.getcontroller1().output(utils.getbit(data, 0));
                 nes.getcontroller2().output(utils.getbit(data, 0));
+                
                 break;
             case 0x17:
                 ctrmode = utils.getbit(data, 7) ? 5 : 4;

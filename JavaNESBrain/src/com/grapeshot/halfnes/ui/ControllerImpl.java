@@ -218,7 +218,9 @@ public class ControllerImpl implements ControllerInterface, KeyListener {
         List<Controller> gameControllers = new ArrayList<Controller>();
         // Get a list of the controllers JInput knows about and can interact
         // with
+     
         Controller[] controllers = ControllerEnvironment.getDefaultEnvironment().getControllers();
+        
         // Check the useable controllers (gamepads or joysticks with at least 2
         // axis and 2 buttons)
         for (Controller controller : controllers) {
