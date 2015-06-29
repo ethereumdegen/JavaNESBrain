@@ -2,15 +2,30 @@ package com.starflask.JavaNESBrain.evolution;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
 import com.starflask.JavaNESBrain.GameDataManager;
-import com.starflask.JavaNESBrain.local;
+import com.starflask.JavaNESBrain.SuperBrain;
 import com.starflask.JavaNESBrain.utils.FastMath;
 
 public class GenePool {
 
+	
+
+	
+	int Population = 300;
+	
+
+
+	int StaleSpecies = 15;
+
+	
+	
+	
 	List<Species> species = new ArrayList<Species>();
 	private int generation = 0;
 	int innovation = 10; //becomes equal to numOutputs
@@ -27,6 +42,14 @@ public class GenePool {
 	public GenePool(GameDataManager gameDataManager)
 	{
 		this.gameDataManager=gameDataManager;
+		
+		for (int i=1; i < getPopulation() ; i++ )
+		{
+		        Genome basic = createBasicGenome();
+		        addToSpecies(basic) ;
+		}
+		
+		
 	}
 	
 	public GameDataManager getGameDataManager() {
@@ -192,43 +215,48 @@ private boolean containsLink(List<Gene> genes, Gene link) {
 private int randomNeuronIndex(List<Gene> genes, boolean nonInput)
 {
 	
-boolean[] neuronMatchesInputState = new boolean[MaxNodes +  getGameDataManager().getNumOutputs()];
+HashMap<Integer,Boolean> neuronMatchesInputState = new HashMap<Integer,Boolean>(); 
 
 //every neuron corresponds with a gamepad button 
 if (! nonInput ){
         for (int i=1; i < getGameDataManager().getNumInputs() ; i++ ){
-        	neuronMatchesInputState[i] = true;
+        	neuronMatchesInputState.put(i, true);
 	}
 }
 
 for (int o=1; o < getGameDataManager().getNumOutputs(); o++ ) {
-	neuronMatchesInputState[MaxNodes+o] = true;
+	 
+	neuronMatchesInputState.put( SuperBrain.MaxNodes +o, true);
 }
 
 for (int i=1; i < genes.size(); i++){
         if ((! nonInput) || genes.get(i).into > getGameDataManager().getNumInputs()) {
-        	neuronMatchesInputState[genes.get(i).into] = true;
+        	neuronMatchesInputState.put(genes.get(i).into, true);
         }
         if ((! nonInput) || genes.get(i).out > getGameDataManager().getNumInputs() ){
-        	neuronMatchesInputState[genes.get(i).out] = true;
+        	neuronMatchesInputState.put(genes.get(i).out, true);
         }
 }
 
 int count = 0 ;
 
 
-for _,_ in pairs(neurons) do
-        count = count + 1
-end
-local n = math.random(1, count)
+int numNeurons = neuronMatchesInputState.size();
 
-for k,v in pairs(neurons) do
-        n = n-1
-        if n == 0 then
-                return k
-        end
-end
+int randomIndex  = rand.nextInt(numNeurons-1)+1;
 
+//stop in a random place in the index hashmap and then give out that index
+for (Integer key : neuronMatchesInputState.keySet() ) 
+{
+	randomIndex--;
+	
+	if (randomIndex == 0 )
+	{
+            return key;
+	}
+	
+}
+ 
 
 return 0;
 		
@@ -370,25 +398,36 @@ public void cullSpecies(boolean cutToOne) {
     for (int s = 1; s < getSpecies().size(); s++)
     {
         
-        Species species = getSpecies().get(s);
+        Species specie = getSpecies().get(s);
         
-       // table.sort(species.genomes, function (a,b)
-       //         return (a.fitness > b.fitness)
-       // end)
+        //this will make better fitness get closer to zero
+        Collections.sort( specie.getGenomes(),new Comparator<Genome>(){
+
+     			@Override
+     			public int compare(Genome g1, Genome g2) 	
+     			{
+     				return g1.getFitness() < g2.getFitness() ? -1 :
+     	               (g1.getFitness() == g2.getFitness() ? 0 : 1);     				
+     			}
+             	
+     			
+     		       // table.sort(species.genomes, function (a,b)
+     		       //         return (a.fitness > b.fitness)
+     		       // end)
+             });
+                          
        
-        int remaining = (int) FastMath.ceil(species.getGenomes().size()/2) ;
+        int remaining = (int) FastMath.ceil(specie.getGenomes().size()/2) ;
         
         if (cutToOne )
         {
             remaining = 1;
         }
         
-        while (species.getGenomes().size() > remaining) 
+        while (specie.getGenomes().size() > remaining) 
         {
-        	
-        	
-                table.remove(species.genomes)
-                
+        	specie.getGenomes().remove( specie.getGenomes().size()-1    );  //keep removing the least fit genome  (hopefully this isnt the least fit!)
+                   
         }
         
         
@@ -405,50 +444,100 @@ public void newGeneration() {
      removeStaleSpecies();
      rankGlobally();
      
-     for (int s = 1 ; s < pool.getSpecies().size(); s++)
+     for (int s = 1 ; s < getSpecies().size(); s++)
      {
-             Species species = pool.getSpecies().get(s);
-             calculateAverageFitness(species) ;
+             Species specie = getSpecies().get(s);
+             calculateAverageFitness(specie) ;
      }
      
      removeWeakSpecies();
      int sum = totalAverageFitness();
-     local children = {}
-     for (int s = 1 ; s < pool.getSpecies().size(); s++)
-    	 Species species = pool.getSpecies().get(s);
-             breed = math.floor(species.averageFitness / sum * Population) - 1
-             for i=1,breed do
-                     table.insert(children, breedChild(species))
-             end
-     end
+     
+     List<Genome> children = new ArrayList<Genome>();
+     
+     for (int s = 1 ; s < getSpecies().size(); s++)
+     {	 Species specie = getSpecies().get(s);
+             int breed = (int) (FastMath.floor(specie.averageFitness / sum * Population) - 1)  ;
+             for (int i=1; i < breed; i++) {
+            	 children.add( breedChild(specie) );
+             }
+     }
      
      cullSpecies(true); //-- Cull all but the top member of each species
             		 
-     while #children + #pool.species < Population do
-             local species = pool.species[math.random(1, #pool.species)]
-             table.insert(children, breedChild(species))
-     end
+     while (children.size() + getSpecies().size() < Population) 
+     {
+    	 	int randIndex = rand.nextInt( getSpecies().size() - 1) + 1; 
+             Species specie = getSpecies().get(randIndex);
+             children.add(breedChild(specie));
+     }
      
-     for c=1,#children do
-             local child = children[c]
-             addToSpecies(child)
-     end
-    
-     pool.generation = pool.generation + 1
+     for (int c=1; c < children.size() ; c++)
+     {
+    	 Genome child = children.get(c);
+            addToSpecies(child);
+     }
+            
+     generation++;
+     
     
    //  writeFile("backup." .. pool.generation .. "." .. forms.gettext(saveLoadFile))
 		
 	}
 
+private void rankGlobally() {
+	
+	List<Genome> genomes = new ArrayList<Genome>();
+//	   local global = {}
+	   
+       for (int s = 1; s < getSpecies().size() ;s++ )
+       {
+               Species specie = getSpecies().get(s);
+               for (int g = 1; g < specie.getGenomes().size();g++)
+            	 {
+            	   genomes.add( specie.getGenomes().get(g));
+            	    
+            	 }
+                  
+       }
+       
+       
+       
+       Collections.sort(genomes,new Comparator<Genome>(){
+
+			@Override
+			public int compare(Genome g1, Genome g2) 	
+			{
+				return g1.getFitness() < g2.getFitness() ? -1 :
+	               (g1.getFitness() == g2.getFitness() ? 0 : 1);     				
+			}
+        	
+			
+			  //table.sort(global, function (a,b)
+		      //         return (a.fitness < b.fitness)
+		      // end)
+        });
+       
+     
+       
+       
+      
+       for (int g=1;g< genomes.size(); g++)
+    	   {
+    	   genomes.get(g).setGlobalRank(g);
+    	   }
+	
+}
+
 public void  addToSpecies(Genome child)
 {
 boolean foundSpecies = false;
 
-for (int s=1; s < pool.getSpecies().size() ; s++ ){
-        Species species = pool.getSpecies().get(s);
-        if (! foundSpecies && sameSpecies(child, species.genomes[1])) 
+for (int s=1; s < getSpecies().size() ; s++ ){
+        Species specie = getSpecies().get(s);
+        if (! foundSpecies && child.sameSpeciesAs(specie.genomes.get(1))   ) 
         {
-        	species.getGenomes().add(child);                 
+        	specie.getGenomes().add(child);                 
             foundSpecies = true;
         }
 }
@@ -457,8 +546,9 @@ for (int s=1; s < pool.getSpecies().size() ; s++ ){
 	{
         Species childSpecies = new Species();
        
-        table.insert(childSpecies.genomes, child)
-        table.insert(pool.species, childSpecies)
+        childSpecies.getGenomes().add(child);
+        getSpecies().add(childSpecies);
+         
 	}
 }
 
@@ -466,72 +556,184 @@ for (int s=1; s < pool.getSpecies().size() ; s++ ){
 
 
 
-
-
-
-
-private Genome  breedChild(Species species){
-	Genome child = new Genome();
+private void calculateAverageFitness(Species specie)
+{
+        int total = 0;
+       
+        for (int g=1; g < specie.getGenomes().size(); g++)  
+        {
+                Genome genome = specie.getGenomes().get(g);
+                total = total + genome.getGlobalRank();
+        }
+       
+        specie.setAverageFitness( total / specie.getGenomes().size() );
+}
+ 
+private int totalAverageFitness()
+{
+        int total = 0;
         
-        if (rand.nextFloat() < CrossoverChance )
+        for (int s = 1;s < getSpecies().size(); s++)
+        {
+                Species specie = getSpecies().get(s);
+                total = total + specie.getAverageFitness();
+        }
+ 
+        return total ;
+}
+
+
+
+
+private Genome  breedChild(Species specie){
+		Genome child = new Genome();
+        
+        if (rand.nextFloat() < child.CrossoverChance )  //should it be the childs crossoverchance or a static one?
         {        	
-        		int index1 = rand.nextInt(species.getGenomes().size() - 1 ) + 1; 
-                g1 = species.getGenomes().get(index1);
-                int index2 = rand.nextInt(species.getGenomes().size() - 1 ) + 1; 
-                g2 = species.getGenomes().get(index2);
+        		int index1 = rand.nextInt(specie.getGenomes().size() - 1 ) + 1; 
+                Genome g1 = specie.getGenomes().get(index1);
+                int index2 = rand.nextInt(specie.getGenomes().size() - 1 ) + 1; 
+                Genome g2 = specie.getGenomes().get(index2);
                 child = crossover(g1, g2);
         }else{
-        		int index = rand.nextInt(species.getGenomes().size() - 1 ) + 1; 
-        		g = species.getGenomes().get(index1);
-                child = copyGenome(g);
+        		int index = rand.nextInt(specie.getGenomes().size() - 1 ) + 1; 
+        		Genome g = specie.getGenomes().get(index);
+                child = Genome.copy(g);
         }
        
         mutate(child);
        
         return child;
 }
+
+
+
+
+
+
+private Genome crossover(Genome g1, Genome g2) //splice two genomes together
+{
+       // -- Make sure g1 is the higher fitness genome
+        if (g2.fitness > g1.fitness )
+        {
+                Genome tempg = g1;
+                g1 = g2;
+                g2 = tempg;
+        }
+ 
+        Genome  child = new Genome();
+       
+        HashMap<Integer,Gene> innovations2 = new HashMap<Integer,Gene>();
+        
+        
+        for (int i=1; i < g2.getGenes().size(); i++ )
+        {
+        		Gene gene = g2.getGenes().get(i);
+        		
+        		innovations2.put(gene.getInnovation(), gene);
+                
+        }
+       
+        for (int i=1; i < g1.getGenes().size(); i++) 
+        {
+                Gene gene1 = g1.getGenes().get(i);
+                Gene gene2 = innovations2.get(gene1.getInnovation());
+                
+                if (gene2 != null && rand.nextBoolean() && gene2.isEnabled())
+                {
+                	child.getGenes().add(gene2.copy());
+                }else{
+                	child.getGenes().add(gene1.copy());
+                }
+        }
+       
+        //set to the max
+        if( g1.maxneuron > g2.maxneuron)
+        {
+        	child.maxneuron = g1.maxneuron;
+        }else{
+        	child.maxneuron = g2.maxneuron;
+        }
+        
+       
+        for(String key : g1.mutationRates.keySet()) //give the child the mutations of g1
+        {
+        	child.mutationRates.put(key, g1.mutationRates.get(key));
+        	
+        }
+        
+        return child;
+}
+ 
+
+
+
  
 private void removeStaleSpecies()
 {
-        local survived = {}
+       // local survived = {}
  
-        for s = 1,#pool.species do
-                local species = pool.species[s]
+        for (int  s = 1; s < getSpecies().size(); s++)
+        	{
+               Species specie = getSpecies().get(s);
                
-                table.sort(species.genomes, function (a,b)
-                        return (a.fitness > b.fitness)
-                end)
                
-                if species.genomes[1].fitness > species.topFitness then
-                        species.topFitness = species.genomes[1].fitness
-                        species.staleness = 0
-                else
-                        species.staleness = species.staleness + 1
-                end
-                if species.staleness < StaleSpecies or species.topFitness >= pool.maxFitness then
-                        table.insert(survived, species)
-                end
-        end
+               
+               Collections.sort(specie.getGenomes() ,new Comparator<Genome>(){
+
+       			@Override
+       			public int compare(Genome g1, Genome g2) 	
+       			{
+       				return g1.getFitness() < g2.getFitness() ? -1 :
+       	               (g1.getFitness() == g2.getFitness() ? 0 : 1);     				
+       			}
+               	
+               });
+              
+               
+              
+               
+                if (specie.getGenomes().get(1).fitness > specie.topFitness )
+                {
+                        specie.topFitness = specie.getGenomes().get(1).fitness ;
+                        specie.staleness = 0 ;
+                }else{
+                        specie.staleness = specie.staleness + 1 ;
+                }
+                
+                if (specie.staleness > StaleSpecies && specie.topFitness < maxFitness) 
+                {
+                	getSpecies().remove(specie);
+                       
+                }
+        	}
  
-        pool.species = survived
+       
 }
  
 private void removeWeakSpecies()
 {
-        local survived = {}
+       //List<Species> survivalists = new ArrayList<Species>();
  
-        local sum = totalAverageFitness()
-        for s = 1,#pool.species do
-                local species = pool.species[s]
-                breed = math.floor(species.averageFitness / sum * Population)
-                if breed >= 1 then
-                        table.insert(survived, species)
-                end
-        end
+        int sum = totalAverageFitness();
+        for (int s = 1; s < getSpecies().size();s++)
+        {
+                Species specie = getSpecies().get(s);
+                float breed = FastMath.floor(specie.averageFitness / sum * Population);
+                
+                if (breed < 1 )
+                {
+                	species.remove(specie);
+                }
+        }
  
-        pool.species = survived
+         
 }
  
+
+public int getPopulation() {
+	return Population;
+}
 
 
 }

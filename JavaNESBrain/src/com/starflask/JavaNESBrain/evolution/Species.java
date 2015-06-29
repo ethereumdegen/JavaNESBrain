@@ -8,7 +8,7 @@ public class Species {
 
 	int topFitness;
 	int staleness;
-	int averageFitness;
+	
 	List<Genome> genomes = new ArrayList<Genome>();
 	
 	
@@ -21,6 +21,19 @@ public class Species {
 	public List<Genome> getGenomes() {
 		 
 		return genomes;
+	}
+
+	
+	int averageFitness; //does this have to be buffered and stored?
+
+	public int getAverageFitness() {
+		
+		return averageFitness;
+	}
+
+
+	public void setAverageFitness(int f) {
+		averageFitness = f;
 	}
 
  

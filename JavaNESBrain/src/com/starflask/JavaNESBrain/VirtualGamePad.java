@@ -1,5 +1,7 @@
 package com.starflask.JavaNESBrain;
 
+import java.util.HashMap;
+
 import com.grapeshot.halfnes.ui.ControllerInterface;
 
 public class VirtualGamePad implements ControllerInterface {
@@ -20,6 +22,15 @@ public class VirtualGamePad implements ControllerInterface {
 	public int getbyte() {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	public void setOutputs(HashMap<String, Boolean> gamePadOutputs) {
+		
+		
+		
+	}
+
+	public void clear() {
 	}
 
 }
