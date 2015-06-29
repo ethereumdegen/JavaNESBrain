@@ -11,7 +11,7 @@ public class Neuron {
 	
 	 
 	
-	public Neuron(int index)
+	public Neuron()
 	{
 		
 	}
@@ -24,6 +24,10 @@ public class Neuron {
 	public void setValue(float val) {
 		value = val;
 		
+	}
+
+	public float getValue() {
+		return value;
 	}
 
 	 

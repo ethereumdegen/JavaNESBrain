@@ -121,9 +121,9 @@ private void pointMutate(Genome genome)
         {
                 Gene gene = genome.genes.get(i) ;
                 if (rand.nextFloat() < PerturbChance) { 
-                        gene.weight = gene.weight + rand.nextFloat() * step*2 - step ;
+                        gene.setWeight(gene.getWeight() + rand.nextFloat() * step*2 - step) ;
                 }else{
-                        gene.weight = rand.nextFloat()*4-2 ;
+                        gene.setWeight(rand.nextFloat()*4-2) ;
 		}
 	}
 }
@@ -168,7 +168,7 @@ private void linkMutate(Genome genome, boolean forceBias)
             		
             		
     newLink.innovation = newInnovation();
-    newLink.weight = rand.nextFloat()*4-2 ;
+    newLink.setWeight(rand.nextFloat()*4-2) ;
    
     genome.genes.add(newLink);
 
@@ -192,7 +192,7 @@ private boolean containsLink(List<Gene> genes, Gene link) {
 private int randomNeuronIndex(List<Gene> genes, boolean nonInput)
 {
 	
-boolean[] neuronMatchesInputState = new boolean[];
+boolean[] neuronMatchesInputState = new boolean[MaxNodes +  getGameDataManager().getNumOutputs()];
 
 //every neuron corresponds with a gamepad button 
 if (! nonInput ){
@@ -256,7 +256,7 @@ private void nodeMutate(Genome genome)
    
     Gene gene1 = gene.copy();
     gene1.out = genome.maxneuron;
-    gene1.weight = 1.0f;
+    gene1.setWeight(1.0f);
     gene1.innovation = newInnovation();
     gene1.setEnabled(true);
     genome.genes.add(gene1);
@@ -369,19 +369,29 @@ public void cullSpecies(boolean cutToOne) {
 	
     for (int s = 1; s < getSpecies().size(); s++)
     {
-            Species species = getSpecies().get(s);
-           
-            table.sort(species.genomes, function (a,b)
-                    return (a.fitness > b.fitness)
-            end)
-           
-            local remaining = math.ceil(#species.genomes/2)
-            if cutToOne then
-                    remaining = 1
-            end
-            while #species.genomes > remaining do
-                    table.remove(species.genomes)
-            end
+        
+        Species species = getSpecies().get(s);
+        
+       // table.sort(species.genomes, function (a,b)
+       //         return (a.fitness > b.fitness)
+       // end)
+       
+        int remaining = (int) FastMath.ceil(species.getGenomes().size()/2) ;
+        
+        if (cutToOne )
+        {
+            remaining = 1;
+        }
+        
+        while (species.getGenomes().size() > remaining) 
+        {
+        	
+        	
+                table.remove(species.genomes)
+                
+        }
+        
+        
     }
 
 }

@@ -2,6 +2,9 @@ package com.starflask.JavaNESBrain;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.UIManager;
@@ -300,17 +303,19 @@ public void evaluateCurrent()
 	Genome genome = pool.getCurrentGenome() ; 
 
  
-	controller = evaluateNetwork(genome.getNetwork(), getGameDataManager().getBrainSystemInputs() ) ;
+	HashMap<String,Boolean> gamePadOutputs = evaluateNetwork(genome.getNetwork(), getGameDataManager().getBrainSystemInputs() ) ;
 
-if (controller["P1 Left"] && controller["P1 Right"])
+	//if left and right are pressed at once, dont press either.. same with up and down
+if (gamePadOutputs.get("P1 Left") && gamePadOutputs.get("P1 Right"))
 {
-        controller["P1 Left"] = false;
-        controller["P1 Right"] = false;
+	gamePadOutputs.put("P1 Left", false);
+	gamePadOutputs.put("P1 Right", false);
 }
-if (controller["P1 Up"] && controller["P1 Down"] )
+
+if (gamePadOutputs.get("P1 Up") && gamePadOutputs.get("P1 Down"))
 {
-        controller["P1 Up"] = false;
-        controller["P1 Down"] = false;
+	gamePadOutputs.put("P1 Up", false);
+	gamePadOutputs.put("P1 Down", false);
 }
 
 joypad.set(controller);
@@ -337,10 +342,21 @@ private void generateNetwork(Genome genome)
                
         }
         
-       //sort by the out number ? 
-        table.sort(genome.genes, function (a,b)
-                return (a.out < b.out)
-        end
+        
+        Collections.sort(genome.getGenes(),new Comparator<Gene>(){
+
+			@Override
+			public int compare(Gene g1, Gene g2) {				 
+				return g1.getNeuralOutIndex() - g2.getNeuralOutIndex();  //hopefully this is not backwards
+			}
+        	
+			 //sort by the out number 
+		       // table.sort(genome.genes, function (a,b)
+		       //         return (a.out < b.out)
+		       // end
+        });
+        
+      
         
         
         
@@ -370,9 +386,10 @@ private void generateNetwork(Genome genome)
 
 /**
  * Input is the neural network and number of inputs, output is the current gamepad button-press states
+ * @return 
  * 
  */
-private void evaluateNetwork(NeuralNetwork network, Integer[] inputs)
+private HashMap<String, Boolean> evaluateNetwork(NeuralNetwork network, Integer[] inputs)
 {
 		
 		List<Integer> inputList = Arrays.asList(inputs);
@@ -396,9 +413,9 @@ private void evaluateNetwork(NeuralNetwork network, Integer[] inputs)
                 
                 for (int j = 1; j < neuron.getIncomingGeneList().size() ; j++ ) 
                 {
-                        local incoming = neuron.incoming[j] ; 
-                        local other = network.neurons[incoming.into]; 
-                        sum = sum + incoming.weight * other.value;
+                		Gene incoming = neuron.getIncomingGeneList().get(j); 
+                        Neuron other = network.getNeurons().get(incoming.getNeuralInIndex()); 
+                        sum = sum + incoming.getWeight() * other.getValue();
                 }
                
                 if(neuron.getIncomingGeneList().size() > 0) {
@@ -406,18 +423,23 @@ private void evaluateNetwork(NeuralNetwork network, Integer[] inputs)
                 }
 		}
        
-        local outputs = {}
+        HashMap<String,Boolean> gamepadOutputs = new  HashMap<String,Boolean>();
+       
+        
         for (int o = 1; o < this.getGameDataManager().getNumOutputs() ; o ++){
-                local button = "P1 " .. ButtonNames[o]
-                if (network.neurons[MaxNodes+o].value > 0) 
+        	
+                String button = "P1 " + this.getGameDataManager().buttonNames[o] ;
+                
+                if (network.getNeurons().get(MaxNodes+o).getValue() > 0) 
                 {
-                        outputs[button] = true;
+                	gamepadOutputs.put(button,true);
                 }else{
-                        outputs[button] = false;
+                	gamepadOutputs.put(button,false);
                 }
+                
         }
        
-        return outputs  ;
+        return gamepadOutputs  ;
 }
 
 

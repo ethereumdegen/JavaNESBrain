@@ -188,16 +188,16 @@ private int readbyte(int addr) {
 Sprite[] sprites;
 Sprite[] extendedSprites;
 
-int[] inputs;
+Integer[] inputs;
 
-public int[] getBrainSystemInputs()
+public Integer[] getBrainSystemInputs()
 {
 	getPositions();
     
     sprites = getSprites();
     extendedSprites = getExtendedSprites();
 
-    inputs = new int[BoxRadius*2 + 1];
+    inputs = new Integer[BoxRadius*2 + 1];
     int  numSystemInputs = 0;
     
     for(int dy = -BoxRadius*16 ; dy < BoxRadius*16  ; dy+= 16)

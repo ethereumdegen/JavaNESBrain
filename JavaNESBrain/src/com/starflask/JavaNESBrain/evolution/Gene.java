@@ -4,7 +4,7 @@ public class Gene {
 
 	int into;  //an index for neurons
 	int out;
-	float weight;
+	private float weight;
 	private boolean enabled = true;
 	int innovation;
 	
@@ -20,7 +20,7 @@ public static Gene copyGene(Gene othergene)
         Gene gene2 = new Gene();
         gene2.into = othergene.into;
         gene2.out = othergene.out;
-        gene2.weight = othergene.weight;
+        gene2.setWeight(othergene.getWeight());
         gene2.setEnabled(othergene.isEnabled());
         gene2.innovation = othergene.innovation;
        
@@ -53,6 +53,16 @@ public void setEnabled(boolean enabled) {
 public int getNeuralInIndex() {
 	 
 	return into;
+}
+
+
+public float getWeight() {
+	return weight;
+}
+
+
+public void setWeight(float weight) {
+	this.weight = weight;
 }
 
 
