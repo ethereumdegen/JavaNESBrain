@@ -92,7 +92,7 @@ public class GenePool {
             p = p - 1;
     }
 
-    p = genome.mutationRates["disable"];
+    p = genome.mutationRates.get("disable");
     while (p > 0) {
             if (rand.nextFloat() < p) {
                     enableDisableMutate(genome, false);
@@ -122,62 +122,90 @@ private void pointMutate(Genome genome)
 
 	
 	
-private void linkMutate(Genome genome, float forceBias)
+private void linkMutate(Genome genome, boolean forceBias)
 	{
     Neuron neuron1 = randomNeuron(genome.genes, false) ; 
     Neuron neuron2 = randomNeuron(genome.genes, true) ;
      
-    local newLink = newGene()
-    if neuron1 <= Inputs and neuron2 <= Inputs then
+    Gene newLink = new Gene();
+    
+    if (neuron1 <= Inputs && neuron2 <= Inputs) 
+    {
             //--Both input nodes
             return
-    end
-    if neuron2 <= Inputs then
-           // -- Swap output and input
-            local temp = neuron1
-            neuron1 = neuron2
-            neuron2 = temp
-    end
+    }
+    
+    if (neuron2 <= Inputs) 
+    {
+           // -- Swap output and input   -- probably should copy !
+            Neuron temp = neuron1;
+            neuron1 = neuron2;
+            neuron2 = temp;
+    }
 
-    newLink.into = neuron1
-    newLink.out = neuron2
-    if forceBias then
+    newLink.into = neuron1 ; 
+    newLink.out = neuron2 ;
+    
+    if (forceBias)
+    	{
             newLink.into = Inputs
-    end
+    	}
    
-    if containsLink(genome.genes, newLink) then
+    if (containsLink(genome.genes, newLink) )
+    {
             return
-    end
-    newLink.innovation = newInnovation()
-    newLink.weight = math.random()*4-2
+    }
+            		
+            		
+    newLink.innovation = newInnovation();
+    newLink.weight = rand.nextFloat()*4-2 ;
    
-    table.insert(genome.genes, newLink)
+    genome.genes.add(newLink);
+
+}
+
+ 
+ 
+private boolean containsLink(List<Gene> genes, Gene link) {
+
+	 for (Gene gene : genes) 
+	 {          
+         if (gene.into == link.into && gene.out == link.out) 
+                 return true;
+         
+	 }
+	 return false;
 }
 
 
-
-
-private Neuron randomNeuron(genes, nonInput)
+//what does this do?   What is a neuron supposed to be.. boolean? int? struct?
+private Neuron randomNeuron(List<Gene> genes, boolean nonInput)
 {
+	
 local neurons = {}
-if not nonInput then
-        for i=1,Inputs do
-                neurons[i] = true
-        end
-end
+
+//every neuron corresponds with a gamepad button 
+if (! nonInput ){
+        for (int i=1; i < Inputs ; i++ ){
+                neurons[i] = true;
+	}
+}
+
 for o=1,Outputs do
         neurons[MaxNodes+o] = true
 end
-for i=1,#genes do
-        if (not nonInput) or genes[i].into > Inputs then
-                neurons[genes[i].into] = true
-        end
-        if (not nonInput) or genes[i].out > Inputs then
-                neurons[genes[i].out] = true
-        end
-end
 
-local count = 0
+for i=1,#genes do
+        if ((! nonInput) || genes[i].into > Inputs) {
+                neurons[genes[i].into] = true;
+        }
+        if ((! nonInput) || genes[i].out > Inputs ){
+                neurons[genes[i].out] = true;
+        }
+}
+
+int count = 0 ;
+
 for _,_ in pairs(neurons) do
         count = count + 1
 end
@@ -190,7 +218,7 @@ for k,v in pairs(neurons) do
         end
 end
 
-return 0
+return 0;
 		
 }
 
@@ -204,7 +232,9 @@ private void nodeMutate(Genome genome)
 
     genome.maxneuron = genome.maxneuron + 1;
 
-    Gene gene = genome.genes[math.random(1,genome.genes.size())] ;
+    
+    int randomIndex = rand.nextInt(genome.genes.size()-1)+1;  //dont ever pick the zeroeth gene since it is always blank?
+    Gene gene = genome.genes.get( randomIndex ) ;
     if (!gene.enabled) 
             return;
     
@@ -229,21 +259,27 @@ private void nodeMutate(Genome genome)
 
 public void enableDisableMutate(Genome genome, boolean enable)
 {
-local candidates = {}
-for _,gene in pairs(genome.genes) do
-        if gene.enabled == not enable then
-                table.insert(candidates, gene)
-        end
-end
+	List<Gene> candidates = new ArrayList<Gene>();
 
-if #candidates == 0 then
-        return
-end
+	//find the genes that are not this enablestate
+	for (Gene gene : genome.genes) {
+        if (gene.enabled != enable)
+        {
+              candidates.add(gene);
+        }
+	}
 
-local gene = candidates[math.random(1,#candidates)]
-gene.enabled = not gene.enabled
-end
-}
+	if (candidates.isEmpty())
+	{
+        return;
+      }
+
+		//flip the enablestate of a random candidate
+		int randomIndex = rand.nextInt(candidates.size()-1 ) + 1;
+		Gene gene = candidates.get(randomIndex) ;
+		gene.enabled = ! gene.enabled ;
+	
+	}
 
 
 }

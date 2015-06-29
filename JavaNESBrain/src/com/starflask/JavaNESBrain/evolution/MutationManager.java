@@ -195,16 +195,6 @@ end
  
 
  
-function containsLink(genes, link)
-        for i=1,#genes do
-                local gene = genes[i]
-                if gene.into == link.into and gene.out == link.out then
-                        return true
-                end
-        end
-end
- 
- 
 
 
  
