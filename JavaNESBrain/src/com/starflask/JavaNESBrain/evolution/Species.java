@@ -18,7 +18,7 @@ public class Species {
 	}
 
 
-	public Collection<Genome> getGenomes() {
+	public List<Genome> getGenomes() {
 		 
 		return genomes;
 	}

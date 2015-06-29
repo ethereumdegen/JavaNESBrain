@@ -9,7 +9,9 @@ public class Neuron {
 	List<Gene> incoming; //incoming gene list
 	float value;
 	
-	public Neuron()
+	 
+	
+	public Neuron(int index)
 	{
 		
 	}
@@ -23,6 +25,7 @@ public class Neuron {
 		value = val;
 		
 	}
+
 	 
  
 

@@ -133,32 +133,32 @@ private void pointMutate(Genome genome)
 	
 private void linkMutate(Genome genome, boolean forceBias)
 	{
-    Neuron neuron1 = randomNeuron(genome.genes, false) ; 
-    Neuron neuron2 = randomNeuron(genome.genes, true) ;
+    int neuron1Index = randomNeuronIndex(genome.genes, false) ; 
+    int neuron2Index = randomNeuronIndex(genome.genes, true) ;
      
     Gene newLink = new Gene();
     
     //if the index of the neuron is less than num inputs then it must be an input-neuron.. i should change this architecture
-    if (neuron1 <= getGameDataManager().getNumInputs() && neuron2 <= getGameDataManager().getNumInputs()) 
+    if (neuron1Index <= getGameDataManager().getNumInputs() && neuron2Index <= getGameDataManager().getNumInputs()) 
     {
             //--Both input nodes
             return;
     }
     
-    if (neuron2 <= Inputs) 
+    if (neuron2Index <= getGameDataManager().getNumInputs()) 
     {
            // -- Swap output and input   -- probably should copy !
-            Neuron temp = neuron1;
-            neuron1 = neuron2;
-            neuron2 = temp;
+            int temp = neuron1Index;
+            neuron1Index = neuron2Index;
+            neuron2Index = temp;
     }
 
-    newLink.into = neuron1 ; 
-    newLink.out = neuron2 ;
+    newLink.into = neuron1Index ; 
+    newLink.out = neuron2Index ;
     
     if (forceBias)
     	{
-            newLink.into = Inputs
+            newLink.into = getGameDataManager().getNumInputs();
     	}
    
     if (containsLink(genome.genes, newLink) )
@@ -189,32 +189,33 @@ private boolean containsLink(List<Gene> genes, Gene link) {
 
 
 //what does this do?   What is a neuron supposed to be.. boolean? int? struct?
-private Neuron randomNeuron(List<Gene> genes, boolean nonInput)
+private int randomNeuronIndex(List<Gene> genes, boolean nonInput)
 {
 	
-local neurons = {}
+boolean[] neuronMatchesInputState = new boolean[];
 
 //every neuron corresponds with a gamepad button 
 if (! nonInput ){
-        for (int i=1; i < Inputs ; i++ ){
-                neurons[i] = true;
+        for (int i=1; i < getGameDataManager().getNumInputs() ; i++ ){
+        	neuronMatchesInputState[i] = true;
 	}
 }
 
-for o=1,Outputs do
-        neurons[MaxNodes+o] = true
-end
+for (int o=1; o < getGameDataManager().getNumOutputs(); o++ ) {
+	neuronMatchesInputState[MaxNodes+o] = true;
+}
 
-for i=1,#genes do
-        if ((! nonInput) || genes[i].into > Inputs) {
-                neurons[genes[i].into] = true;
+for (int i=1; i < genes.size(); i++){
+        if ((! nonInput) || genes.get(i).into > getGameDataManager().getNumInputs()) {
+        	neuronMatchesInputState[genes.get(i).into] = true;
         }
-        if ((! nonInput) || genes[i].out > Inputs ){
-                neurons[genes[i].out] = true;
+        if ((! nonInput) || genes.get(i).out > getGameDataManager().getNumInputs() ){
+        	neuronMatchesInputState[genes.get(i).out] = true;
         }
 }
 
 int count = 0 ;
+
 
 for _,_ in pairs(neurons) do
         count = count + 1
@@ -227,6 +228,7 @@ for k,v in pairs(neurons) do
                 return k
         end
 end
+
 
 return 0;
 		
@@ -364,8 +366,10 @@ public void setCurrentFrame(int i) {
 }
 
 public void cullSpecies(boolean cutToOne) { 
-    for s = 1,#pool.species do
-            local species = pool.species[s]
+	
+    for (int s = 1; s < getSpecies().size(); s++)
+    {
+            Species species = getSpecies().get(s);
            
             table.sort(species.genomes, function (a,b)
                     return (a.fitness > b.fitness)
@@ -378,7 +382,7 @@ public void cullSpecies(boolean cutToOne) {
             while #species.genomes > remaining do
                     table.remove(species.genomes)
             end
-    end
+    }
 
 }
 
@@ -439,7 +443,7 @@ for (int s=1; s < pool.getSpecies().size() ; s++ ){
         }
 }
 
-if (!foundSpecies )
+	if (!foundSpecies )
 	{
         Species childSpecies = new Species();
        
@@ -456,23 +460,29 @@ if (!foundSpecies )
 
 
 
-function breedChild(species)
-        local child = {}
-        if math.random() < CrossoverChance then
-                g1 = species.genomes[math.random(1, #species.genomes)]
-                g2 = species.genomes[math.random(1, #species.genomes)]
-                child = crossover(g1, g2)
-        else
-                g = species.genomes[math.random(1, #species.genomes)]
-                child = copyGenome(g)
-        end
+private Genome  breedChild(Species species){
+	Genome child = new Genome();
+        
+        if (rand.nextFloat() < CrossoverChance )
+        {        	
+        		int index1 = rand.nextInt(species.getGenomes().size() - 1 ) + 1; 
+                g1 = species.getGenomes().get(index1);
+                int index2 = rand.nextInt(species.getGenomes().size() - 1 ) + 1; 
+                g2 = species.getGenomes().get(index2);
+                child = crossover(g1, g2);
+        }else{
+        		int index = rand.nextInt(species.getGenomes().size() - 1 ) + 1; 
+        		g = species.getGenomes().get(index1);
+                child = copyGenome(g);
+        }
        
-        mutate(child)
+        mutate(child);
        
-        return child
-end
+        return child;
+}
  
-function removeStaleSpecies()
+private void removeStaleSpecies()
+{
         local survived = {}
  
         for s = 1,#pool.species do
@@ -494,9 +504,10 @@ function removeStaleSpecies()
         end
  
         pool.species = survived
-end
+}
  
-function removeWeakSpecies()
+private void removeWeakSpecies()
+{
         local survived = {}
  
         local sum = totalAverageFitness()
@@ -509,7 +520,7 @@ function removeWeakSpecies()
         end
  
         pool.species = survived
-end
+}
  
 
 
