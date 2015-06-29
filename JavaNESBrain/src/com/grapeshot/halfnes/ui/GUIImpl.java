@@ -42,16 +42,16 @@ public class GUIImpl extends JFrame implements GUIInterface {
     private GraphicsDevice gd;
     private int NES_HEIGHT = 224, NES_WIDTH;
     private Renderer renderer;
-    private final ControllerImpl padController1, padController2;
+    //private final ControllerImpl padController1, padController2;
 
     public GUIImpl(NES nes) {
         this.nes = nes;
         screenScaleFactor = PrefsSingleton.get().getInt("screenScaling", 2);
-        padController1 = new ControllerImpl(this, 0);
-        padController2 = new ControllerImpl(this, 1);
-        nes.setControllers(padController1, padController2);
-        padController1.startEventQueue();
-        padController2.startEventQueue();
+      //  padController1 = new ControllerImpl(this, 0);
+      //  padController2 = new ControllerImpl(this, 1);
+       // nes.setControllers(padController1, padController2);
+      //  padController1.startEventQueue();
+      //  padController2.startEventQueue();
     }
 
     public synchronized void setRenderOptions() {
@@ -455,8 +455,8 @@ public class GUIImpl extends JFrame implements GUIInterface {
         final ControlsDialog dialog = new ControlsDialog(this);
         dialog.setVisible(true);
         if (dialog.okClicked()) {
-            padController1.setButtons();
-            padController2.setButtons();
+          //  padController1.setButtons();
+           // padController2.setButtons();
         }
     }
 
@@ -539,8 +539,8 @@ public class GUIImpl extends JFrame implements GUIInterface {
         @Override
         public void windowClosing(WindowEvent e) {
             savewindowposition();
-            padController1.stopEventQueue();
-            padController2.stopEventQueue();
+           // padController1.stopEventQueue();
+           // padController2.stopEventQueue();
             nes.quit();
 
         }
