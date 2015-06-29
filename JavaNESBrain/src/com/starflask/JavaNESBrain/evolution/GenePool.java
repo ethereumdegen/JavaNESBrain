@@ -44,15 +44,15 @@ public class GenePool {
 	
 	
 	private void mutate(Genome genome)
-	{
-		
-		
-		
-    for (mutation,rate in pairs(genome.mutationRates) ){
-            if (math.random(1,2) == 1){
-                    genome.mutationRates[mutation] = 0.95*rate;
+	{		
+    for (String key : genome.mutationRates.keySet()  ){
+    	
+    	float rate = genome.mutationRates.get(key);
+    	
+            if ( rand.nextBoolean() ){ //50 50 chance
+                   genome.mutationRates.put(key,0.95f*rate ) ;
             }else{
-                    genome.mutationRates[mutation] = 1.05263*rate;
+            	   genome.mutationRates.put(key,1.05263f*rate ) ; 
             }
 	}
 
@@ -63,7 +63,7 @@ public class GenePool {
     float p = genome.mutationRates.get("link");
     while (p > 0){
             if (rand.nextFloat() < p) {
-                    linkMutate(genome, false)
+                    linkMutate(genome, false);
             }
             p = p - 1;
     }
@@ -71,7 +71,7 @@ public class GenePool {
     p = genome.mutationRates.get("bias");
     while (p > 0) {
             if (rand.nextFloat() < p) {
-                    linkMutate(genome, true)
+                    linkMutate(genome, true);
             }
             p = p - 1;
     }
@@ -124,16 +124,16 @@ private void pointMutate(Genome genome)
 	
 private void linkMutate(Genome genome, float forceBias)
 	{
-    local neuron1 = randomNeuron(genome.genes, false)
-    local neuron2 = randomNeuron(genome.genes, true)
+    Neuron neuron1 = randomNeuron(genome.genes, false) ; 
+    Neuron neuron2 = randomNeuron(genome.genes, true) ;
      
     local newLink = newGene()
     if neuron1 <= Inputs and neuron2 <= Inputs then
-            --Both input nodes
+            //--Both input nodes
             return
     end
     if neuron2 <= Inputs then
-            -- Swap output and input
+           // -- Swap output and input
             local temp = neuron1
             neuron1 = neuron2
             neuron2 = temp
@@ -157,7 +157,8 @@ private void linkMutate(Genome genome, float forceBias)
 
 
 
-function randomNeuron(genes, nonInput)
+private Neuron randomNeuron(genes, nonInput)
+{
 local neurons = {}
 if not nonInput then
         for i=1,Inputs do
@@ -190,40 +191,44 @@ for k,v in pairs(neurons) do
 end
 
 return 0
-end
+		
+}
 
 
 
 private void nodeMutate(Genome genome)
 {
-    if #genome.genes == 0 then
-            return
-    end
+    if (genome.genes.size() == 0 )
+            return;
+    
 
-    genome.maxneuron = genome.maxneuron + 1
+    genome.maxneuron = genome.maxneuron + 1;
 
-    local gene = genome.genes[math.random(1,#genome.genes)]
-    if not gene.enabled then
-            return
-    end
-    gene.enabled = false
+    Gene gene = genome.genes[math.random(1,genome.genes.size())] ;
+    if (!gene.enabled) 
+            return;
+    
+            		
+            		
+    gene.enabled = false;
    
-    local gene1 = copyGene(gene)
-    gene1.out = genome.maxneuron
-    gene1.weight = 1.0
-    gene1.innovation = newInnovation()
-    gene1.enabled = true
-    table.insert(genome.genes, gene1)
+    Gene gene1 = gene.copy();
+    gene1.out = genome.maxneuron;
+    gene1.weight = 1.0f;
+    gene1.innovation = newInnovation();
+    gene1.enabled = true;
+    genome.genes.add(gene1);
    
-    local gene2 = copyGene(gene)
-    gene2.into = genome.maxneuron
-    gene2.innovation = newInnovation()
-    gene2.enabled = true
-    table.insert(genome.genes, gene2)
+    Gene gene2 = gene.copy();
+    gene2.into = genome.maxneuron;
+    gene2.innovation = newInnovation();
+    gene2.enabled = true;
+    genome.genes.add(gene2);
 }
 	
 
-function enableDisableMutate(genome, enable)
+public void enableDisableMutate(Genome genome, boolean enable)
+{
 local candidates = {}
 for _,gene in pairs(genome.genes) do
         if gene.enabled == not enable then
@@ -238,7 +243,7 @@ end
 local gene = candidates[math.random(1,#candidates)]
 gene.enabled = not gene.enabled
 end
-
+}
 
 
 }

@@ -51,25 +51,34 @@ public class NES {
         run();
     }
 
+    
     public void run() {
         while (true) {
-            if (runEmulation) {
-                frameStartTime = System.nanoTime();
-                actionReplay.applyPatches();
-                runframe();
-                if (frameLimiterOn && !dontSleep) {
-                    limiter.sleep();
-                }
-                frameDoneTime = System.nanoTime() - frameStartTime;
-            } else {
-                limiter.sleepFixed();
-                if (ppu != null && framecount > 1) {
-                    java.awt.EventQueue.invokeLater(render);
-                }
-            }
+        	
+          update();
+            
+           
+            
         }
     }
-    Runnable render = new Runnable() {
+    public  void update() {
+    	  if (runEmulation) {
+              frameStartTime = System.nanoTime();
+              actionReplay.applyPatches();
+              runframe();
+              if (frameLimiterOn && !dontSleep) {
+                  limiter.sleep();
+              }
+              frameDoneTime = System.nanoTime() - frameStartTime;
+          } else {
+              limiter.sleepFixed();
+              if (ppu != null && framecount > 1) {
+                  java.awt.EventQueue.invokeLater(render);
+              }
+          }
+		
+	}
+	Runnable render = new Runnable() {
         @Override
         public void run() {
             gui.render();

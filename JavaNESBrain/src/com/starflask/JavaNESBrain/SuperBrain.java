@@ -1,5 +1,9 @@
 package com.starflask.JavaNESBrain;
 
+import java.io.IOException;
+
+import javax.swing.UIManager;
+
 import com.grapeshot.halfnes.CPURAM;
 import com.grapeshot.halfnes.NES;
 import com.grapeshot.halfnes.ui.ControllerInterface;
@@ -13,7 +17,7 @@ import com.grapeshot.halfnes.ui.ControllerInterface;
  */
 
 
-public class SuperBrain implements Runnable{
+public class SuperBrain  {
 
 	VirtualGamePad gamepad;
 	
@@ -21,16 +25,42 @@ public class SuperBrain implements Runnable{
 	
 	GameDataManager gameData;
 	
-	public SuperBrain(NES emulator) {
-		this.emulator= emulator;
+	public SuperBrain() {
+		
+		 emulator = new  NES();
+		 
+       // emulator.run();  do not run continuously.. this class updates each frame manually
+        
+        emulator.setControllers( getController() , null);
+        
+        start();
 	}
+	
+	//use this as vm arg   -Djava.library.path=natives
+	
+
+	   public static void main(String[] args) throws IOException {
+	        try {
+	            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+	        } catch (Exception e) {
+	            System.err.println("Could not set system look and feel. Meh.");
+	        }
+	        
+	        
+	        SuperBrain brain = new SuperBrain(  ); 
+	        
+	        
+
+	    }
+	   
+	   
 
 	public ControllerInterface getController() { 
 		return gamepad;
 	}
 	
-	@Override
-	public void run()
+ 
+	public void start()
 	{
 		gameData = new GameDataManager(this);
 		
@@ -38,9 +68,6 @@ public class SuperBrain implements Runnable{
 		{
 
 				update();
-			
-			
-			
 			
 		}
 		
@@ -124,7 +151,11 @@ public class SuperBrain implements Runnable{
 		               
 		        pool.currentFrame = pool.currentFrame + 1
 		 
-		        emu.frameadvance();
+		        
+		        
+		        
+		        
+		        emulator.update();
 		                		
 		                		
 		
