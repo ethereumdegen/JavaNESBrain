@@ -1,14 +1,19 @@
 package com.starflask.JavaNESBrain;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.UIManager;
 
 import com.grapeshot.halfnes.CPURAM;
 import com.grapeshot.halfnes.NES;
 import com.grapeshot.halfnes.ui.ControllerInterface;
+import com.starflask.JavaNESBrain.evolution.Gene;
 import com.starflask.JavaNESBrain.evolution.GenePool;
 import com.starflask.JavaNESBrain.evolution.Genome;
+import com.starflask.JavaNESBrain.evolution.NeuralNetwork;
+import com.starflask.JavaNESBrain.evolution.Neuron;
 import com.starflask.JavaNESBrain.evolution.Species;
 import com.starflask.JavaNESBrain.utils.FastMath;
 
@@ -181,14 +186,22 @@ public class SuperBrain  {
 		        int measured = 0;
 		        int total = 0;
 		        
-		        for _,species in pairs(pool.species) do
-		                for _,genome in pairs(species.genomes) do
-		                        total = total + 1
-		                        if genome.fitness ~= 0 then
-		                                measured = measured + 1
-		                        end
-		                end
-		        end
+		        //for every genome in every species increment total and  if fitness is not zero then increment measured
+		        
+		        for(Species s : pool.getSpecies())
+		        {
+		        	for(Genome g : s.getGenomes() )
+		        	{
+		        		total ++;
+		        		if(g.getFitness() != 0)
+		        		{
+		        			measured++;
+		        		}
+		        		
+		        		
+		        	}
+		        }
+		        
 		        
 		        /*
 		        if (! forms.ischecked(hideBanner)) {
@@ -198,7 +211,7 @@ public class SuperBrain  {
 		        }*/
 		        
 		               
-		        pool.currentFrame = pool.currentFrame + 1;
+		        pool.setCurrentFrame(pool.getCurrentFrame()+1);
 		 
 		        
 		        
@@ -233,16 +246,17 @@ private void newGeneration() {
      removeStaleSpecies();
      rankGlobally();
      
-     for s = 1,#pool.species do
-             local species = pool.species[s]
-             calculateAverageFitness(species)
-     end
+     for (int s = 1 ; s < pool.getSpecies().size(); s++)
+     {
+             Species species = pool.getSpecies().get(s);
+             calculateAverageFitness(species) ;
+     }
      
      removeWeakSpecies();
      int sum = totalAverageFitness();
      local children = {}
-     for s = 1,#pool.species do
-             local species = pool.species[s]
+     for (int s = 1 ; s < pool.getSpecies().size(); s++)
+    	 Species species = pool.getSpecies().get(s);
              breed = math.floor(species.averageFitness / sum * Population) - 1
              for i=1,breed do
                      table.insert(children, breedChild(species))
@@ -301,10 +315,10 @@ int rightmost = 0; // the most right that we ever got so far
 public void  initializeRun()
 {
 	
-savestate.load(Filename);
+// savestate.load(Filename);   //cannot do this with halfnes yet :/
 
 rightmost = 0 ; 
-pool.currentFrame = 0 ;
+pool.setCurrentFrame(0) ;
 timeout = TimeoutConstant ; 
 clearJoypad(); 
 
@@ -321,8 +335,8 @@ public void evaluateCurrent()
 	Species species = pool.getCurrentSpecies() ;
 	Genome genome = pool.getCurrentGenome() ; 
 
-inputs = getGameDataManager().getInputs() ;
-controller = evaluateNetwork(genome.network, inputs) ;
+ 
+	controller = evaluateNetwork(genome.getNetwork(), getGameDataManager().getBrainSystemInputs() ) ;
 
 if (controller["P1 Left"] && controller["P1 Right"])
 {
@@ -339,78 +353,107 @@ joypad.set(controller);
 
 }
 
-
+/*
+ * Thsi explains how neurons fit into genes and etc..
+ * 
+ */
 private void generateNetwork(Genome genome)
 {
-        local network = {}
-        network.neurons = {}
+        NeuralNetwork network = new NeuralNetwork();
+         
        
-        for i=1,Inputs do
-                network.neurons[i] = newNeuron()
-        end
+        for (int i=1;i< getGameDataManager().getNumInputs(); i++ ) 
+        {              
+                network.getNeurons().add(i, new Neuron() );
+        }
        
-        for o=1,Outputs do
-                network.neurons[MaxNodes+o] = newNeuron()
-        end
-       
+        for (int o=1;o< getGameDataManager().getNumOutputs(); o++ ) 
+        {
+        	  network.getNeurons().add(MaxNodes+o, new Neuron() );
+               
+        }
+        
+       //sort by the out number ? 
         table.sort(genome.genes, function (a,b)
                 return (a.out < b.out)
-        end)
-        for i=1,#genome.genes do
-                local gene = genome.genes[i]
-                if gene.enabled then
-                        if network.neurons[gene.out] == nil then
-                                network.neurons[gene.out] = newNeuron()
-                        end
-                        local neuron = network.neurons[gene.out]
-                        table.insert(neuron.incoming, gene)
-                        if network.neurons[gene.into] == nil then
-                                network.neurons[gene.into] = newNeuron()
-                        end
-                end
         end
+        
+        
+        
+        for (int i=1; i < genome.getGenes().size() ; i++ )
+        {
+                Gene gene = genome.getGenes().get(i);
+                if (gene.isEnabled()) 
+                {
+                        if (network.getNeurons().get( gene.getNeuralOutIndex() )  == null )
+                        {                        	
+                                network.getNeurons().add(gene.getNeuralOutIndex(), new Neuron() );                                 		
+                        }
+                        
+                        Neuron neuron = network.getNeurons().get( gene.getNeuralOutIndex() );                        
+                        neuron.getIncomingGeneList().add(gene);
+                         
+                        if (network.getNeurons().get( gene.getNeuralInIndex() )  == null )
+                        	 network.getNeurons().add(gene.getNeuralInIndex(), new Neuron() );                                   
+                        }
+                }
+		
+	
        
-        genome.network = network
+        genome.setNetwork(network);
 }
  
 
-
-private void evaluateNetwork(network, inputs)
+/**
+ * Input is the neural network and number of inputs, output is the current gamepad button-press states
+ * 
+ */
+private void evaluateNetwork(NeuralNetwork network, Integer[] inputs)
 {
-        table.insert(inputs, 1)
-        if #inputs ~= Inputs then
-                console.writeline("Incorrect number of neural network inputs.")
-                return {}
-        end
+		
+		List<Integer> inputList = Arrays.asList(inputs);
+	
+		inputList.add(1);
+		
+        
+        if (inputList.size() != this.getGameDataManager().getNumInputs()) 
+        {
+                System.err.println("Incorrect number of neural network inputs.") ;
+                return null ;
+        }
        
-        for i=1,Inputs do
-                network.neurons[i].value = inputs[i]
-        end
+        for (int i=1; i < this.getGameDataManager().getNumInputs(); i++){
+                network.getNeurons().get(i).setValue(inputList.get(i))  ;
+        }
        
-        for _,neuron in pairs(network.neurons) do
-                local sum = 0
-                for j = 1,#neuron.incoming do
-                        local incoming = neuron.incoming[j]
-                        local other = network.neurons[incoming.into]
-                        sum = sum + incoming.weight * other.value
-                end
+        for (Neuron neuron : network.getNeurons())
+        {
+                float sum = 0;
+                
+                for (int j = 1; j < neuron.getIncomingGeneList().size() ; j++ ) 
+                {
+                        local incoming = neuron.incoming[j] ; 
+                        local other = network.neurons[incoming.into]; 
+                        sum = sum + incoming.weight * other.value;
+                }
                
-                if #neuron.incoming > 0 then
-                        neuron.value = sigmoid(sum)
-                end
-        end
+                if(neuron.getIncomingGeneList().size() > 0) {
+                        neuron.setValue( sigmoid(sum) );
+                }
+		}
        
         local outputs = {}
-        for o=1,Outputs do
+        for (int o = 1; o < this.getGameDataManager().getNumOutputs() ; o ++){
                 local button = "P1 " .. ButtonNames[o]
-                if network.neurons[MaxNodes+o].value > 0 then
-                        outputs[button] = true
-                else
-                        outputs[button] = false
-                end
-        end
+                if (network.neurons[MaxNodes+o].value > 0) 
+                {
+                        outputs[button] = true;
+                }else{
+                        outputs[button] = false;
+                }
+        }
        
-        return outputs
+        return outputs  ;
 }
 
 
@@ -448,9 +491,9 @@ private void evaluateNetwork(network, inputs)
 	
 
 	
-public static float sigmoid(int x)
+public static float sigmoid(float sum)
 {
-	return 2/(1+FastMath.exp(-4.9f*x))-1 ;
+	return 2/(1+FastMath.exp(-4.9f*sum))-1 ;
 }
 
 

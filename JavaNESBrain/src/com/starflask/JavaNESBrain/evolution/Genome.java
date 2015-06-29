@@ -1,6 +1,7 @@
 package com.starflask.JavaNESBrain.evolution;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -20,7 +21,9 @@ public class Genome {
 	
 	int fitness;
 	int adjustedFitness;
-	List<Neuron> network = new ArrayList<Neuron>();  //??
+	NeuralNetwork network = new NeuralNetwork();   
+	
+
 	int maxneuron = 0;
 	int globalRank = 0;
 	
@@ -73,7 +76,18 @@ public class Genome {
 		return fitness;
 	}
 	 
-  
+	public NeuralNetwork getNetwork() {
+		return network;
+	}
+
+	public void setNetwork(NeuralNetwork network) {
+		this.network = network;
+	}
+
+	public List<Gene> getGenes() {
+		 
+		return genes;
+	}
  
  
 }

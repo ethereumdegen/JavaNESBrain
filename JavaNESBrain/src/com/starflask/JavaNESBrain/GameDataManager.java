@@ -258,6 +258,16 @@ public Vector2f getMarioPos() {
 	return marioPos;
 }
 
+public int getNumInputs() {
+	 
+	return numInputs;
+}
+
+public int getNumOutputs() {
+	 
+	return numOutputs;
+}
+
  /*
 
 function getInputs()

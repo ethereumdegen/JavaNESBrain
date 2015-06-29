@@ -236,24 +236,24 @@ private void nodeMutate(Genome genome)
     
     int randomIndex = rand.nextInt(genome.genes.size()-1)+1;  //dont ever pick the zeroeth gene since it is always blank?
     Gene gene = genome.genes.get( randomIndex ) ;
-    if (!gene.enabled) 
+    if (!gene.isEnabled()) 
             return;
     
             		
             		
-    gene.enabled = false;
+    gene.setEnabled(false);
    
     Gene gene1 = gene.copy();
     gene1.out = genome.maxneuron;
     gene1.weight = 1.0f;
     gene1.innovation = newInnovation();
-    gene1.enabled = true;
+    gene1.setEnabled(true);
     genome.genes.add(gene1);
    
     Gene gene2 = gene.copy();
     gene2.into = genome.maxneuron;
     gene2.innovation = newInnovation();
-    gene2.enabled = true;
+    gene2.setEnabled(true);
     genome.genes.add(gene2);
 }
 	
@@ -264,7 +264,7 @@ public void enableDisableMutate(Genome genome, boolean enable)
 
 	//find the genes that are not this enablestate
 	for (Gene gene : genome.genes) {
-        if (gene.enabled != enable)
+        if (gene.isEnabled() != enable)
         {
               candidates.add(gene);
         }
@@ -278,7 +278,7 @@ public void enableDisableMutate(Genome genome, boolean enable)
 		//flip the enablestate of a random candidate
 		int randomIndex = rand.nextInt(candidates.size()-1 ) + 1;
 		Gene gene = candidates.get(randomIndex) ;
-		gene.enabled = ! gene.enabled ;
+		gene.setEnabled(! gene.isEnabled()) ;
 	
 	}
 
@@ -343,9 +343,15 @@ public int getCurrentSpeciesIndex() {
 }
 
 
-public Collection<Species> getSpecies() {
+public List<Species> getSpecies() {
 	 
 	return species;
+}
+
+
+public void setCurrentFrame(int i) {
+	 currentFrame = i;
+	
 }
 
 

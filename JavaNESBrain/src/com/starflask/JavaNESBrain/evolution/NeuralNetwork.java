@@ -1,0 +1,14 @@
+package com.starflask.JavaNESBrain.evolution;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class NeuralNetwork {
+	List<Neuron> neurons = new ArrayList<Neuron>();
+
+	public List<Neuron> getNeurons() {
+		return neurons;
+	}
+	
+	
+}
