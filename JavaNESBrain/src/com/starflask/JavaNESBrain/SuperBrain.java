@@ -183,6 +183,9 @@ public class SuperBrain  {
 		                initializeRun();
 		        }
 		 
+		        
+		        
+		        
 		        int measured = 0;
 		        int total = 0;
 		        
@@ -230,56 +233,13 @@ public class SuperBrain  {
 		                pool.setCurrentSpecies(pool.getCurrentSpeciesIndex() + 1);
 		                
 		                if (pool.getCurrentSpeciesIndex() > pool.getSpecies().size() ){
-		                        newGeneration() ;
+		                        pool.newGeneration() ;
 		                        pool.setCurrentSpecies(  1);
 		                }
 		        }
 		
 	}
 
-
-
-private void newGeneration() {
-
-	 cullSpecies(false); // Cull the bottom half of each species
-     rankGlobally();
-     removeStaleSpecies();
-     rankGlobally();
-     
-     for (int s = 1 ; s < pool.getSpecies().size(); s++)
-     {
-             Species species = pool.getSpecies().get(s);
-             calculateAverageFitness(species) ;
-     }
-     
-     removeWeakSpecies();
-     int sum = totalAverageFitness();
-     local children = {}
-     for (int s = 1 ; s < pool.getSpecies().size(); s++)
-    	 Species species = pool.getSpecies().get(s);
-             breed = math.floor(species.averageFitness / sum * Population) - 1
-             for i=1,breed do
-                     table.insert(children, breedChild(species))
-             end
-     end
-     
-     cullSpecies(true); //-- Cull all but the top member of each species
-            		 
-     while #children + #pool.species < Population do
-             local species = pool.species[math.random(1, #pool.species)]
-             table.insert(children, breedChild(species))
-     end
-     
-     for c=1,#children do
-             local child = children[c]
-             addToSpecies(child)
-     end
-    
-     pool.generation = pool.generation + 1
-    
-   //  writeFile("backup." .. pool.generation .. "." .. forms.gettext(saveLoadFile))
-		
-	}
 
 
 
@@ -294,20 +254,24 @@ private GameDataManager getGameDataManager() {
 		return gameData;
 	}
 
-
+ 
 
 public void initializePool()
 {
-pool = new GenePool();
+pool = new GenePool( gameData );
 
-for i=1,Population do
-        basic = basicGenome()
-        addToSpecies(basic)
-end
+for (int i=1; i < Population ; i++ )
+{
+        Genome basic = pool.createBasicGenome();
+        pool.addToSpecies(basic) ;
+}
 
 initializeRun();
 
 }
+
+
+
 
 int timeout;
 int rightmost = 0; // the most right that we ever got so far
@@ -646,97 +610,8 @@ function totalAverageFitness()
  
         return total
 end
- 
-function cullSpecies(cutToOne)
-        for s = 1,#pool.species do
-                local species = pool.species[s]
-               
-                table.sort(species.genomes, function (a,b)
-                        return (a.fitness > b.fitness)
-                end)
-               
-                local remaining = math.ceil(#species.genomes/2)
-                if cutToOne then
-                        remaining = 1
-                end
-                while #species.genomes > remaining do
-                        table.remove(species.genomes)
-                end
-        end
-end
- 
-function breedChild(species)
-        local child = {}
-        if math.random() < CrossoverChance then
-                g1 = species.genomes[math.random(1, #species.genomes)]
-                g2 = species.genomes[math.random(1, #species.genomes)]
-                child = crossover(g1, g2)
-        else
-                g = species.genomes[math.random(1, #species.genomes)]
-                child = copyGenome(g)
-        end
-       
-        mutate(child)
-       
-        return child
-end
- 
-function removeStaleSpecies()
-        local survived = {}
- 
-        for s = 1,#pool.species do
-                local species = pool.species[s]
-               
-                table.sort(species.genomes, function (a,b)
-                        return (a.fitness > b.fitness)
-                end)
-               
-                if species.genomes[1].fitness > species.topFitness then
-                        species.topFitness = species.genomes[1].fitness
-                        species.staleness = 0
-                else
-                        species.staleness = species.staleness + 1
-                end
-                if species.staleness < StaleSpecies or species.topFitness >= pool.maxFitness then
-                        table.insert(survived, species)
-                end
-        end
- 
-        pool.species = survived
-end
- 
-function removeWeakSpecies()
-        local survived = {}
- 
-        local sum = totalAverageFitness()
-        for s = 1,#pool.species do
-                local species = pool.species[s]
-                breed = math.floor(species.averageFitness / sum * Population)
-                if breed >= 1 then
-                        table.insert(survived, species)
-                end
-        end
- 
-        pool.species = survived
-end
- 
- 
-function addToSpecies(child)
-        local foundSpecies = false
-        for s=1,#pool.species do
-                local species = pool.species[s]
-                if not foundSpecies and sameSpecies(child, species.genomes[1]) then
-                        table.insert(species.genomes, child)
-                        foundSpecies = true
-                end
-        end
-       
-        if not foundSpecies then
-                local childSpecies = newSpecies()
-                table.insert(childSpecies.genomes, child)
-                table.insert(pool.species, childSpecies)
-        end
-end
+  
+  
   
 
 	 * 
