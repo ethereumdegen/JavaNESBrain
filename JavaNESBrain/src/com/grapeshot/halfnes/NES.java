@@ -186,7 +186,11 @@ public class NES {
         }
     }
 
-    private void saveSRAM(final boolean async) {
+    public CPURAM getCPURAM() {
+		return cpuram;
+	}
+
+	private void saveSRAM(final boolean async) {
         if (mapper != null && mapper.hasSRAM() && mapper.supportsSaves()) {
             if (async) {
                 FileUtils.asyncwritetofile(mapper.getPRGRam(), FileUtils.stripExtension(curRomPath) + ".sav");

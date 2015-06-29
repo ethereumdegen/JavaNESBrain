@@ -18,7 +18,7 @@ public class NESBrain {
 	        com.grapeshot.halfnes.NES emulator = new com.grapeshot.halfnes.NES();
 	        
 	       
-	        SuperBrain brain = new SuperBrain();
+	        SuperBrain brain = new SuperBrain( emulator );
 	        Thread AIThread = new Thread( brain );
 	        AIThread.start();
 	        
