@@ -62,6 +62,16 @@ public class Genome {
 		    		
 		   return genome2 ;
 	}
+
+	public void setFitness(int newFitness) {
+		this.fitness=newFitness;
+		
+	}
+
+	public int getFitness() {
+		 
+		return fitness;
+	}
 	 
   
  

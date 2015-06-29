@@ -1,6 +1,7 @@
 package com.starflask.JavaNESBrain.evolution;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
@@ -9,12 +10,12 @@ import com.starflask.JavaNESBrain.utils.FastMath;
 public class GenePool {
 
 	List<Species> species = new ArrayList<Species>();
-	int generation = 0;
+	private int generation = 0;
 	int innovation = 10; //numOutputs
-	int currentSpecies = 1;
-	int currentGenome = 1;
+	private int currentSpecies = 1;
+	private int currentGenome = 1;
 	int currentFrame = 0;
-	int maxFitness = 0;
+	private int maxFitness = 0;
 	
 	Random rand = new Random();
 	
@@ -132,7 +133,7 @@ private void linkMutate(Genome genome, boolean forceBias)
     if (neuron1 <= Inputs && neuron2 <= Inputs) 
     {
             //--Both input nodes
-            return
+            return;
     }
     
     if (neuron2 <= Inputs) 
@@ -153,7 +154,7 @@ private void linkMutate(Genome genome, boolean forceBias)
    
     if (containsLink(genome.genes, newLink) )
     {
-            return
+            return;
     }
             		
             		
@@ -280,6 +281,72 @@ public void enableDisableMutate(Genome genome, boolean enable)
 		gene.enabled = ! gene.enabled ;
 	
 	}
+
+
+public int getCurrentFrame() {
+	 
+	return currentFrame;
+}
+
+
+public Species getCurrentSpecies() {
+	 
+	return species.get(currentSpecies);
+}
+
+
+public Genome getCurrentGenome() {
+	 
+	return species.get(currentSpecies).genomes.get(currentGenome);
+}
+
+
+public int getMaxFitness() {
+	return maxFitness;
+}
+
+
+public void setMaxFitness(int maxFitness) {
+	this.maxFitness = maxFitness;
+}
+
+
+public void setCurrentSpecies(int currentSpecies) {
+	this.currentSpecies = currentSpecies;
+}
+
+
+public void setCurrentGenome(int currentGenome) {
+	this.currentGenome = currentGenome;
+}
+
+
+public int getGeneration() {
+	return generation;
+}
+
+
+public void setGeneration(int generation) {
+	this.generation = generation;
+}
+
+
+public int getCurrentGenomeIndex() {
+	 
+	return currentGenome;
+}
+
+
+public int getCurrentSpeciesIndex() {
+ 
+	return currentSpecies;
+}
+
+
+public Collection<Species> getSpecies() {
+	 
+	return species;
+}
 
 
 }

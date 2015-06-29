@@ -34,8 +34,8 @@ String[]  buttonNames;
 	
 private void init() {
 		 
-	if (superBrain.getRomName().equals("Super Mario World (USA)"))
-    {
+	//if (superBrain.getRomName().equals("Super Mario World (USA)"))
+   // {
 		String savefilename = "DP1.state" ;
     
 	      String[]  buttonNames = new String[]{
@@ -49,7 +49,7 @@ private void init() {
 	                "Right",
 	        };
 	
-    }  
+   // }  
  
 	
 	
@@ -58,7 +58,7 @@ private void init() {
     
 	}
 
-private void getPositions()
+void getPositions()
 {
         if (superBrain.getRomName().equals("Super Mario World (USA)"))
         {
@@ -251,6 +251,11 @@ public int[] getBrainSystemInputs()
    
     return inputs ;
     
+}
+
+public Vector2f getMarioPos() {
+	 
+	return marioPos;
 }
 
  /*
