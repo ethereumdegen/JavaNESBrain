@@ -86,6 +86,7 @@ public class Nes {
 		
 		if(externalGamepadBuffer != null)
 		{
+			
 			regs.setInput( externalGamepadBuffer );
 		}
 		

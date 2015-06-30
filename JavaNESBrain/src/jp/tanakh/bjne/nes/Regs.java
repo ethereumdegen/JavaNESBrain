@@ -75,7 +75,9 @@ public class Regs {
 
 	public void setInput(int[] dat) {
 		for (int i = 0; i < 16; i++)
+		{
 			padDat[i / 8][i % 8] = dat[i] != 0 ? true : false;
+		}
 	}
 
 	private static boolean _bit(int x, int n) {

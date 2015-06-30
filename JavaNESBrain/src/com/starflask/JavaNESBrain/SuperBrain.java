@@ -146,24 +146,34 @@ public class SuperBrain {
 		
 		int marioDistanceDelta = marioDistanceRight - runStartingMarioX;
 		 		 
+		
+		//int previousDistanceDelta = marioDistanceRight - marioPreviousDistanceRight;
+				
 		marioPreviousDistanceRight = marioDistanceRight;
+		
+		
 				
 		// if mario gets farther than he has ever been... make the timeout longer (this may need to be changed to delta style)
-		if (marioDistanceRight > rightmost) {
+		if (marioDistanceRight > rightmost  ) {
 			rightmost =  marioDistanceRight ;
 			timeout = TimeoutConstant;
 		}
-
-		timeout = timeout - 1;
-
-		int timeoutBonus = pool.getCurrentFrame() / 4;
-
+		
+		
+			timeout = timeout - 1; 		 
+		
+		 
+		//int timeoutBonus = pool.getCurrentFrame() / 4;
+		
+		int timeoutBonus = pool.getCurrentFrame() / 2;
+		
+		
 		
 		/**
 		 * Since we dont have savestates with this emulator, fitness is determined by the increase in distance
 		 * 
 		 */
-		if (timeout + timeoutBonus <= 0) {
+		if ((timeout + timeoutBonus) <= 0   ) {
 			 
 			
 			int fitness = 25 +  marioDistanceDelta - pool.getCurrentFrame() / 2;
@@ -208,6 +218,7 @@ public class SuperBrain {
 			 
 			}
 
+		 
 			initializeRun();
 		}
 
@@ -320,6 +331,9 @@ public class SuperBrain {
 			gamePadOutputs.put("P1 Down", false);
 		}
 
+		
+	  
+		
 		gamepad.setOutputs(gamePadOutputs);
 
 		}

@@ -49,12 +49,15 @@ public class VirtualGamePad  {
 		int value = pressed ? 1 : 0 ;
 		
 		integerBuffer[keyIndex] = value;
+						
+		integerBuffer[2] = 0; //no select
+		integerBuffer[3] = 0; //no enter
 		
 	}
 
 	public void clear() {
 		for (int i = 0; i < 16; i++){
-			integerBuffer[i] = 0;
+		//	integerBuffer[i] = 0;
 		}
 		
 	}
