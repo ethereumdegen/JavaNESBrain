@@ -73,7 +73,9 @@ public class VirtualGamePad  {
 	public void onHardwareKey(int keyCode, boolean pressed) {
 		for (int i = 0; i < 16; i++){
 				if (keyCode == keyDef[i/8][i%8]){					
-					integerBuffer[i ] = (pressed ? 1 : 0);					
+					integerBuffer[i ] = (pressed ? 1 : 0);		
+					
+					System.out.println("forcing key " + i);
 			}
 		}
 	}
