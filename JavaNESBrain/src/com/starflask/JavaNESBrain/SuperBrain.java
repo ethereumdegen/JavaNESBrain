@@ -82,7 +82,7 @@ public class SuperBrain {
 			if(emulator.getCPURAM() != null)
 			{
 			
-			update();
+			//update();
 			}
 
 			
@@ -120,7 +120,7 @@ public class SuperBrain {
 			evaluateCurrent();
 		}
 
-		emulator.setControllers(getController(), getController());
+	//	emulator.setControllers(getController(), getController());
 
 		getGameDataManager().getPositions();
 
@@ -361,6 +361,8 @@ public class SuperBrain {
 		}
 
 		for (int i = 1; i < this.getGameDataManager().getNumInputs(); i++) {
+			
+			
 			network.getNeurons().get(i).setValue(inputList.get(i));
 		}
 
