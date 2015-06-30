@@ -222,9 +222,6 @@ public class BrainInfoWindow extends Frame{
 		
 		//the key corresponds to which input affects this neuron
 		
-		
-		
-		
 		for(int key : network.getNeurons().keySet())
 		{
 			Neuron neuron = network.getNeurons().get(key);
@@ -266,13 +263,13 @@ public class BrainInfoWindow extends Frame{
     					   cellIn.x = cellIn.x - 40;
     				   }
     				   
-    				   if(cellIn.x < 90)
+    				   if(cellIn.x < 190)
     				   {
-    					   cellIn.x = 90;
+    					   cellIn.x = 190;
     				   }
-    				   if(cellIn.x > 220)
+    				   if(cellIn.x > 320)
     				   {
-    					   cellIn.x = 220;
+    					   cellIn.x = 320;
     				   }
     				   
     				   cellIn.y = 0.75f*cellIn.y + 0.25f*cellOut.y;
@@ -289,13 +286,13 @@ public class BrainInfoWindow extends Frame{
                                }
 
 
-                               if(cellOut.x < 90)
+                               if(cellOut.x < 190)
             				   {
-                            	   cellOut.x = 90;
+                            	   cellOut.x = 190;
             				   }
-            				   if(cellOut.x > 220)
+            				   if(cellOut.x > 320)
             				   {
-            					   cellOut.x = 220;
+            					   cellOut.x = 320;
             				   }            				   
             				   
             				   cellOut.y = 0.25f*cellIn.y + 0.75f*cellOut.y;

@@ -405,8 +405,8 @@ public void cullSpecies(boolean cutToOne) {
      			@Override
      			public int compare(Genome g1, Genome g2) 	
      			{
-     				return g1.getFitness() < g2.getFitness() ? -1 :
-     	               (g1.getFitness() == g2.getFitness() ? 0 : 1);     				
+     				return g1.getFitness() < g2.getFitness() ? 1 :
+     	               (g1.getFitness() == g2.getFitness() ? 0 : -1);     				
      			}
              	
      			
@@ -519,8 +519,8 @@ private void rankGlobally() {
 			@Override
 			public int compare(Genome g1, Genome g2) 	
 			{
-				return g1.getFitness() < g2.getFitness() ? -1 :
-	               (g1.getFitness() == g2.getFitness() ? 0 : 1);     				
+				return g1.getFitness() < g2.getFitness() ? 1 :
+	               (g1.getFitness() == g2.getFitness() ? 0 : -1);     				
 			}
         	
 			
@@ -703,8 +703,8 @@ private void removeStaleSpecies()
        			@Override
        			public int compare(Genome g1, Genome g2) 	
        			{
-       				return g1.getFitness() < g2.getFitness() ? -1 :
-       	               (g1.getFitness() == g2.getFitness() ? 0 : 1);     				
+       				return g1.getFitness() < g2.getFitness() ? 1 :
+       	               (g1.getFitness() == g2.getFitness() ? 0 : -1);     				
        			}
                	
                });
