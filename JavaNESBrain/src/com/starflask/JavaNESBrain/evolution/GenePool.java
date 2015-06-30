@@ -457,10 +457,13 @@ public void newGeneration() {
      {	 
     	 Species specie = getSpecies().get(s);
      
+    	 if( specie.getGenomes().size() > 0 )
+    	 {
              int breed = (int) (FastMath.floor(specie.averageFitness / sum * Population) - 1)  ;
              for (int i=0; i < breed; i++) {
             	 children.add( breedChild(specie) );
              }
+    	 }
              
      }
      
@@ -470,7 +473,11 @@ public void newGeneration() {
      {
     	 	int randIndex = rand.nextInt( getSpecies().size() ) ; 
              Species specie = getSpecies().get(randIndex);
-             children.add(breedChild(specie));
+             
+             if( specie.getGenomes().size() > 0 )
+        	 {
+            	 children.add(breedChild(specie));
+        	 }
      }
      
      for (int c=0; c < children.size() ; c++)
@@ -538,7 +545,7 @@ for (int s=0; s < getSpecies().size() ; s++ ){
 	
         Species specie = getSpecies().get(s);
         
-        if (!foundSpecies &&  child.sameSpeciesAs(specie.genomes.get(0))   ) 
+        if (!foundSpecies && !specie.getGenomes().isEmpty() && child.sameSpeciesAs(specie.getGenomes().get(0))   ) 
         {
         	specie.getGenomes().add(child);                 
             foundSpecies = true;
@@ -596,7 +603,8 @@ private int totalAverageFitness()
 private Genome  breedChild(Species specie){
 		Genome child = new Genome();
         
-        if (specie.getGenomes().size() > 0 && rand.nextFloat() < child.CrossoverChance )  //should it be the childs crossoverchance or a static one?
+        
+        if ( rand.nextFloat() < child.CrossoverChance )  //should it be the childs crossoverchance or a static one?
         {        	
         		int index1 = rand.nextInt(specie.getGenomes().size() ) ; 
                 Genome g1 = specie.getGenomes().get(index1);
