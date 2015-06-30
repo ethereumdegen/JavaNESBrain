@@ -13,9 +13,6 @@ import javax.swing.UIManager;
 import jp.tanakh.bjne.nes.Cpu;
 import jp.tanakh.bjne.ui.BJNEmulator;
 
-import com.grapeshot.halfnes.CPURAM;
-import com.grapeshot.halfnes.NES;
-import com.grapeshot.halfnes.ui.ControllerInterface;
 import com.starflask.JavaNESBrain.evolution.Gene;
 import com.starflask.JavaNESBrain.evolution.GenePool;
 import com.starflask.JavaNESBrain.evolution.Genome;
@@ -63,10 +60,6 @@ public class SuperBrain {
 
 		SuperBrain brain = new SuperBrain();
 
-	}
-
-	public ControllerInterface getController() {
-		return gamepad;
 	}
 
 	

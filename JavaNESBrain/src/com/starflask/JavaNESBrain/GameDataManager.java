@@ -3,7 +3,6 @@ package com.starflask.JavaNESBrain;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.grapeshot.halfnes.CPURAM;
 import com.starflask.JavaNESBrain.utils.FastMath;
 import com.starflask.JavaNESBrain.utils.Vector2f;
 
