@@ -36,7 +36,11 @@ public class Species {
 		averageFitness = f;
 	}
 
- 
+	@Override
+	public String toString()
+	{
+		return "SPECIES"+this.hashCode();		
+	}
 	  
  
 }

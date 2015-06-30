@@ -79,7 +79,7 @@ public class SuperBrain {
 			{			
 			 update();   
 			 
-			 infoWindow.outputScreen();
+			 
 			}
 			 
 			
@@ -110,7 +110,7 @@ public class SuperBrain {
 			 
 			emulator.setGamepadInput( gamepad.getIntegerBuffer() );
 			
-			infoWindow = new BrainInfoWindow( gamepad , getGameDataManager()  );
+			infoWindow = new BrainInfoWindow( gamepad , getGameDataManager() , pool );
 			
 		}
 
@@ -163,8 +163,9 @@ public class SuperBrain {
 				// forms.gettext(saveLoadFile))
 			}
 
-			System.out.println("Gen " + pool.getGeneration() + " species " + pool.getCurrentSpecies() + " genome "
-					+ pool.getCurrentGenome() + " fitness: " + fitness);
+			infoWindow.outputScreen();
+
+
 
 			pool.setCurrentSpecies(1);
 			pool.setCurrentGenome(1);
@@ -297,11 +298,11 @@ public class SuperBrain {
 	private void generateNetwork(Genome genome) {
 		NeuralNetwork network = new NeuralNetwork();
 
-		for (int i = 1; i < getGameDataManager().getNumInputs(); i++) {
+		for (int i = 0; i < getGameDataManager().getNumInputs(); i++) {
 			network.getNeurons().put(i, new Neuron());
 		}
 
-		for (int o = 1; o < getGameDataManager().getNumOutputs(); o++) {
+		for (int o = 0; o < getGameDataManager().getNumOutputs(); o++) {
 			network.getNeurons().put(MaxNodes + o, new Neuron());
 
 		}
@@ -322,7 +323,7 @@ public class SuperBrain {
 			// end
 		});
 
-		for (int i = 1; i < genome.getGenes().size(); i++) {
+		for (int i = 0; i < genome.getGenes().size(); i++) {
 			Gene gene = genome.getGenes().get(i);
 			if (gene.isEnabled()) {
 				if (network.getNeurons().get(gene.getNeuralOutIndex()) == null) {
@@ -344,7 +345,8 @@ public class SuperBrain {
 	 * Input is the neural network and number of inputs, output is the current
 	 * gamepad button-press states
 	 * 
-	 * @return
+	 * I feel like this is not completely working.. what do the 'input' neurons even do ?
+	 * 
 	 * 
 	 */
 	private HashMap<String, Boolean> evaluateNetwork(NeuralNetwork network, List<Integer> inputList) {
@@ -358,7 +360,7 @@ public class SuperBrain {
 			return null;
 		}
 
-		for (int i = 1; i < this.getGameDataManager().getNumInputs(); i++) {	
+		for (int i = 0; i < this.getGameDataManager().getNumInputs(); i++) {	
 			if(network.getNeurons().containsKey( i ))
 			{
 				network.getNeurons().get(i).setValue(inputList.get(i));
@@ -367,10 +369,11 @@ public class SuperBrain {
 			}
 		}
 
+		//for every neuron, sum up the values of its incoming genes and set its own value to that
 		for (Neuron neuron : network.getNeurons().values()) {
 			float sum = 0;
 
-			for (int j = 1; j < neuron.getIncomingGeneList().size(); j++) {
+			for (int j = 0; j < neuron.getIncomingGeneList().size(); j++) {
 				Gene incoming = neuron.getIncomingGeneList().get(j);
 				Neuron other = network.getNeurons().get(incoming.getNeuralInIndex());
 				sum = sum + incoming.getWeight() * other.getValue();
@@ -385,14 +388,11 @@ public class SuperBrain {
 		HashMap<String, Boolean> gamepadOutputs = new HashMap<String, Boolean>();
 
 		
-		for (int o = 1; o < this.getGameDataManager().getNumOutputs(); o++) {
+		for (int o = 0; o < this.getGameDataManager().getNumOutputs(); o++) {
 			
 			String button = "P1 " + this.getGameDataManager().getButtonNames()[o];
 
 			if (network.getNeurons().get(MaxNodes + o).getValue() > 0) {
-				 
-				
-				System.out.println("FIRING NEURON TO GAMEPAD");
 				gamepadOutputs.put(button, true);
 			} else {
 				gamepadOutputs.put(button, false);

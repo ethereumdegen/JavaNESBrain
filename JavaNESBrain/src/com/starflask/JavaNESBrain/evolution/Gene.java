@@ -2,8 +2,8 @@ package com.starflask.JavaNESBrain.evolution;
 
 public class Gene {
 
-	int into; // an index for neurons
-	int out;
+	private int into; // an index for neurons
+	private int out;
 	private float weight;
 	private boolean enabled = true;
 	int innovation;
@@ -14,8 +14,8 @@ public class Gene {
 
 	public static Gene copyGene(Gene othergene) {
 		Gene gene2 = new Gene();
-		gene2.into = othergene.into;
-		gene2.out = othergene.out;
+		gene2.setInto(othergene.getNeuralInIndex());
+		gene2.setOut(othergene.getNeuralOutIndex());
 		gene2.setWeight(othergene.getWeight());
 		gene2.setEnabled(othergene.isEnabled());
 		gene2.innovation = othergene.innovation;
@@ -56,6 +56,18 @@ public class Gene {
 
 	public void setWeight(float weight) {
 		this.weight = weight;
+	}
+
+	
+
+	public void setInto(int into) {
+		this.into = into;
+	}
+
+	
+
+	public void setOut(int out) {
+		this.out = out;
 	}
 
 }

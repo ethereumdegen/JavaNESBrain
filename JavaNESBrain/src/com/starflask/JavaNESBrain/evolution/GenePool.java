@@ -13,18 +13,10 @@ import com.starflask.JavaNESBrain.data.GameDataManager;
 import com.starflask.JavaNESBrain.utils.FastMath;
 
 public class GenePool {
-
-	
-
 	
 	int Population = 300;
 	
-
-
 	int StaleSpecies = 15;
-
-	
-	
 	
 	List<Species> species = new ArrayList<Species>();
 	private int generation = 0;
@@ -176,12 +168,12 @@ private void linkMutate(Genome genome, boolean forceBias)
             neuron2Index = temp;
     }
 
-    newLink.into = neuron1Index ; 
-    newLink.out = neuron2Index ;
+    newLink.setInto(neuron1Index) ; 
+    newLink.setOut(neuron2Index) ;
     
     if (forceBias)
     	{
-            newLink.into = getGameDataManager().getNumInputs();
+            newLink.setInto(getGameDataManager().getNumInputs());
     	}
    
     if (containsLink(genome.genes, newLink) )
@@ -203,7 +195,7 @@ private boolean containsLink(List<Gene> genes, Gene link) {
 
 	 for (Gene gene : genes) 
 	 {          
-         if (gene.into == link.into && gene.out == link.out) 
+         if (gene.getNeuralInIndex() == link.getNeuralInIndex() && gene.getNeuralOutIndex() == link.getNeuralOutIndex()) 
                  return true;
          
 	 }
@@ -230,11 +222,11 @@ for (int o=1; o < getGameDataManager().getNumOutputs(); o++ ) {
 }
 
 for (int i=1; i < genes.size(); i++){
-        if ((! nonInput) || genes.get(i).into > getGameDataManager().getNumInputs()) {
-        	neuronMatchesInputState.put(genes.get(i).into, true);
+        if ((! nonInput) || genes.get(i).getNeuralInIndex() > getGameDataManager().getNumInputs()) {
+        	neuronMatchesInputState.put(genes.get(i).getNeuralInIndex(), true);
         }
-        if ((! nonInput) || genes.get(i).out > getGameDataManager().getNumInputs() ){
-        	neuronMatchesInputState.put(genes.get(i).out, true);
+        if ((! nonInput) || genes.get(i).getNeuralOutIndex() > getGameDataManager().getNumInputs() ){
+        	neuronMatchesInputState.put(genes.get(i).getNeuralOutIndex(), true);
         }
 }
 
@@ -283,14 +275,14 @@ private void nodeMutate(Genome genome)
     gene.setEnabled(false);
    
     Gene gene1 = gene.copy();
-    gene1.out = genome.maxneuron;
+    gene1.setOut(genome.maxneuron);
     gene1.setWeight(1.0f);
     gene1.innovation = newInnovation();
     gene1.setEnabled(true);
     genome.genes.add(gene1);
    
     Gene gene2 = gene.copy();
-    gene2.into = genome.maxneuron;
+    gene2.setInto(genome.maxneuron);
     gene2.innovation = newInnovation();
     gene2.setEnabled(true);
     genome.genes.add(gene2);

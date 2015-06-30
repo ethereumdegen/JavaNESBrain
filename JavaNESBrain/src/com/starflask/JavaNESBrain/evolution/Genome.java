@@ -198,6 +198,10 @@ private float  weights( List<Gene> genes1, List<Gene> genes2 )
         return sum / coincident  ;
 }
 	
- 
+@Override
+public String toString()
+{
+	return "GENOME"+this.hashCode();		
+}
  
 }
