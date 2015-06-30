@@ -10,6 +10,9 @@ import java.util.List;
 
 import javax.swing.UIManager;
 
+import jp.tanakh.bjne.nes.Cpu;
+import jp.tanakh.bjne.ui.BJNEmulator;
+
 import com.grapeshot.halfnes.CPURAM;
 import com.grapeshot.halfnes.NES;
 import com.grapeshot.halfnes.ui.ControllerInterface;
@@ -37,13 +40,13 @@ public class SuperBrain {
 
 	VirtualGamePad gamepad = new VirtualGamePad();
 
-	NES emulator;
+	BJNEmulator emulator;
 
 	GameDataManager gameData;
 
 	public SuperBrain() {
 
-		emulator = new NES();
+		emulator = new BJNEmulator( "" );
 
 		// emulator.run(); do not run continuously.. this class updates each
 		// frame manually
@@ -72,21 +75,19 @@ public class SuperBrain {
 		
 		gameData = new GameDataManager(this);
 
-		
-		
-		
+		 
 
 		while (true) {
 
 		 
-			if(emulator.getCPURAM() != null)
+			if(emulator.getCPU() != null)
 			{
 			
-			//update();
+			// update();  //TEMPORARILY DISABLED DUE TO CRASHES 
 			}
-
+			 
 			
-			emulator.update();
+			emulator.stepEmulation(); 
 			
 		}
 
@@ -360,9 +361,7 @@ public class SuperBrain {
 			return null;
 		}
 
-		for (int i = 1; i < this.getGameDataManager().getNumInputs(); i++) {
-			
-			
+		for (int i = 1; i < this.getGameDataManager().getNumInputs(); i++) {			
 			network.getNeurons().get(i).setValue(inputList.get(i));
 		}
 
@@ -405,17 +404,17 @@ public class SuperBrain {
 		return emulator.getCurrentRomName();
 	}
 
-	public CPURAM getRAM() {
-
-		return emulator.getCPURAM();
-	}
+	 
 
 	public static float sigmoid(float sum) {
 		return 2 / (1 + FastMath.exp(-4.9f * sum)) - 1;
 	}
 
 	//if pool == nil then initializePool() end
-	
-	
+
+	public Cpu getCPU()
+	{
+		return emulator.getCPU();
+	}
 
 }

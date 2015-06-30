@@ -69,10 +69,6 @@ void getPositions()
         	 
 }
  
-private CPURAM getRAM() {
-	 
-	return superBrain.getRAM();
-}
 
 
 
@@ -150,9 +146,11 @@ private int getTile(Vector2f delta)
  }
 	 
 private int readbyte(int addr) {
+ 
+		 
+		return superBrain.getCPU().read8( (short) addr);
 	 
-	return getRAM().read(/*(byte)*/ addr);
-	
+
 }
 
 

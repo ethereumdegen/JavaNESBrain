@@ -17,9 +17,10 @@ import java.io.IOException;
 
 import javax.sound.sampled.LineUnavailableException;
 
+import jp.tanakh.bjne.nes.Cpu;
 import jp.tanakh.bjne.nes.Nes;
 
-public class Main extends Frame {
+public class BJNEmulator extends Frame {
 
 	private static final long serialVersionUID = 1L;
 
@@ -30,10 +31,10 @@ public class Main extends Frame {
 	private Object nesLock = new Object();
 
 	public static void main(String[] args) {
-		new Main(args.length == 1 ? args[0] : null);
+		new BJNEmulator(args.length == 1 ? args[0] : null);
 	}
 
-	Main(String file) {
+	public BJNEmulator(String file) {
 		// setup main window
 
 		super("Nes Emulator");
@@ -96,41 +97,54 @@ public class Main extends Frame {
 				+ getInsets().top + getInsets().bottom);
 		setVisible(true);
 
-		loop();
+		
+		
+		//loop();
 	}
 
+	final int FPS = 60;
+	
 	private void loop() {
-		final int FPS = 60;
+		
 
-		for (;;) {
-			synchronized (nesLock) {
-				if (nes == null)
-					continue;
+		while(true) {
+			
+			stepEmulation(); 
+			
+		}
+	}
 
-				long start = System.nanoTime();
-				nes.execFrame();
+	public void stepEmulation() {
+	 
+		synchronized (nesLock) {
+			if (nes == null)
+			{
+				return;
+			}
+			
+			long start = System.nanoTime();
+			nes.execFrame();
 
-				for (;;) {
-					int bufStat = r.getSoundBufferState();
-					if (bufStat < 0)
-						break;
-					if (bufStat == 0) {
-						long elapsed = System.nanoTime() - start;
-						long wait = (long) (1.0 / FPS - elapsed / 1e-9);
-						try {
-							if (wait > 0)
-								Thread.sleep(wait);
-						} catch (InterruptedException e) {
-						}
-						break;
-					}
+			for (;;) {
+				int bufStat = r.getSoundBufferState();
+				if (bufStat < 0)
+					break;
+				if (bufStat == 0) {
+					long elapsed = System.nanoTime() - start;
+					long wait = (long) (1.0 / FPS - elapsed / 1e-9);
 					try {
-						Thread.sleep(1);
+						if (wait > 0)
+							Thread.sleep(wait);
 					} catch (InterruptedException e) {
 					}
+					break;
 				}
-				// timer.elapse(60);
+				try {
+					Thread.sleep(1);
+				} catch (InterruptedException e) {
+				}
 			}
+			// timer.elapse(60);
 		}
 	}
 
@@ -206,4 +220,21 @@ public class Main extends Frame {
 		dlg.setModal(true);
 		dlg.setVisible(true);
 	}
+
+
+	public Cpu getCPU()
+	{
+		if(nes!=null)
+		{
+			return nes.getCpu();
+		}
+		
+		return null;
+	}
+
+	public String getCurrentRomName() {
+		
+		return "Mario";
+	}
+
 }

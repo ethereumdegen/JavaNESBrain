@@ -919,11 +919,11 @@ public class Cpu {
 		return 3579545.0 / 2;
 	}
 
-	private byte read8(short adr) {
+	public byte read8(short adr) {
 		return mbc.read(adr);
 	}
 
-	private short read16(short adr) {
+	public short read16(short adr) {
 		return (short) ((mbc.read(adr) & 0xff) | ((mbc.read((short) (adr + 1)) & 0xff) << 8));
 	}
 
