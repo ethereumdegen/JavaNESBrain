@@ -10,9 +10,9 @@ import java.util.List;
 
 import javax.swing.UIManager;
 
-import com.grapeshot.halfnes.CPURAM;
-import com.grapeshot.halfnes.NES;
-import com.grapeshot.halfnes.ui.ControllerInterface;
+import jp.tanakh.bjne.nes.Cpu;
+import jp.tanakh.bjne.ui.BJNEmulator;
+
 import com.starflask.JavaNESBrain.evolution.Gene;
 import com.starflask.JavaNESBrain.evolution.GenePool;
 import com.starflask.JavaNESBrain.evolution.Genome;
@@ -37,13 +37,13 @@ public class SuperBrain {
 
 	VirtualGamePad gamepad = new VirtualGamePad();
 
-	NES emulator;
+	BJNEmulator emulator;
 
 	GameDataManager gameData;
 
 	public SuperBrain() {
 
-		emulator = new NES();
+		emulator = new BJNEmulator( "" );
 
 		// emulator.run(); do not run continuously.. this class updates each
 		// frame manually
@@ -62,31 +62,25 @@ public class SuperBrain {
 
 	}
 
-	public ControllerInterface getController() {
-		return gamepad;
-	}
-
 	
 	boolean firstUpdateOccured = false;
 	public void start() {
 		
 		gameData = new GameDataManager(this);
 
-		
-		
-		
+		 
 
 		while (true) {
 
 		 
-			if(emulator.getCPURAM() != null)
+			if(emulator.isAiEnabled())
 			{
 			
-			//update();
+			 update();   
 			}
-
+			 
 			
-			emulator.update();
+			emulator.stepEmulation(); 
 			
 		}
 
@@ -106,6 +100,9 @@ public class SuperBrain {
 			firstUpdateOccured = true;
 			
 			initializePool();
+			
+			System.out.println("set gamepad input ");
+			emulator.setGamepadInput( gamepad.getIntegerBuffer() );
 			
 		}
 
@@ -342,15 +339,8 @@ public class SuperBrain {
 	 * @return
 	 * 
 	 */
-	private HashMap<String, Boolean> evaluateNetwork(NeuralNetwork network, Integer[] inputs) {
-
-		List<Integer> inputList = new ArrayList<Integer>();
-		
-		for(int i=0; i < inputs.length; i++)
-		{
-			inputList.add(inputs[i]);
-		}
-		
+	private HashMap<String, Boolean> evaluateNetwork(NeuralNetwork network, List<Integer> inputList) {
+ 
 		
 
 		inputList.add(1);
@@ -360,10 +350,13 @@ public class SuperBrain {
 			return null;
 		}
 
-		for (int i = 1; i < this.getGameDataManager().getNumInputs(); i++) {
-			
-			
-			network.getNeurons().get(i).setValue(inputList.get(i));
+		for (int i = 1; i < this.getGameDataManager().getNumInputs(); i++) {	
+			if(network.getNeurons().containsKey( i ))
+			{
+				network.getNeurons().get(i).setValue(inputList.get(i));
+			}else{
+				System.err.println(  "no neuron at " + i   );
+			}
 		}
 
 		for (Neuron neuron : network.getNeurons().values()) {
@@ -373,20 +366,25 @@ public class SuperBrain {
 				Gene incoming = neuron.getIncomingGeneList().get(j);
 				Neuron other = network.getNeurons().get(incoming.getNeuralInIndex());
 				sum = sum + incoming.getWeight() * other.getValue();
+					 
 			}
 
-			if (neuron.getIncomingGeneList().size() > 0) {
+			if (neuron.getIncomingGeneList().size() > 0) { 
 				neuron.setValue(sigmoid(sum));
 			}
 		}
 
 		HashMap<String, Boolean> gamepadOutputs = new HashMap<String, Boolean>();
 
+		
 		for (int o = 1; o < this.getGameDataManager().getNumOutputs(); o++) {
-
+			
 			String button = "P1 " + this.getGameDataManager().buttonNames[o];
 
 			if (network.getNeurons().get(MaxNodes + o).getValue() > 0) {
+				 
+				
+				System.out.println("FIRING NEURON TO GAMEPAD");
 				gamepadOutputs.put(button, true);
 			} else {
 				gamepadOutputs.put(button, false);
@@ -405,17 +403,17 @@ public class SuperBrain {
 		return emulator.getCurrentRomName();
 	}
 
-	public CPURAM getRAM() {
-
-		return emulator.getCPURAM();
-	}
+	 
 
 	public static float sigmoid(float sum) {
 		return 2 / (1 + FastMath.exp(-4.9f * sum)) - 1;
 	}
 
 	//if pool == nil then initializePool() end
-	
-	
+
+	public Cpu getCPU()
+	{
+		return emulator.getCPU();
+	}
 
 }

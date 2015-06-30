@@ -1,6 +1,8 @@
 package com.starflask.JavaNESBrain;
 
-import com.grapeshot.halfnes.CPURAM;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.starflask.JavaNESBrain.utils.FastMath;
 import com.starflask.JavaNESBrain.utils.Vector2f;
 
@@ -38,9 +40,11 @@ private void init() {
    // {
 		String savefilename = "DP1.state" ;
     
-	        buttonNames = new String[]{
+	        buttonNames = new String[]{	        		
 	                "A",
 	                "B",
+	                "Select",
+	                "Enter",
 	                "Up",
 	                "Down",
 	                "Left",
@@ -69,10 +73,6 @@ void getPositions()
         	 
 }
  
-private CPURAM getRAM() {
-	 
-	return superBrain.getRAM();
-}
 
 
 
@@ -150,9 +150,11 @@ private int getTile(Vector2f delta)
  }
 	 
 private int readbyte(int addr) {
+ 
+		 
+		return superBrain.getCPU().read8( (short) addr);
 	 
-	return getRAM().read(/*(byte)*/ addr);
-	
+
 }
 
 
@@ -162,30 +164,32 @@ Sprite[] extendedSprites;
 
 Integer[] inputs;
 
-public Integer[] getBrainSystemInputs()
+public List<Integer> getBrainSystemInputs()
 {
 	getPositions();
     
     sprites = getSprites();
     extendedSprites = getExtendedSprites();
 
-    inputs = new Integer[169];
-    int  numSystemInputs = 0;
+    List<Integer> inputs = new ArrayList<Integer>();
     
-    for(int dy = -BoxRadius*16 ; dy < BoxRadius*16  ; dy+= 16)
+    
+    
+    for(int dy = -BoxRadius*16 ; dy <= BoxRadius*16  ; dy+= 16)
     {
-    	for(int dx = -BoxRadius*16 ; dx < BoxRadius*16  ; dx+= 16)
+    	for(int dx = -BoxRadius*16 ; dx <= BoxRadius*16  ; dx+= 16)
         {
     		Vector2f deltaPos = new Vector2f(dx, dy);
     		
-    		numSystemInputs++;    		
-    		inputs[numSystemInputs] = 0;
+    		int cellValue = 0;
+    		
+    		
     		
     		 int tile = getTile( deltaPos );
     		 
                      if (tile == 1 && marioPos.getY() + dy < 0x1B0 )
                      {
-                    	  inputs[numSystemInputs] = 1 ;
+                    	 cellValue = 1;
                      }
                             
                      
@@ -198,14 +202,17 @@ public Integer[] getBrainSystemInputs()
                          
                          if (distx <= 8 && disty <= 8 )
                          {
-                        	 inputs[numSystemInputs] = -1 ;
+                        	 cellValue = -1;
                          }
                 	 }
                  }
                  
                 
     		
-    		
+                 inputs.add(cellValue); 
+                 // 0 means nothing
+                 // 1 means a tile , white in color on the grid
+                 // -1 mean a baddie, black in color on the grid
     		
         }
     }
