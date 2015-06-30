@@ -83,7 +83,7 @@ public class SuperBrain {
 			if(emulator.getCPU() != null)
 			{
 			
-			// update();  //TEMPORARILY DISABLED DUE TO CRASHES 
+			 update();  //TEMPORARILY DISABLED DUE TO CRASHES 
 			}
 			 
 			
@@ -343,15 +343,8 @@ public class SuperBrain {
 	 * @return
 	 * 
 	 */
-	private HashMap<String, Boolean> evaluateNetwork(NeuralNetwork network, Integer[] inputs) {
-
-		List<Integer> inputList = new ArrayList<Integer>();
-		
-		for(int i=0; i < inputs.length; i++)
-		{
-			inputList.add(inputs[i]);
-		}
-		
+	private HashMap<String, Boolean> evaluateNetwork(NeuralNetwork network, List<Integer> inputList) {
+ 
 		
 
 		inputList.add(1);
@@ -361,8 +354,13 @@ public class SuperBrain {
 			return null;
 		}
 
-		for (int i = 1; i < this.getGameDataManager().getNumInputs(); i++) {			
-			network.getNeurons().get(i).setValue(inputList.get(i));
+		for (int i = 1; i < this.getGameDataManager().getNumInputs(); i++) {	
+			if(network.getNeurons().containsKey( i ))
+			{
+				network.getNeurons().get(i).setValue(inputList.get(i));
+			}else{
+				System.err.println(  "no neuron at " + i   );
+			}
 		}
 
 		for (Neuron neuron : network.getNeurons().values()) {
