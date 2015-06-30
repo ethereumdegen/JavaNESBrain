@@ -134,11 +134,11 @@ public class SuperBrain {
 		if (timeout + timeoutBonus <= 0) {
 
 			int fitness = rightmost - pool.getCurrentFrame() / 2;
-			if (getRomName().equals("Super Mario World (USA)") && rightmost > 4816) {
-				fitness = fitness + 1000;
-			}
+			//if (getRomName().equals("Super Mario World (USA)") && rightmost > 4816) {
+			//	fitness = fitness + 1000;
+			//}
 
-			if (getRomName().equals("Super Mario Bros.") && rightmost > 3186) {
+			if (getRomName().startsWith("Super Mario Bros.") && rightmost > 3186) {
 				fitness = fitness + 1000;
 			}
 

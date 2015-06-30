@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.starflask.JavaNESBrain.utils.FastMath;
-import com.starflask.JavaNESBrain.utils.Vector2f;
+import com.starflask.JavaNESBrain.utils.Vector2Int;
 
 public class GameDataManager {
 
-	Vector2f marioPos = new Vector2f(0,0);
-	Vector2f screenPos = new Vector2f(0,0);
+	Vector2Int marioPos = new Vector2Int(0,0);
+	Vector2Int screenPos = new Vector2Int(0,0);
 	
 	SuperBrain superBrain;
 	
@@ -62,7 +62,8 @@ private void init() {
 
 void getPositions()
 {
-        
+			if (getRomName().startsWith("Super Mario Bros."))
+			{
         	
         	marioPos.setX( readbyte(0x6D)*0x100 + readbyte(0x86)) ;
         	marioPos.setY( readbyte(0x03B8) + 16 );
@@ -70,31 +71,25 @@ void getPositions()
         	screenPos.setX( readbyte(0x03AD) );
         	screenPos.setY( readbyte(0x03B8) ); 
         
-        	 
+			} 
 }
  
 
 
 
-private int getTile(Vector2f delta)
+private String getRomName() {	 
+	return superBrain.getRomName();
+}
+
+private int getTile(Vector2Int delta)
 {
  
-	 /* if (superBrain.getRomName().equals("Super Mario World (USA)"))
-      {
-		  
-		 int x = (int) FastMath.floor((marioPos.x + delta.x +8)/16) ; 
-	     int y = (int) FastMath.floor((marioPos.y + delta.y )/16);
-	               
-	     
-	     int addr = 0x1C800 + ((int)FastMath.floor((x/0x10)))*0x1B0 + y*0x10 + x%0x10; 
-	     
-	     return readbyte( addr );  //used to be readbyte ...
-		  
-      }*/
+	if (getRomName().startsWith("Super Mario Bros."))
+			{
 	  
 
-			int x = (int) (marioPos.getX() + delta.x + 8);
-			int y = (int) (marioPos.getY() + delta.y - 16);
+			int x = (int) (marioPos.getX() + delta.getX() + 8);
+			int y = (int) (marioPos.getY() + delta.getY() - 16);
              
             int page = (int) (FastMath.floor(x/256)%2);
 
@@ -113,6 +108,10 @@ private int getTile(Vector2f delta)
             }else{
                     return 0;
             }
+            
+		}
+	
+	return 0;
             
 }
 
@@ -179,7 +178,7 @@ public List<Integer> getBrainSystemInputs()
     {
     	for(int dx = -BoxRadius*16 ; dx <= BoxRadius*16  ; dx+= 16)
         {
-    		Vector2f deltaPos = new Vector2f(dx, dy);
+    		Vector2Int deltaPos = new Vector2Int(dx, dy);
     		
     		int cellValue = 0;
     		
@@ -226,7 +225,7 @@ public List<Integer> getBrainSystemInputs()
     
 }
 
-public Vector2f getMarioPos() {
+public Vector2Int getMarioPos() {
 	 
 	return marioPos;
 }

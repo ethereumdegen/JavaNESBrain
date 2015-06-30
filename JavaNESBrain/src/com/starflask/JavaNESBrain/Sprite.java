@@ -1,14 +1,14 @@
 package com.starflask.JavaNESBrain;
 
-import com.starflask.JavaNESBrain.utils.Vector2f;
+import com.starflask.JavaNESBrain.utils.Vector2Int;
 
 public class Sprite {
 	
-	Vector2f pos;
+	Vector2Int pos;
 	public Sprite(int x, int y) {
-		pos = new Vector2f(x,y);
+		pos = new Vector2Int(x,y);
 	}
-	public Vector2f getPos() {
+	public Vector2Int getPos() {
 		 
 		return pos;
 	}

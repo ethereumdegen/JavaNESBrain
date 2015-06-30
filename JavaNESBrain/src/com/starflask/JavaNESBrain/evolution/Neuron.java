@@ -3,7 +3,6 @@ package com.starflask.JavaNESBrain.evolution;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.starflask.JavaNESBrain.utils.Vector2f;
 
 public class Neuron {
 

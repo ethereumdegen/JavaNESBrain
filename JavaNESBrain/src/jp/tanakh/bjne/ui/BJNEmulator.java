@@ -260,7 +260,7 @@ public class BJNEmulator extends Frame {
 
 	public String getCurrentRomName() {
 		
-		return "Mario";
+		return nes.getRom().getROMName();
 	}
 
 }

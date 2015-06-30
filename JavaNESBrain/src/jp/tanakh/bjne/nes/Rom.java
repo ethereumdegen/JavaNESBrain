@@ -1,5 +1,6 @@
 package jp.tanakh.bjne.nes;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
@@ -17,9 +18,18 @@ public class Rom {
 		sram = null;
 		vram = null;
 	}
+	
+	String filename = "";
 
 	public void load(String fname) throws IOException {
 		release();
+		
+		if(fname.length() > 2)
+		{
+			filename = fname.substring(fname.lastIndexOf(File.separatorChar)+1);	
+		}
+		
+		System.out.println("filename: "+filename);
 
 		FileInputStream is = new FileInputStream(fname);
 		byte[] dat = new byte[is.available()];
@@ -126,4 +136,10 @@ public class Rom {
 	private boolean fourScreen;
 	private int mapper;
 	private byte[] romDat, chrDat, sram, vram;
+	
+	public String getROMName()
+	{
+		return filename;
+	}
+	
 }
