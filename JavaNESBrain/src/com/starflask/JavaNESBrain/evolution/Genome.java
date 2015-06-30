@@ -139,7 +139,7 @@ private float  disjoint(List<Gene> genes1, List<Gene> genes2)
          {
         	 Gene gene = genes1.get(i);
          
-                if (! innovativeGene2.get(gene.innovation) )
+                if (!innovativeGene2.containsKey(  gene.innovation ) || ! innovativeGene2.get(gene.innovation) )
                 {
                 	disjointGenes++;
                 }
@@ -149,7 +149,7 @@ private float  disjoint(List<Gene> genes1, List<Gene> genes2)
          {
         	 Gene gene = genes2.get(i);
          
-        	 if (! innovativeGene1.get(gene.innovation) )
+        	 if (!innovativeGene1.containsKey(  gene.innovation ) || ! innovativeGene1.get(gene.innovation) )
         		 disjointGenes++;
          
                 
@@ -183,7 +183,7 @@ private float  weights( List<Gene> genes1, List<Gene> genes2 )
         float sum = 0;
         float coincident = 0;
         		
-        for (int i = 1; i < genes2.size(); i++)
+        for (int i = 1; i < genes1.size(); i++)
         {
                 Gene gene = genes1.get(i);
         

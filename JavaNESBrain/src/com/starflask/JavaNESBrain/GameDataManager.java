@@ -6,7 +6,7 @@ import com.starflask.JavaNESBrain.utils.Vector2f;
 
 public class GameDataManager {
 
-	Vector2f marioPos;
+	Vector2f marioPos = new Vector2f(0,0);
 	Vector2f screenPos;
 	
 	SuperBrain superBrain;
@@ -197,7 +197,7 @@ public Integer[] getBrainSystemInputs()
     sprites = getSprites();
     extendedSprites = getExtendedSprites();
 
-    inputs = new Integer[BoxRadius*2 + 1];
+    inputs = new Integer[1000];
     int  numSystemInputs = 0;
     
     for(int dy = -BoxRadius*16 ; dy < BoxRadius*16  ; dy+= 16)
@@ -219,6 +219,8 @@ public Integer[] getBrainSystemInputs()
                      
                  for(int i=1; i < sprites.length; i++)
                  { 
+                	 if(sprites[i] != null)
+                	 {
                         float distx = FastMath.abs(sprites[i].getPos().getX() - (marioPos.getX()+dx) )  ;
                         float disty = FastMath.abs(sprites[i].getPos().getY() - (marioPos.getY()+dy) )  ;
                          
@@ -226,10 +228,13 @@ public Integer[] getBrainSystemInputs()
                          {
                         	 inputs[numSystemInputs] = -1 ;
                          }
+                	 }
                  }
                  
                  for(int i=1; i < extendedSprites.length; i++)
                  { 
+                	 if(extendedSprites[i] != null)
+                	 {
                         float distx = FastMath.abs(extendedSprites[i].getPos().getX() - (marioPos.getX()+dx) )  ;
                         float disty = FastMath.abs(extendedSprites[i].getPos().getY() - (marioPos.getY()+dy) )  ;
                          
@@ -237,6 +242,7 @@ public Integer[] getBrainSystemInputs()
                          {
                         	 inputs[numSystemInputs] = -1 ;
                          }
+                	 }
                  }
     		
     		

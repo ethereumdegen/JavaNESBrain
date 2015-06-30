@@ -273,7 +273,7 @@ private void nodeMutate(Genome genome)
     genome.maxneuron = genome.maxneuron + 1;
 
     
-    int randomIndex = rand.nextInt(genome.genes.size()-1)+1;  //dont ever pick the zeroeth gene since it is always blank?
+    int randomIndex = rand.nextInt(genome.genes.size());  //dont ever pick the zeroeth gene since it is always blank?
     Gene gene = genome.genes.get( randomIndex ) ;
     if (!gene.isEnabled()) 
             return;
@@ -315,7 +315,7 @@ public void enableDisableMutate(Genome genome, boolean enable)
       }
 
 		//flip the enablestate of a random candidate
-		int randomIndex = rand.nextInt(candidates.size()-1 ) + 1;
+		int randomIndex = rand.nextInt(candidates.size() ) ;
 		Gene gene = candidates.get(randomIndex) ;
 		gene.setEnabled(! gene.isEnabled()) ;
 	
@@ -535,7 +535,7 @@ boolean foundSpecies = false;
 
 for (int s=1; s < getSpecies().size() ; s++ ){
         Species specie = getSpecies().get(s);
-        if (! foundSpecies && child.sameSpeciesAs(specie.genomes.get(1))   ) 
+        if (! foundSpecies && child.sameSpeciesAs(specie.genomes.get(0))   ) 
         {
         	specie.getGenomes().add(child);                 
             foundSpecies = true;
