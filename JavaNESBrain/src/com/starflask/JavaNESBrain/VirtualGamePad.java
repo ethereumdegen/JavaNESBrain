@@ -42,13 +42,14 @@ public class VirtualGamePad  {
 		if(pressed)
 		{
 		System.out.println("pressing " + keyname );
-
+		}
+		
 		int keyIndex = KEYNAMEMAP.get(keyname);
 		
 		int value = pressed ? 1 : 0 ;
 		
 		integerBuffer[keyIndex] = value;
-		}
+		
 	}
 
 	public void clear() {
