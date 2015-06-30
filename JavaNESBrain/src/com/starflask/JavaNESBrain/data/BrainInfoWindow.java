@@ -111,8 +111,64 @@ public class BrainInfoWindow extends Frame{
 		
 		
 		
+		//draw inputs
 		
 		
+		g.setColor(Color.GRAY);
+		 
+		 g.drawString("Grid Map (AI Inputs)", 80, 110);
+		
+		List<Integer> cellValues = getGameData().getBrainSystemInputs();
+		
+		Iterator<Integer> cellValueInterator = cellValues.iterator();
+		
+		int inputCount = 0;
+
+	    for(int dy = -getGameData().getBoxRadius()*16 ; dy <= getGameData().getBoxRadius()*16  ; dy+= 16)
+	    {
+	    	for(int dx = -getGameData().getBoxRadius()*16 ; dx <= getGameData().getBoxRadius()*16  ; dx+= 16)
+	        {
+	    		Vector2Int deltaPos = new Vector2Int(dx, dy);
+	    			    		    		
+	    		 int tile = cellValueInterator.next();
+			 
+	    		 g.setColor(Color.GRAY);
+	    		 
+	    		 if(tile < 0)
+	    		 {
+	    		 g.setColor(Color.BLACK);
+	    		 }
+	    		 
+	    		 if(tile > 0)
+	    		 {
+	    		 g.setColor(Color.BLUE);
+	    		 }
+	    		 
+	    		 
+	    			DebugCell inputCell = new DebugCell();
+	    			inputCell.x = 30 + (getGameData().getBoxRadius())*16 + dx;
+	    			inputCell.y = 120 +  (getGameData().getBoxRadius())*16 + dy;
+	    			inputCell.value = tile;
+	    			
+	    			cells.put(inputCount, inputCell  );
+	    		
+	    				
+	    			inputCount++;
+	    			
+	    			g.fillRect((int) inputCell.x,(int)  inputCell.y, 12, 12);
+			 
+			 
+		 }
+		
+	}
+		
+		
+		
+		
+		
+		
+		
+		//draw outputs
 		//each output only has one assigned neuron, but that neuron can have multiple incoming genes
 		for (int o = 0; o < this.getGameData().getNumOutputs(); o++) {
 			
@@ -284,41 +340,7 @@ public class BrainInfoWindow extends Frame{
 
 	private void drawTiles(Graphics g) {
 		
-		 g.setColor(Color.GRAY);
-		 
-		 g.drawString("Grid Map (AI Inputs)", 80, 110);
 		
-		List<Integer> cellValues = getGameData().getBrainSystemInputs();
-		
-		Iterator<Integer> cellValueInterator = cellValues.iterator();
-
-	    for(int dy = -getGameData().getBoxRadius()*16 ; dy <= getGameData().getBoxRadius()*16  ; dy+= 16)
-	    {
-	    	for(int dx = -getGameData().getBoxRadius()*16 ; dx <= getGameData().getBoxRadius()*16  ; dx+= 16)
-	        {
-	    		Vector2Int deltaPos = new Vector2Int(dx, dy);
-	    			    		    		
-	    		 int tile = cellValueInterator.next();
-			 
-	    		 g.setColor(Color.GRAY);
-	    		 
-	    		 if(tile < 0)
-	    		 {
-	    		 g.setColor(Color.BLACK);
-	    		 }
-	    		 
-	    		 if(tile > 0)
-	    		 {
-	    		 g.setColor(Color.BLUE);
-	    		 }
-	    		 
-	    		
-	    		 g.fillRect(30+ (getGameData().getBoxRadius())*16 + dx,120+  (getGameData().getBoxRadius())*16 + dy, 12, 12);
-			 
-			 
-		 }
-		
-	}
 
 }
 	

@@ -451,14 +451,11 @@ public void newGeneration() {
      
      List<Genome> children = new ArrayList<Genome>();
      
-     if(children.isEmpty())
-     {
-    	 System.err.println("Empty genome");
-    	 return;
-     }
+    
      
      for (int s = 0 ; s < getSpecies().size(); s++)
-     {	 Species specie = getSpecies().get(s);
+     {	 
+    	 Species specie = getSpecies().get(s);
      
              int breed = (int) (FastMath.floor(specie.averageFitness / sum * Population) - 1)  ;
              for (int i=0; i < breed; i++) {
@@ -476,10 +473,10 @@ public void newGeneration() {
              children.add(breedChild(specie));
      }
      
-     for (int c=1; c < children.size() ; c++)
+     for (int c=0; c < children.size() ; c++)
      {
     	 Genome child = children.get(c);
-            addToSpecies(child);
+         addToSpecies(child);
      }
             
      generation++;
@@ -599,7 +596,7 @@ private int totalAverageFitness()
 private Genome  breedChild(Species specie){
 		Genome child = new Genome();
         
-        if (rand.nextFloat() < child.CrossoverChance )  //should it be the childs crossoverchance or a static one?
+        if (specie.getGenomes().size() > 0 && rand.nextFloat() < child.CrossoverChance )  //should it be the childs crossoverchance or a static one?
         {        	
         		int index1 = rand.nextInt(specie.getGenomes().size() ) ; 
                 Genome g1 = specie.getGenomes().get(index1);
