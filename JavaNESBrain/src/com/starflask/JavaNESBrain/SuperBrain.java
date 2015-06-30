@@ -167,8 +167,8 @@ public class SuperBrain {
 
 
 
-			pool.setCurrentSpecies(1);
-			pool.setCurrentGenome(1);
+			pool.setCurrentSpecies(0);
+			pool.setCurrentGenome(0);
 
 			while (fitnessAlreadyMeasured()) {
 				nextGenome();
@@ -212,13 +212,13 @@ public class SuperBrain {
 
 	private void nextGenome() {
 		pool.setCurrentGenome(pool.getCurrentGenomeIndex() + 1);
-		if (pool.getCurrentGenomeIndex() > pool.getCurrentSpecies().getGenomes().size()) {
-			pool.setCurrentGenome(1);
+		if (pool.getCurrentGenomeIndex() >= pool.getCurrentSpecies().getGenomes().size()) {
+			pool.setCurrentGenome(0);
 			pool.setCurrentSpecies(pool.getCurrentSpeciesIndex() + 1);
 
-			if (pool.getCurrentSpeciesIndex() > pool.getSpecies().size()) {
+			if (pool.getCurrentSpeciesIndex() >= pool.getSpecies().size()) {
 				pool.newGeneration();
-				pool.setCurrentSpecies(1);
+				pool.setCurrentSpecies(0);
 			}
 		}
 

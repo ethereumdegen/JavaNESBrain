@@ -20,6 +20,7 @@ import com.starflask.JavaNESBrain.evolution.NeuralNetwork;
 import com.starflask.JavaNESBrain.evolution.Neuron;
 import com.starflask.JavaNESBrain.utils.FastMath;
 import com.starflask.JavaNESBrain.utils.Vector2Int;
+import com.starflask.JavaNESBrain.utils.Vector2f;
 
 public class BrainInfoWindow extends Frame{
 	
@@ -94,6 +95,10 @@ public class BrainInfoWindow extends Frame{
 
 	private void drawNeurons(Graphics g) {
 		 
+		
+		HashMap<Integer,DebugCell> cells = new HashMap<Integer,DebugCell>();
+		
+		
 		g.setColor(Color.BLACK);
 		
 		
@@ -108,9 +113,6 @@ public class BrainInfoWindow extends Frame{
 		
 		
 		
-		
-		
-		
 		//each output only has one assigned neuron, but that neuron can have multiple incoming genes
 		for (int o = 0; o < this.getGameData().getNumOutputs(); o++) {
 			
@@ -118,18 +120,30 @@ public class BrainInfoWindow extends Frame{
 
 			g.setColor(Color.GRAY);
 			
-			if (network.getNeurons().get( SuperBrain.MaxNodes + o) .getValue() > 0) {
+			DebugCell outputCell = new DebugCell();
+			outputCell.x = 350;
+			outputCell.y = 120 +  16 * o;
+			outputCell.value = network.getNeurons().get( SuperBrain.MaxNodes + o) .getValue();
+			
+			
+			
+			if (network.getNeurons().get( SuperBrain.MaxNodes + o).getValue() > 0) {
 				g.setColor(Color.RED);
 			}
 			
+			
+			
 			g.drawString( button , 365, 120 + 12 +  16 * o);
 			g.fillRect(350 ,120 +  16 * o, 12, 12);
+			
+			
+			cells.put(SuperBrain.MaxNodes + o, outputCell );
 			
 		}
 		
 		//the key corresponds to which input affects this neuron
 		
-		HashMap<Integer,DebugCell> cells = new HashMap<Integer,DebugCell>();
+		
 		
 		
 		for(int key : network.getNeurons().keySet())
@@ -139,8 +153,8 @@ public class BrainInfoWindow extends Frame{
 			if(key > getGameData().numInputs && key <= SuperBrain.MaxNodes)
 			{
 				DebugCell cell = new DebugCell();
-				cell.x = 140;
-				cell.y = 40;
+				cell.x = 260;
+				cell.y = 120;
 				cell.value = neuron.getValue();
 				cells.put(key, cell);
 			}
@@ -156,15 +170,17 @@ public class BrainInfoWindow extends Frame{
        {
     	   for(Gene gene : pool.getCurrentGenome().getGenes() )
     	   {
-    		   if(gene.isEnabled())
+    		   DebugCell cellIn = cells.get(gene.getNeuralInIndex());
+			   DebugCell cellOut = cells.get(gene.getNeuralOutIndex());
+    		   
+    		   if(gene.isEnabled() && cellIn!=null && cellOut != null )
     		   {
-    			   DebugCell cellIn = cells.get(gene.getNeuralInIndex());
-    			   DebugCell cellOut = cells.get(gene.getNeuralOutIndex());
+    			  
     			   
     			   if(gene.getNeuralInIndex() > getGameData().getNumInputs() && gene.getNeuralInIndex() <= getMaxNodes()  )
     			   {
     				   
-    				   cellIn.x =  0.75f*cellIn.x + 0.25f*cellIn.x;
+    				   cellIn.x =  0.75f*cellIn.x + 0.25f*cellOut.x;
     				   
     				   if(cellIn.x >= cellOut.x)
     				   {
@@ -228,7 +244,7 @@ public class BrainInfoWindow extends Frame{
     		   Color color = new Color(colordarkness / 255f, 0.2f, 0.2f, opacity);
     		   
     		   g.setColor(color);
-    		   g.drawRect((int) cell.x, (int) cell.y, 2, 2);
+    		   g.drawRect((int) cell.x , (int) cell.y  , (int) (4 * opacity),(int)  (4 * opacity));
 
     	   }
     	   
@@ -236,12 +252,15 @@ public class BrainInfoWindow extends Frame{
        
        for(Gene gene : pool.getCurrentGenome().getGenes() )
        {
-    	   if(gene.isEnabled())
+    	   
+    	   DebugCell cellIn = cells.get(gene.getNeuralInIndex());
+		   DebugCell cellOut = cells.get(gene.getNeuralOutIndex());
+    	   if(gene.isEnabled() && cellIn!=null && cellOut!=null )
 		   {
-			   DebugCell cellIn = cells.get(gene.getNeuralInIndex());
-			   DebugCell cellOut = cells.get(gene.getNeuralOutIndex());
 			   
-			   float opacity = cellIn.value == 0 ? 0.1f : 0.8f ;
+			   
+			   
+			   float opacity = cellIn.value == 0 ? 0.2f : 0.8f ;
 			   float colorDarkness = 0.5f - FastMath.floor(FastMath.abs(SuperBrain.sigmoid(gene.getWeight())*0.5f  ));
 			   
 			   Color color = new Color(colorDarkness,colorDarkness,colorDarkness,opacity);
@@ -249,6 +268,7 @@ public class BrainInfoWindow extends Frame{
 			   g.setColor(color);
 			   
 			   g.drawLine((int) cellIn.x,(int)cellIn.y,(int) cellOut.x,(int) cellOut.y);
+			   
 		   }
     	   
        }

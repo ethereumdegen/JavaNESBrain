@@ -21,8 +21,8 @@ public class GenePool {
 	List<Species> species = new ArrayList<Species>();
 	private int generation = 0;
 	int innovation = 10; //becomes equal to numOutputs
-	private int currentSpecies = 1;
-	private int currentGenome = 1;
+	private int currentSpecies = 0;
+	private int currentGenome = 0;
 	int currentFrame = 0;
 	private int maxFitness = 0;
 	
@@ -327,8 +327,12 @@ public Species getCurrentSpecies() {
 
 
 public Genome getCurrentGenome() {
-	 //this crashes sometimes ?   
-	return species.get(currentSpecies).genomes.get(currentGenome - 1 ); //TEMPORARY MAGIC NUMBER FIX 
+	 
+	 
+	return getCurrentSpecies().getGenomes().get(currentGenome  ); 
+	
+	 
+	
 }
 
 
@@ -387,7 +391,7 @@ public void setCurrentFrame(int i) {
 
 public void cullSpecies(boolean cutToOne) { 
 	
-    for (int s = 1; s < getSpecies().size(); s++)
+    for (int s = 0; s < getSpecies().size(); s++)
     {
         
         Species specie = getSpecies().get(s);
@@ -436,7 +440,7 @@ public void newGeneration() {
      removeStaleSpecies();
      rankGlobally();
      
-     for (int s = 1 ; s < getSpecies().size(); s++)
+     for (int s = 0 ; s < getSpecies().size(); s++)
      {
              Species specie = getSpecies().get(s);
              calculateAverageFitness(specie) ;
@@ -447,19 +451,27 @@ public void newGeneration() {
      
      List<Genome> children = new ArrayList<Genome>();
      
-     for (int s = 1 ; s < getSpecies().size(); s++)
+     if(children.isEmpty())
+     {
+    	 System.err.println("Empty genome");
+    	 return;
+     }
+     
+     for (int s = 0 ; s < getSpecies().size(); s++)
      {	 Species specie = getSpecies().get(s);
+     
              int breed = (int) (FastMath.floor(specie.averageFitness / sum * Population) - 1)  ;
-             for (int i=1; i < breed; i++) {
+             for (int i=0; i < breed; i++) {
             	 children.add( breedChild(specie) );
              }
+             
      }
      
      cullSpecies(true); //-- Cull all but the top member of each species
             		 
      while (children.size() + getSpecies().size() < Population) 
      {
-    	 	int randIndex = rand.nextInt( getSpecies().size() - 1) + 1; 
+    	 	int randIndex = rand.nextInt( getSpecies().size() ) ; 
              Species specie = getSpecies().get(randIndex);
              children.add(breedChild(specie));
      }
@@ -482,10 +494,10 @@ private void rankGlobally() {
 	List<Genome> genomes = new ArrayList<Genome>();
 //	   local global = {}
 	   
-       for (int s = 1; s < getSpecies().size() ;s++ )
+       for (int s = 0; s < getSpecies().size() ;s++ )
        {
                Species specie = getSpecies().get(s);
-               for (int g = 1; g < specie.getGenomes().size();g++)
+               for (int g = 0; g < specie.getGenomes().size();g++)
             	 {
             	   genomes.add( specie.getGenomes().get(g));
             	    
@@ -514,7 +526,7 @@ private void rankGlobally() {
        
        
       
-       for (int g=1;g< genomes.size(); g++)
+       for (int g=0;g< genomes.size(); g++)
     	   {
     	   genomes.get(g).setGlobalRank(g);
     	   }
@@ -525,13 +537,16 @@ public void  addToSpecies(Genome child)
 {
 boolean foundSpecies = false;
 
-for (int s=1; s < getSpecies().size() ; s++ ){
+for (int s=0; s < getSpecies().size() ; s++ ){
+	
         Species specie = getSpecies().get(s);
-        if (! foundSpecies && child.sameSpeciesAs(specie.genomes.get(0))   ) 
+        
+        if (!foundSpecies &&  child.sameSpeciesAs(specie.genomes.get(0))   ) 
         {
         	specie.getGenomes().add(child);                 
             foundSpecies = true;
         }
+        
 }
 
 	if (!foundSpecies )
@@ -552,20 +567,24 @@ private void calculateAverageFitness(Species specie)
 {
         int total = 0;
        
-        for (int g=1; g < specie.getGenomes().size(); g++)  
+        
+        for (int g=0; g < specie.getGenomes().size(); g++)  
         {
                 Genome genome = specie.getGenomes().get(g);
                 total = total + genome.getGlobalRank();
         }
        
-        specie.setAverageFitness( total / specie.getGenomes().size() );
+        if(specie.getGenomes().size() > 0 )
+        {
+        	specie.setAverageFitness( total / specie.getGenomes().size() );
+        }
 }
  
 private int totalAverageFitness()
 {
         int total = 0;
         
-        for (int s = 1;s < getSpecies().size(); s++)
+        for (int s = 0;s < getSpecies().size(); s++)
         {
                 Species specie = getSpecies().get(s);
                 total = total + specie.getAverageFitness();
@@ -582,13 +601,13 @@ private Genome  breedChild(Species specie){
         
         if (rand.nextFloat() < child.CrossoverChance )  //should it be the childs crossoverchance or a static one?
         {        	
-        		int index1 = rand.nextInt(specie.getGenomes().size() - 1 ) + 1; 
+        		int index1 = rand.nextInt(specie.getGenomes().size() ) ; 
                 Genome g1 = specie.getGenomes().get(index1);
-                int index2 = rand.nextInt(specie.getGenomes().size() - 1 ) + 1; 
+                int index2 = rand.nextInt(specie.getGenomes().size()  ) ; 
                 Genome g2 = specie.getGenomes().get(index2);
                 child = crossover(g1, g2);
         }else{
-        		int index = rand.nextInt(specie.getGenomes().size() - 1 ) + 1; 
+        		int index = rand.nextInt(specie.getGenomes().size()  ) ; 
         		Genome g = specie.getGenomes().get(index);
                 child = Genome.copy(g);
         }
@@ -618,7 +637,7 @@ private Genome crossover(Genome g1, Genome g2) //splice two genomes together
         HashMap<Integer,Gene> innovations2 = new HashMap<Integer,Gene>();
         
         
-        for (int i=1; i < g2.getGenes().size(); i++ )
+        for (int i=0; i < g2.getGenes().size(); i++ )
         {
         		Gene gene = g2.getGenes().get(i);
         		
@@ -626,7 +645,7 @@ private Genome crossover(Genome g1, Genome g2) //splice two genomes together
                 
         }
        
-        for (int i=1; i < g1.getGenes().size(); i++) 
+        for (int i=0; i < g1.getGenes().size(); i++) 
         {
                 Gene gene1 = g1.getGenes().get(i);
                 Gene gene2 = innovations2.get(gene1.getInnovation());
@@ -665,7 +684,7 @@ private void removeStaleSpecies()
 {
        // local survived = {}
  
-        for (int  s = 1; s < getSpecies().size(); s++)
+        for (int  s = 0; s < getSpecies().size(); s++)
         	{
                Species specie = getSpecies().get(s);
                
@@ -685,9 +704,9 @@ private void removeStaleSpecies()
                
               
                
-                if (specie.getGenomes().get(1).fitness > specie.topFitness )
+                if (!specie.getGenomes().isEmpty() && specie.getGenomes().get(0).fitness > specie.topFitness )
                 {
-                        specie.topFitness = specie.getGenomes().get(1).fitness ;
+                        specie.topFitness = specie.getGenomes().get(0).fitness ;
                         specie.staleness = 0 ;
                 }else{
                         specie.staleness = specie.staleness + 1 ;
@@ -708,7 +727,7 @@ private void removeWeakSpecies()
        //List<Species> survivalists = new ArrayList<Species>();
  
         int sum = totalAverageFitness();
-        for (int s = 1; s < getSpecies().size();s++)
+        for (int s = 0; s < getSpecies().size();s++)
         {
                 Species specie = getSpecies().get(s);
                 float breed = FastMath.floor(specie.averageFitness / sum * Population);
