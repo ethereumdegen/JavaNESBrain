@@ -109,8 +109,7 @@ public class SuperBrain {
 	BrainInfoWindow infoWindow;
 	
 	int marioPreviousDistanceRight = 0;
-	int marioDeltaSlow = 0;
-	
+		
 	private void update() {
 		
 		
@@ -145,15 +144,10 @@ public class SuperBrain {
 		
 		int marioDistanceRight = getGameDataManager().getMarioPos().getX();
 		
-		int marioDistanceDelta = marioDistanceRight - marioPreviousDistanceRight;
-		 
-		if( marioDeltaSlow < marioDistanceDelta) { marioDeltaSlow++ ;}  
-		if( marioDeltaSlow > marioDistanceDelta) { marioDeltaSlow-- ;}  
-		
+		int marioDistanceDelta = marioDistanceRight - runStartingMarioX;
+		 		 
 		marioPreviousDistanceRight = marioDistanceRight;
-		
-		
-		
+				
 		// if mario gets farther than he has ever been... make the timeout longer (this may need to be changed to delta style)
 		if (marioDistanceRight > rightmost) {
 			rightmost =  marioDistanceRight ;
@@ -172,7 +166,7 @@ public class SuperBrain {
 		if (timeout + timeoutBonus <= 0) {
 			 
 			
-			int fitness = 25 +  marioDeltaSlow - pool.getCurrentFrame() / 2;
+			int fitness = 25 +  marioDistanceDelta - pool.getCurrentFrame() / 2;
 			//if (getRomName().equals("Super Mario World (USA)") && rightmost > 4816) {
 			//	fitness = fitness + 1000;
 			//}
@@ -279,13 +273,13 @@ public class SuperBrain {
 	int timeout;
 	int rightmost = 0; // the most right that we ever got so far
 	
-	int runStartingFitness;
+	int runStartingMarioX;
 
 	public void initializeRun() {
 		
 		//getNES().loadSram("run");
-		 System.out.println("new run");
-
+		 
+		runStartingMarioX= getGameDataManager().getMarioPos().getX();
 		///rightmost = 0;
 		
 		pool.setCurrentFrame(0);
