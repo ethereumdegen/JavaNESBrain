@@ -170,14 +170,14 @@ public class SuperBrain {
 			pool.setCurrentSpecies(0);
 			pool.setCurrentGenome(0);
 
-			while (fitnessAlreadyMeasured()) {
+			while ( pool.getCurrentSpecies().getGenomes().isEmpty() || fitnessAlreadyMeasured() ) {
 				nextGenome();
 			}
 
 			initializeRun();
 		}
 
-		int measured = 0;
+	/*	int measured = 0;
 		int total = 0;
 
 		// for every genome in every species increment total and if fitness is
@@ -191,17 +191,9 @@ public class SuperBrain {
 				}
 
 			}
-		}
+		}*/
 
-		/*
-		 * if (! forms.ischecked(hideBanner)) { gui.drawText(0, 0, "Gen " ..
-		 * pool.generation .. " species " .. pool.currentSpecies .. " genome "
-		 * .. pool.currentGenome .. " (" .. math.floor(measured/total*100) ..
-		 * "%)", 0xFF000000, 11) gui.drawText(0, 12, "Fitness: " ..
-		 * math.floor(rightmost - (pool.currentFrame) / 2 - (timeout +
-		 * timeoutBonus)*2/3), 0xFF000000, 11) gui.drawText(100, 12,
-		 * "Max Fitness: " .. math.floor(pool.maxFitness), 0xFF000000, 11) }
-		 */
+	
 
 		pool.setCurrentFrame(pool.getCurrentFrame() + 1);
 
