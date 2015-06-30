@@ -66,15 +66,28 @@ public class SuperBrain {
 		return gamepad;
 	}
 
+	
+	boolean firstUpdateOccured = false;
 	public void start() {
+		
 		gameData = new GameDataManager(this);
 
-		initializePool();
+		
+		
+		
 
 		while (true) {
 
+		 
+			if(emulator.getCPURAM() != null)
+			{
+			
 			update();
+			}
 
+			
+			emulator.update();
+			
 		}
 
 	}
@@ -86,6 +99,15 @@ public class SuperBrain {
 	GenePool pool;
 
 	private void update() {
+		
+		
+		if(!firstUpdateOccured)
+		{
+			firstUpdateOccured = true;
+			
+			initializePool();
+			
+		}
 
 		Species species = pool.getCurrentSpecies();
 		Genome genome = pool.getCurrentGenome();
@@ -177,7 +199,8 @@ public class SuperBrain {
 
 		pool.setCurrentFrame(pool.getCurrentFrame() + 1);
 
-		emulator.update();
+		
+		
 
 	}
 
@@ -333,7 +356,7 @@ public class SuperBrain {
 		inputList.add(1);
 
 		if (inputList.size() != this.getGameDataManager().getNumInputs()) {
-			System.err.println("Incorrect number of neural network inputs.");
+			System.err.println("Incorrect number of neural network inputs. " + inputList.size() + " vs " + this.getGameDataManager().getNumInputs() );
 			return null;
 		}
 

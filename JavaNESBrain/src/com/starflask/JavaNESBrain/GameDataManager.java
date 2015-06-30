@@ -7,7 +7,7 @@ import com.starflask.JavaNESBrain.utils.Vector2f;
 public class GameDataManager {
 
 	Vector2f marioPos = new Vector2f(0,0);
-	Vector2f screenPos;
+	Vector2f screenPos = new Vector2f(0,0);
 	
 	SuperBrain superBrain;
 	
@@ -38,11 +38,9 @@ private void init() {
    // {
 		String savefilename = "DP1.state" ;
     
-	      String[]  buttonNames = new String[]{
+	        buttonNames = new String[]{
 	                "A",
 	                "B",
-	                "X",
-	                "Y",
 	                "Up",
 	                "Down",
 	                "Left",
@@ -60,35 +58,17 @@ private void init() {
 
 void getPositions()
 {
-        if (superBrain.getRomName().equals("Super Mario World (USA)"))
-        {
-        	marioPos.setX( readS16( 0x94 ) );  // was memory.read_s16_le( 0x94) 
-        	marioPos.setY( readS16( 0x96 ) );   
-               
-        	Vector2f layer1 = new Vector2f(
-        			readS16( 0x1A ),
-        			readS16(0x1C )
-        			);
+        
         	
-        	screenPos.set( marioPos.subtract(layer1) );
+        	marioPos.setX( readbyte(0x6D)*0x100 + readbyte(0x86)) ;
+        	marioPos.setY( readbyte(0x03B8) + 16 );
                
-        }
-        else if (superBrain.getRomName().equals( "Super Mario Bros.") )
-        		{
-        	
-                //marioX = memory.readbyte(0x6D) * 0x100 + memory.readbyte(0x86)
-               // marioY = memory.readbyte(0x03B8)+16
-       
-                //screenX = memory.readbyte(0x03AD)
-                //screenY = memory.readbyte(0x03B8)
-        	}
+        	screenPos.setX( readbyte(0x03AD) );
+        	screenPos.setY( readbyte(0x03B8) ); 
+        
+        	 
 }
-
-private float readS16(int addr) {
-	
-	return getRAM().read(addr);
-}
-
+ 
 private CPURAM getRAM() {
 	 
 	return superBrain.getRAM();
@@ -99,7 +79,7 @@ private CPURAM getRAM() {
 private int getTile(Vector2f delta)
 {
  
-	  if (superBrain.getRomName().equals("Super Mario World (USA)"))
+	 /* if (superBrain.getRomName().equals("Super Mario World (USA)"))
       {
 		  
 		 int x = (int) FastMath.floor((marioPos.x + delta.x +8)/16) ; 
@@ -110,71 +90,63 @@ private int getTile(Vector2f delta)
 	     
 	     return readbyte( addr );  //used to be readbyte ...
 		  
-      }
+      }*/
 	  
-	  
-	  
-	  return 0;
+
+			int x = (int) (marioPos.getX() + delta.x + 8);
+			int y = (int) (marioPos.getY() + delta.y - 16);
+             
+            int page = (int) (FastMath.floor(x/256)%2);
+
+            int subx = (int) FastMath.floor((x%256)/16);
+            int suby = (int) FastMath.floor((y - 32)/16);
+            int addr = 0x500 + page*13*16+suby*16+subx ;
+           
+            if (suby >= 13 || suby < 0 )
+            {
+                    return 0;
+            }
+           
+            if (readbyte(addr) != 0 )
+            {
+                    return 1;
+            }else{
+                    return 0;
+            }
+            
 }
 
  private Sprite[] getSprites()
  {
-	 Sprite[] sprites = new Sprite[12];
+	 Sprite[] sprites = new Sprite[5];
 	 
-	 if (superBrain.getRomName().equals("Super Mario World (USA)"))
-     {
-		
+	  
 		 
-		 for(int slot=0;slot<12;slot++)
+		 for(int slot=0;slot<=4;slot++)
 		 {
 			  
-			 int status = readbyte(0x14C8 + slot ) ; //used to be readbyte...
-                     if ( status != 0 )
+			int enemy = readbyte(0xF+slot) ;
+                     if (enemy != 0) 
                      {
-                             int spritex = readbyte(0xE4+slot) + readbyte(0x14E0+slot)*256 ;
-                             int spritey = readbyte(0xD8+slot) + readbyte(0x14D4+slot)*256 ;
-                             
-                             sprites[ slot ] = new Sprite(spritex, spritey);
-                     }
+                             int ex = readbyte(0x6E + slot)*0x100 + readbyte(0x87+slot);
+                            int ey = readbyte(0xCF + slot)+24;
+                             sprites[ slot ] = new Sprite(ex,ey);
+                     }  
+                     
+                     
                      
 		 }
 		 
-		
-     }
+	 
  
 	 return sprites;
  }
 	 
  private Sprite[] getExtendedSprites()
  {
-	 Sprite[] extendedSprites = new Sprite[12];
 	 
-	 if (superBrain.getRomName().equals("Super Mario World (USA)"))
-     {
-		 
-		 
-		 for(int slot=0;slot<12;slot++)
-		 {
-			 int  number = readbyte(0x170B+slot);
-			 
-			 if (number != 0)
-			 {
-                     int spritex = readbyte(0x171F+slot) + readbyte(0x1733+slot)*256 ; 
-                     int spritey = readbyte(0x1715+slot) + readbyte(0x1729+slot)*256 ;
-                      
-                     extendedSprites[ slot ] = new Sprite(spritex, spritey);
-			 }
-			
-                             int spritex = readbyte(0xE4+slot) +readbyte(0x14E0+slot)*256 ;
-                             int spritey = readbyte(0xD8+slot) + readbyte(0x14D4+slot)*256 ;
-                             
-                            
-                    
-                     
-		 }
-     }
 	 
-	 return extendedSprites;
+	 return null;
  }
 	 
 private int readbyte(int addr) {
@@ -197,7 +169,7 @@ public Integer[] getBrainSystemInputs()
     sprites = getSprites();
     extendedSprites = getExtendedSprites();
 
-    inputs = new Integer[1000];
+    inputs = new Integer[169];
     int  numSystemInputs = 0;
     
     for(int dy = -BoxRadius*16 ; dy < BoxRadius*16  ; dy+= 16)
@@ -231,19 +203,7 @@ public Integer[] getBrainSystemInputs()
                 	 }
                  }
                  
-                 for(int i=1; i < extendedSprites.length; i++)
-                 { 
-                	 if(extendedSprites[i] != null)
-                	 {
-                        float distx = FastMath.abs(extendedSprites[i].getPos().getX() - (marioPos.getX()+dx) )  ;
-                        float disty = FastMath.abs(extendedSprites[i].getPos().getY() - (marioPos.getY()+dy) )  ;
-                         
-                         if (distx <= 8 && disty <= 8 )
-                         {
-                        	 inputs[numSystemInputs] = -1 ;
-                         }
-                	 }
-                 }
+                
     		
     		
     		
