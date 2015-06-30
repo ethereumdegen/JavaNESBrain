@@ -53,6 +53,10 @@ public class VirtualGamePad  {
 	}
 
 	public void clear() {
+		for (int i = 0; i < 16; i++){
+			integerBuffer[i] = 0;
+		}
+		
 	}
 
 	public int[] getIntegerBuffer() {

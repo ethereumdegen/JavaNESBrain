@@ -63,6 +63,8 @@ public class BJNEmulator extends Frame {
 					}
 				});
 				menu.add(aibutton);
+				
+				
 			}
 			{
 				MenuItem item = new MenuItem("Exit");
@@ -74,6 +76,18 @@ public class BJNEmulator extends Frame {
 				});
 				menu.add(item);
 			}
+			menuBar.add(menu);
+		}
+		{
+			Menu menu = new Menu("Settings");
+			MenuItem mutebutton = new MenuItem("Mute");
+			mutebutton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					toggleAudio();						
+				}
+			});
+			menu.add(mutebutton);
 			menuBar.add(menu);
 		}
 		{
@@ -114,6 +128,11 @@ public class BJNEmulator extends Frame {
 	}
 
 	
+	protected void toggleAudio() {
+		nes.audioEnabled = !nes.audioEnabled;
+	}
+
+
 	boolean aiEnabled = false;
 	public boolean isAiEnabled() {
 		return aiEnabled;

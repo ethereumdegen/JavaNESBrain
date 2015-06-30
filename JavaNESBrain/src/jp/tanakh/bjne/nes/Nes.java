@@ -13,6 +13,8 @@ public class Nes {
 		rom = new Rom(this);
 		mapper = null;
 	}
+	
+	public boolean audioEnabled = true;
 
 	public void load(String fname) throws IOException {
 		rom.load(fname);
@@ -69,7 +71,8 @@ public class Nes {
 		Renderer.SoundInfo sndi = renderer.requestSound();
 		Renderer.InputInfo inpi = renderer.requestInput(2, 8);
 
-		if (sndi != null) {
+		
+		if (sndi != null && audioEnabled) {
 			apu.genAudio(sndi);
 			renderer.outputSound(sndi);
 		}

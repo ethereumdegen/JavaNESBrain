@@ -391,7 +391,7 @@ public List<Species> getSpecies() {
 
 public void setCurrentFrame(int i) {
 	 currentFrame = i;
-	
+	 
 }
 
 public void cullSpecies(boolean cutToOne) { 
