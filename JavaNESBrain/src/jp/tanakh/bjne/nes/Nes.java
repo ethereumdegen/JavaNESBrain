@@ -73,8 +73,19 @@ public class Nes {
 			apu.genAudio(sndi);
 			renderer.outputSound(sndi);
 		}
+		
+		
+		
 		if (inpi != null)
+		{
 			regs.setInput(inpi.buf);
+		}
+		
+		if(externalGamepadBuffer != null)
+		{
+			regs.setInput( externalGamepadBuffer );
+		}
+		
 
 		regs.setVBlank(false, true);
 		regs.startFrame();
@@ -147,4 +158,10 @@ public class Nes {
 	private Mapper mapper;
 
 	private Renderer renderer;
+	
+	int[] externalGamepadBuffer;
+	public void setGamepadInput(int[] buf)
+	{
+		externalGamepadBuffer =  buf ; 
+	}
 }

@@ -80,10 +80,10 @@ public class SuperBrain {
 		while (true) {
 
 		 
-			if(emulator.getCPU() != null)
+			if(emulator.isAiEnabled())
 			{
 			
-			 update();  //TEMPORARILY DISABLED DUE TO CRASHES 
+			 update();   
 			}
 			 
 			
@@ -107,6 +107,9 @@ public class SuperBrain {
 			firstUpdateOccured = true;
 			
 			initializePool();
+			
+			System.out.println("set gamepad input ");
+			emulator.setGamepadInput( gamepad.getIntegerBuffer() );
 			
 		}
 
@@ -370,20 +373,25 @@ public class SuperBrain {
 				Gene incoming = neuron.getIncomingGeneList().get(j);
 				Neuron other = network.getNeurons().get(incoming.getNeuralInIndex());
 				sum = sum + incoming.getWeight() * other.getValue();
+					 
 			}
 
-			if (neuron.getIncomingGeneList().size() > 0) {
+			if (neuron.getIncomingGeneList().size() > 0) { 
 				neuron.setValue(sigmoid(sum));
 			}
 		}
 
 		HashMap<String, Boolean> gamepadOutputs = new HashMap<String, Boolean>();
 
+		
 		for (int o = 1; o < this.getGameDataManager().getNumOutputs(); o++) {
-
+			
 			String button = "P1 " + this.getGameDataManager().buttonNames[o];
 
 			if (network.getNeurons().get(MaxNodes + o).getValue() > 0) {
+				 
+				
+				System.out.println("FIRING NEURON TO GAMEPAD");
 				gamepadOutputs.put(button, true);
 			} else {
 				gamepadOutputs.put(button, false);

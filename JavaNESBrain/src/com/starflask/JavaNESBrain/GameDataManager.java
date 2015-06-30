@@ -41,9 +41,11 @@ private void init() {
    // {
 		String savefilename = "DP1.state" ;
     
-	        buttonNames = new String[]{
+	        buttonNames = new String[]{	        		
 	                "A",
 	                "B",
+	                "Select",
+	                "Enter",
 	                "Up",
 	                "Down",
 	                "Left",

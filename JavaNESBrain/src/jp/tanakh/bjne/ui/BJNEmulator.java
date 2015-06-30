@@ -53,6 +53,16 @@ public class BJNEmulator extends Frame {
 					}
 				});
 				menu.add(item);
+				
+				
+				MenuItem aibutton = new MenuItem("Start AI");
+				aibutton.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						startAI();
+					}
+				});
+				menu.add(aibutton);
 			}
 			{
 				MenuItem item = new MenuItem("Exit");
@@ -100,6 +110,16 @@ public class BJNEmulator extends Frame {
 		
 		
 		//loop();
+	}
+
+	
+	boolean aiEnabled = false;
+	public boolean isAiEnabled() {
+		return aiEnabled;
+	}
+
+	protected void startAI() {
+		aiEnabled = true;
 	}
 
 	final int FPS = 60;
@@ -230,6 +250,12 @@ public class BJNEmulator extends Frame {
 		}
 		
 		return null;
+	}
+	
+	public void setGamepadInput(int[] buf )
+	{
+		
+		nes.setGamepadInput(buf);	 
 	}
 
 	public String getCurrentRomName() {

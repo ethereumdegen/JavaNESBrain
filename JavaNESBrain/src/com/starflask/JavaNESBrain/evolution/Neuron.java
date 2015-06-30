@@ -22,6 +22,7 @@ public class Neuron {
 		return incoming;
 	}
 
+	//NOBODY DOES THIS !
 	public void setValue(float val) {
 		value = val;
 		

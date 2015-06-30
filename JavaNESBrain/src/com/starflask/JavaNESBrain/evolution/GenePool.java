@@ -68,7 +68,7 @@ public class GenePool {
         Genome genome = new Genome();
 		innovation = 1;
  
-        genome.maxneuron = 6 ;  //numInputs
+        genome.maxneuron = getGameDataManager().getNumInputs() ;  //numInputs
         mutate(genome);
        
         return genome;
@@ -191,7 +191,7 @@ private void linkMutate(Genome genome, boolean forceBias)
             		
             		
     newLink.innovation = newInnovation();
-    newLink.setWeight(rand.nextFloat()*4-2) ;
+    newLink.setWeight(rand.nextFloat()*4 -2 ) ;
    
     genome.genes.add(newLink);
 
@@ -335,8 +335,8 @@ public Species getCurrentSpecies() {
 
 
 public Genome getCurrentGenome() {
-	 
-	return species.get(currentSpecies).genomes.get(currentGenome);
+	 //this crashes sometimes ?   
+	return species.get(currentSpecies).genomes.get(currentGenome - 1 ); //TEMPORARY MAGIC NUMBER FIX 
 }
 
 
