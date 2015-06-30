@@ -7,10 +7,14 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+
+import javax.imageio.ImageIO;
 
 import jp.tanakh.bjne.ui.AWTRenderer;
 
@@ -44,6 +48,15 @@ public class BrainInfoWindow extends Frame{
 		this.gameDataManager=gameDataManager;
 		this.pool=pool;
 		this.gamepad=gamepad;
+		
+		BufferedImage img = null;
+		try {
+		    img = ImageIO.read(new File("src/icon.png"));
+		    this.setIconImage( img  );			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 		
 		setVisible(true);
 		setVisible(false);
@@ -125,10 +138,11 @@ public class BrainInfoWindow extends Frame{
 		g.setColor(Color.BLACK);
 		
 		
-		g.drawString("Gen:" + getPool().getGeneration(), 10, 50);
+		g.drawString("Generation #" + getPool().getGeneration(), 10, 50);
 		g.drawString("Species:" + getPool().getCurrentSpecies().toString(), 200, 50);
 		g.drawString("Genome:" + getPool().getCurrentGenome().toString(), 10, 80);
 		g.drawString("Fitness:" + getPool().getCurrentGenome().getFitness(), 200, 80);
+		g.drawString("Max Fitness:" + getPool().getMaxFitness(), 290, 80);
 		
 		NeuralNetwork network = getPool().getCurrentGenome().getNetwork();
 		

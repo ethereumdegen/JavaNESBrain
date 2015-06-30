@@ -39,7 +39,7 @@ public class Species {
 	@Override
 	public String toString()
 	{
-		return "SPECIES"+this.hashCode();		
+		return "SPECIES"+this.hashCode() + "(g" + genomes.size() +")[f"+averageFitness+"]";		
 	}
 	  
  

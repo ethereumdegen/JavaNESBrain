@@ -244,14 +244,11 @@ public class BJNEmulator extends Frame {
 	}
 
 
-	public Cpu getCPU()
+	public Nes getNES()
 	{
-		if(nes!=null)
-		{
-			return nes.getCpu();
-		}
 		
-		return null;
+		
+		return nes;
 	}
 	
 	public void setGamepadInput(int[] buf )

@@ -12,6 +12,7 @@ import java.util.List;
 import javax.swing.UIManager;
 
 import jp.tanakh.bjne.nes.Cpu;
+import jp.tanakh.bjne.nes.Nes;
 import jp.tanakh.bjne.ui.BJNEmulator;
 
 import com.starflask.JavaNESBrain.data.BrainInfoWindow;
@@ -34,6 +35,14 @@ import com.starflask.JavaNESBrain.utils.FastMath;
  * the tile bytes and neurons match
  * 
  * 
+ */
+
+
+/**
+ * 
+ * BUG: Every species only has a single genome..?
+ * 
+
  */
 
 public class SuperBrain {
@@ -228,7 +237,9 @@ public class SuperBrain {
 	}
 
 	public void initializePool() {
-
+		
+		getNES().saveSram("run");
+		
 		pool = new GenePool(gameData);
 
 		initializeRun();
@@ -239,8 +250,8 @@ public class SuperBrain {
 	int rightmost = 0; // the most right that we ever got so far
 
 	public void initializeRun() {
-
-		// savestate.load(Filename); //cannot do this with halfnes yet :/
+		
+		getNES().loadSram("run");
 
 		rightmost = 0;
 		pool.setCurrentFrame(0);
@@ -254,6 +265,8 @@ public class SuperBrain {
 		evaluateCurrent();
 
 	}
+
+	
 
 	public void evaluateCurrent() {
 		Species species = pool.getCurrentSpecies();
@@ -422,7 +435,16 @@ public class SuperBrain {
 
 	public Cpu getCPU()
 	{
-		return emulator.getCPU();
+		if(getNES()!=null)
+		{
+			return getNES().getCpu();
+		}
+		return null;
+	}
+	
+	private Nes getNES() {
+		
+		return emulator.getNES();
 	}
 
 }

@@ -3,6 +3,7 @@ package jp.tanakh.bjne.nes;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.HashMap;
 
 public class Rom {
 	public Rom(Nes n) {
@@ -74,13 +75,27 @@ public class Rom {
 		System.out.printf("four screen : %s\n", fourScreen ? "Y" : "N");
 	}
 
+	HashMap <String , byte[] > saveStates = new HashMap <String , byte[] > ();
+	
+	
 	public void saveSram(String fname) {
-		// TODO
+		
+		byte[] backup = new byte[0x2000];
+		
+		System.arraycopy(sram, 0, backup, 0, 0x2000);
+		
+		saveStates.put(fname, backup);		
 	}
 
-	public void loadSram(String fname) {
-		// TODO
+	public void loadSram(String fname) {	
+		
+		System.arraycopy(saveStates.get(fname), 0, sram, 0, 0x2000);
+		
+		System.out.println("loaded state " + sram);
+		
 	}
+	
+	
 
 	public byte[] getRom() {
 		return romDat;

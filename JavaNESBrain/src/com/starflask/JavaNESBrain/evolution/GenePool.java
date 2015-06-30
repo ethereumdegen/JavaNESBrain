@@ -15,6 +15,8 @@ import com.starflask.JavaNESBrain.SuperBrain;
 import com.starflask.JavaNESBrain.data.GameDataManager;
 import com.starflask.JavaNESBrain.utils.FastMath;
 
+
+
 public class GenePool {
 	
 	int Population = 300;
@@ -206,7 +208,7 @@ private boolean containsLink(List<Gene> genes, Gene link) {
 }
 
 
-//what does this do?   What is a neuron supposed to be.. boolean? int? struct?
+//what does this do?  
 private int randomNeuronIndex(List<Gene> genes, boolean nonInput)
 {
 	
@@ -214,17 +216,17 @@ HashMap<Integer,Boolean> neuronMatchesInputState = new HashMap<Integer,Boolean>(
 
 //every neuron corresponds with a gamepad button 
 if (! nonInput ){
-        for (int i=1; i < getGameDataManager().getNumInputs() ; i++ ){
+        for (int i=0; i < getGameDataManager().getNumInputs() ; i++ ){
         	neuronMatchesInputState.put(i, true);
 	}
 }
 
-for (int o=1; o < getGameDataManager().getNumOutputs(); o++ ) {
+for (int o=0; o < getGameDataManager().getNumOutputs(); o++ ) {
 	 
 	neuronMatchesInputState.put( SuperBrain.MaxNodes +o, true);
 }
 
-for (int i=1; i < genes.size(); i++){
+for (int i=0; i < genes.size(); i++){
         if ((! nonInput) || genes.get(i).getNeuralInIndex() > getGameDataManager().getNumInputs()) {
         	neuronMatchesInputState.put(genes.get(i).getNeuralInIndex(), true);
         }
@@ -233,12 +235,12 @@ for (int i=1; i < genes.size(); i++){
         }
 }
 
-int count = 0 ;
+
 
 
 int numNeurons = neuronMatchesInputState.size();
 
-int randomIndex  = rand.nextInt(numNeurons-1)+1;
+int randomIndex  = rand.nextInt(numNeurons);
 
 //stop in a random place in the index hashmap and then give out that index
 for (Integer key : neuronMatchesInputState.keySet() ) 
@@ -268,7 +270,7 @@ private void nodeMutate(Genome genome)
     genome.maxneuron = genome.maxneuron + 1;
 
     
-    int randomIndex = rand.nextInt(genome.genes.size());  //dont ever pick the zeroeth gene since it is always blank?
+    int randomIndex = rand.nextInt(genome.genes.size()); 
     Gene gene = genome.genes.get( randomIndex ) ;
     if (!gene.isEnabled()) 
             return;
@@ -410,6 +412,8 @@ public void cullSpecies(boolean cutToOne) {
      			}
              	
      			
+     			//If your Comparator's compare(T o1, T o2) return a negative when o1 is greater than o2, you get descending order 
+     			
      		       // table.sort(species.genomes, function (a,b)
      		       //         return (a.fitness > b.fitness)
      		       // end)
@@ -425,8 +429,11 @@ public void cullSpecies(boolean cutToOne) {
         
         while (specie.getGenomes().size() > remaining) 
         {
-        	specie.getGenomes().remove( specie.getGenomes().size()-1    );  //keep removing the least fit genome  (hopefully this isnt the least fit!)
-                   
+        	
+        	System.out.println("culling " +  specie.getGenomes().get( specie.getGenomes().size()-1 ) + " with " + specie.getGenomes().get( specie.getGenomes().size()-1 ).getFitness() + " fitness "  );
+        
+        	 specie.getGenomes().remove( specie.getGenomes().size()-1    );  //keep removing the least fit genome  (hopefully this isnt the least fit!)
+                
         }
         
         
@@ -449,6 +456,7 @@ public void newGeneration() {
              calculateAverageFitness(specie) ;
      }
      
+     //remove empty species and those with poor average fitness
      removeWeakSpecies();
      int sum = totalAverageFitness();
      
@@ -462,7 +470,7 @@ public void newGeneration() {
      
     	 if( specie.getGenomes().size() > 0 )
     	 {
-             int breed = (int) (FastMath.floor(specie.averageFitness / sum * Population) - 1)  ;
+             int breed = (int) (FastMath.floor(specie.averageFitness / sum * Population) - 1)  ; //more fitness  = more breeding
              for (int i=0; i < breed; i++) {
             	 children.add( breedChild(specie) );
              }
@@ -471,7 +479,9 @@ public void newGeneration() {
      }
      
      cullSpecies(true); //-- Cull all but the top member of each species
-            		 
+        
+     
+     //make new children from the previous best child
      while (children.size() + getSpecies().size() < Population) 
      {
     	 	int randIndex = rand.nextInt( getSpecies().size() ) ; 
@@ -483,6 +493,7 @@ public void newGeneration() {
         	 }
      }
      
+     //place those children into species that are most similar to them.. or maybe they are new unique species
      for (int c=0; c < children.size() ; c++)
      {
     	 Genome child = children.get(c);
@@ -523,6 +534,7 @@ private void rankGlobally() {
 	               (g1.getFitness() == g2.getFitness() ? 0 : -1);     				
 			}
         	
+			//ranks in descending order so most fit is at 0
 			
 			  //table.sort(global, function (a,b)
 		      //         return (a.fitness < b.fitness)
@@ -734,19 +746,30 @@ private void removeWeakSpecies()
 {
        //List<Species> survivalists = new ArrayList<Species>();
  
-        int sum = totalAverageFitness();
+        float sum = totalAverageFitness();
+         
+        
+        if(sum > 0)
+        {
         for (int s = 0; s < getSpecies().size();s++)
         {
                 Species specie = getSpecies().get(s);
-                float breed = FastMath.floor(specie.averageFitness / sum * Population);
                 
-                if (breed < 1 )
+               // float breed = FastMath.floor( (specie.averageFitness / sum) * Population );
+                
+                float breed =  (specie.averageFitness / sum) * Population ;
+                
+                if (breed < 1f )
                 {
+                	System.out.println("removing weak breed " + breed + " " + specie);
                 	species.remove(specie);
+                }else{
+                	System.out.println("keeping strong breed " + breed + " " + specie);
+                	
                 }
         }
  
-         
+        }
 }
  
 
