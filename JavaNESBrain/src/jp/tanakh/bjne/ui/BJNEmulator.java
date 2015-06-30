@@ -214,6 +214,7 @@ public class BJNEmulator extends Frame {
 
 			add(new Label("Beautiful Japanese Nes Emulator for Java"));
 			add(new Label("Version 0.2.0"));
+			add(new Label("(Modded to add NESBrain AI)"));
 
 			Button b = new Button("OK");
 			b.addActionListener(new ActionListener() {
@@ -232,7 +233,7 @@ public class BJNEmulator extends Frame {
 			});
 
 			setTitle("About");
-			setSize(270, 100);
+			setSize(270, 200);
 		}
 	}
 

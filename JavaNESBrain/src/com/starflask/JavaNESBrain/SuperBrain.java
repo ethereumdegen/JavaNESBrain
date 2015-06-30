@@ -78,8 +78,11 @@ public class SuperBrain {
 			if(getCPU()!=null && emulator.isAiEnabled())
 			{			
 			 update();   
+			 
+			 infoWindow.outputScreen();
 			}
 			 
+			
 			
 			emulator.stepEmulation(); 
 			
@@ -93,6 +96,8 @@ public class SuperBrain {
 
 	GenePool pool;
 
+	BrainInfoWindow infoWindow;
+	
 	private void update() {
 		
 		
@@ -105,7 +110,7 @@ public class SuperBrain {
 			 
 			emulator.setGamepadInput( gamepad.getIntegerBuffer() );
 			
-			BrainInfoWindow debugTools = new BrainInfoWindow( gamepad , getGameDataManager()  );
+			infoWindow = new BrainInfoWindow( gamepad , getGameDataManager()  );
 			
 		}
 
