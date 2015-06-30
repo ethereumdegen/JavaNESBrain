@@ -2,7 +2,7 @@
 
 A fork of the BJNE Java NES Emulator that includes a Neural Network learning algorithm based on SethBling's MarI/O Lua script to enable the emulator to learn how to play itself.
 
-Dependencies for Windows x64 are included in the 'lib' and 'natives' folders
+No dependencies (besides vanilla Java) are required to run this
 
 ##Building
 Clone this repo in Eclipse as a new project and run the main function in the 'SuperBrain' class
