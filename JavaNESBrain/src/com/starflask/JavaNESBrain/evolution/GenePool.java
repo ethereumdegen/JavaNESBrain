@@ -8,8 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
-import com.starflask.JavaNESBrain.GameDataManager;
 import com.starflask.JavaNESBrain.SuperBrain;
+import com.starflask.JavaNESBrain.data.GameDataManager;
 import com.starflask.JavaNESBrain.utils.FastMath;
 
 public class GenePool {

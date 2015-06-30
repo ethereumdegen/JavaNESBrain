@@ -13,6 +13,8 @@ import javax.swing.UIManager;
 import jp.tanakh.bjne.nes.Cpu;
 import jp.tanakh.bjne.ui.BJNEmulator;
 
+import com.starflask.JavaNESBrain.data.BrainInfoWindow;
+import com.starflask.JavaNESBrain.data.GameDataManager;
 import com.starflask.JavaNESBrain.evolution.Gene;
 import com.starflask.JavaNESBrain.evolution.GenePool;
 import com.starflask.JavaNESBrain.evolution.Genome;
@@ -22,7 +24,7 @@ import com.starflask.JavaNESBrain.evolution.Species;
 import com.starflask.JavaNESBrain.utils.FastMath;
 
 /**
- * //use this as vm arg -Djava.library.path=natives
+ * //use this as vm arg:      -Dsun.java2d.opengl=True 
  * 
  * This basically..
  * 
@@ -73,9 +75,8 @@ public class SuperBrain {
 		while (true) {
 
 		 
-			if(emulator.isAiEnabled())
-			{
-			
+			if(getCPU()!=null && emulator.isAiEnabled())
+			{			
 			 update();   
 			}
 			 
@@ -101,8 +102,10 @@ public class SuperBrain {
 			
 			initializePool();
 			
-			System.out.println("set gamepad input ");
+			 
 			emulator.setGamepadInput( gamepad.getIntegerBuffer() );
+			
+			BrainInfoWindow debugTools = new BrainInfoWindow( gamepad , getGameDataManager()  );
 			
 		}
 
@@ -379,7 +382,7 @@ public class SuperBrain {
 		
 		for (int o = 1; o < this.getGameDataManager().getNumOutputs(); o++) {
 			
-			String button = "P1 " + this.getGameDataManager().buttonNames[o];
+			String button = "P1 " + this.getGameDataManager().getButtonNames()[o];
 
 			if (network.getNeurons().get(MaxNodes + o).getValue() > 0) {
 				 

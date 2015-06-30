@@ -97,13 +97,14 @@ public class BJNEmulator extends Frame {
 		});
 
 		initializeNes();
-
+		
+		
 		if (file != null)
 			openRom(file);
 
 		setVisible(true);
 		setVisible(false);
-		setSize(256 + getInsets().left + getInsets().right, 240
+		setSize(256 * AWTRenderer.SCREEN_SIZE_MULTIPLIER + getInsets().left + getInsets().right, 240 * AWTRenderer.SCREEN_SIZE_MULTIPLIER
 				+ getInsets().top + getInsets().bottom);
 		setVisible(true);
 
@@ -260,7 +261,12 @@ public class BJNEmulator extends Frame {
 
 	public String getCurrentRomName() {
 		
+		if(nes!=null && nes.getRom()!=null)
+		{
 		return nes.getRom().getROMName();
+		}
+		
+		return "none";
 	}
 
 }

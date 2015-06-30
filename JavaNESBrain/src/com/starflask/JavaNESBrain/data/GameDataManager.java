@@ -1,8 +1,9 @@
-package com.starflask.JavaNESBrain;
+package com.starflask.JavaNESBrain.data;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import com.starflask.JavaNESBrain.SuperBrain;
 import com.starflask.JavaNESBrain.utils.FastMath;
 import com.starflask.JavaNESBrain.utils.Vector2Int;
 
@@ -13,7 +14,7 @@ public class GameDataManager {
 	
 	SuperBrain superBrain;
 	
-	GameDataManager(SuperBrain superBrain)
+	public GameDataManager(SuperBrain superBrain)
 	{
 		this.superBrain=superBrain;
 		
@@ -31,7 +32,7 @@ int InputSize = (BoxRadius*2+1)*(BoxRadius*2+1);
 int numInputs = InputSize+1;
 int numOutputs = 8;
 
-String[]  buttonNames;
+private String[]  buttonNames;
 
 	
 private void init() {
@@ -40,7 +41,7 @@ private void init() {
    // {
 		String savefilename = "DP1.state" ;
     
-	        buttonNames = new String[]{	        		
+	        setButtonNames(new String[]{	        		
 	                "A",
 	                "B",
 	                "Select",
@@ -49,18 +50,18 @@ private void init() {
 	                "Down",
 	                "Left",
 	                "Right",
-	        };
+	        });
 	
    // }  
  
 	
 	
-	 numOutputs = buttonNames.length;
+	 numOutputs = getButtonNames().length;
     
     
 	}
 
-void getPositions()
+public void getPositions()
 {
 			if (getRomName().startsWith("Super Mario Bros."))
 			{
@@ -238,6 +239,14 @@ public int getNumInputs() {
 public int getNumOutputs() {
 	 
 	return numOutputs;
+}
+
+public String[] getButtonNames() {
+	return buttonNames;
+}
+
+public void setButtonNames(String[] buttonNames) {
+	this.buttonNames = buttonNames;
 }
 
  /*

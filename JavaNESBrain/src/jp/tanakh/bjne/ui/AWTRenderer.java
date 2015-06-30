@@ -16,8 +16,11 @@ import javax.sound.sampled.SourceDataLine;
 import jp.tanakh.bjne.nes.Renderer;
 
 public class AWTRenderer implements Renderer {
-	private static final int SCREEN_WIDTH = 256;
-	private static final int SCREEN_HEIGHT = 240;
+	
+	static final int SCREEN_SIZE_MULTIPLIER = 2;
+	
+	private static final int SCREEN_WIDTH = 16*16;
+	private static final int SCREEN_HEIGHT = 15*16;
 
 	private static final int SAMPLE_RATE = 48000;
 	private static final int BPS = 16;
@@ -102,7 +105,8 @@ public class AWTRenderer implements Renderer {
 		int left = frame.getInsets().left;
 		int top = frame.getInsets().top;
 		Graphics g = frame.getGraphics();
-		g.drawImage(image, left, top, left + SCREEN_WIDTH, top + SCREEN_HEIGHT,
+		 
+		g.drawImage(image, left, top, left + SCREEN_WIDTH*SCREEN_SIZE_MULTIPLIER, top + SCREEN_HEIGHT*SCREEN_SIZE_MULTIPLIER,
 				0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, frame);
 	}
 

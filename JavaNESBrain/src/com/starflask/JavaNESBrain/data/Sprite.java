@@ -1,4 +1,4 @@
-package com.starflask.JavaNESBrain;
+package com.starflask.JavaNESBrain.data;
 
 import com.starflask.JavaNESBrain.utils.Vector2Int;
 
