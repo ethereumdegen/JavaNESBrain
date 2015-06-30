@@ -3,6 +3,8 @@ package com.starflask.JavaNESBrain.data;
 import java.awt.Color;
 import java.awt.Frame;
 import java.awt.Graphics;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.util.ArrayList;
@@ -32,6 +34,8 @@ public class BrainInfoWindow extends Frame{
 	 
 	GameDataManager gameDataManager;
 	
+	VirtualGamePad gamepad;
+	
 	GenePool pool;
 	
 	public BrainInfoWindow(VirtualGamePad gamepad,	GameDataManager gameDataManager, GenePool pool) {
@@ -39,12 +43,31 @@ public class BrainInfoWindow extends Frame{
 		
 		this.gameDataManager=gameDataManager;
 		this.pool=pool;
+		this.gamepad=gamepad;
 		
 		setVisible(true);
 		setVisible(false);
 		setSize(SCREEN_WIDTH*SCREEN_SIZE_MULTIPLIER  + getInsets().left + getInsets().right, SCREEN_HEIGHT*SCREEN_SIZE_MULTIPLIER + getInsets().top + getInsets().bottom);
 		setVisible(true);
+		
+		
+		this.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				onHardwareKey(e.getKeyCode(), true);
+			}
 
+			@Override
+			public void keyReleased(KeyEvent e) {
+				onHardwareKey(e.getKeyCode(), false);
+			}
+		});
+
+
+	}
+
+	protected void onHardwareKey(int keyCode, boolean pressed) {
+		gamepad.onHardwareKey(keyCode,pressed);
 	}
 
 	private BufferedImage image = new BufferedImage(SCREEN_WIDTH,

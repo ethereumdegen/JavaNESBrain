@@ -1,5 +1,6 @@
 package com.starflask.JavaNESBrain;
 
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -337,7 +338,7 @@ public class SuperBrain {
 	 * Input is the neural network and number of inputs, output is the current
 	 * gamepad button-press states
 	 * 
-	 * I feel like this is not completely working.. what do the 'input' neurons even do ?
+	 *  
 	 * 
 	 * 
 	 */
@@ -404,6 +405,14 @@ public class SuperBrain {
 	}
 
 	 
+	public void saveGenePoolToFile() throws Exception
+	{
+		FileWriter file = new FileWriter("c:\\test.json");
+		file.write(pool.getAsJson().toJSONString());
+		file.flush();
+		file.close();
+		
+	}
 
 	public static float sigmoid(float sum) {
 		return 2 / (1 + FastMath.exp(-4.9f * sum)) - 1;

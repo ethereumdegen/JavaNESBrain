@@ -1,5 +1,6 @@
 package com.starflask.JavaNESBrain;
 
+import java.awt.event.KeyEvent;
 import java.util.HashMap;
 
 
@@ -12,14 +13,14 @@ public class VirtualGamePad  {
 	
 	VirtualGamePad()
 	{
-		KEYNAMEMAP.put("P1 A", 1);
-		KEYNAMEMAP.put("P1 B", 2);
-		KEYNAMEMAP.put("P1 Select", 3);
-		KEYNAMEMAP.put("P1 Enter", 4);		
-		KEYNAMEMAP.put("P1 Up", 5);
-		KEYNAMEMAP.put("P1 Down", 6);
-		KEYNAMEMAP.put("P1 Left", 7);
-		KEYNAMEMAP.put("P1 Right", 8);
+		KEYNAMEMAP.put("P1 A", 0);
+		KEYNAMEMAP.put("P1 B", 1);
+		KEYNAMEMAP.put("P1 Select", 2);
+		KEYNAMEMAP.put("P1 Enter", 3);		
+		KEYNAMEMAP.put("P1 Up", 4);
+		KEYNAMEMAP.put("P1 Down", 5);
+		KEYNAMEMAP.put("P1 Left", 6);
+		KEYNAMEMAP.put("P1 Right", 7);
 	
 		
 	}
@@ -56,6 +57,24 @@ public class VirtualGamePad  {
 	public int[] getIntegerBuffer() {
 		
 		return integerBuffer;
+	}
+
+
+	static final int[][] keyDef = {
+		{ KeyEvent.VK_Z, KeyEvent.VK_X, KeyEvent.VK_SHIFT,
+				KeyEvent.VK_ENTER, KeyEvent.VK_UP, KeyEvent.VK_DOWN,
+				KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT, },
+		{ KeyEvent.VK_V, KeyEvent.VK_B, KeyEvent.VK_N, KeyEvent.VK_M,
+				KeyEvent.VK_O, KeyEvent.VK_COMMA, KeyEvent.VK_K,
+				KeyEvent.VK_L, } };
+
+
+	public void onHardwareKey(int keyCode, boolean pressed) {
+		for (int i = 0; i < 16; i++){
+				if (keyCode == keyDef[i/8][i%8]){					
+					integerBuffer[i ] = (pressed ? 1 : 0);					
+			}
+		}
 	}
 
 }
