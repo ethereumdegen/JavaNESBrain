@@ -107,8 +107,7 @@ public class SuperBrain {
 	GenePool pool;
 
 	BrainInfoWindow infoWindow;
-	
-	int marioPreviousDistanceRight = 0;
+	 
 		
 	private void update() {
 		
@@ -138,68 +137,36 @@ public class SuperBrain {
 		}
 
 	//	emulator.setControllers(getController(), getController());
-
 		getGameDataManager().getPositions();
 
-		
-		int marioDistanceRight = getGameDataManager().getMarioPos().getX();
-		
-		int marioDistanceDelta = marioDistanceRight - runStartingMarioX;
-		 		 
-		
-		//int previousDistanceDelta = marioDistanceRight - marioPreviousDistanceRight;
-				
-		marioPreviousDistanceRight = marioDistanceRight;
-		
-		
-				
-		// if mario gets farther than he has ever been... make the timeout longer (this may need to be changed to delta style)
-		if (marioDistanceRight > rightmost  ) {
-			rightmost =  marioDistanceRight ;
+		// if mario gets farther than he has ever been...
+		if (getGameDataManager().getMarioPos().getX() > rightmost) {
+			rightmost = (int) getGameDataManager().getMarioPos().getX();
 			timeout = TimeoutConstant;
 		}
-		
-		
-			timeout = timeout - 1; 		 
-		
-		 
-		//int timeoutBonus = pool.getCurrentFrame() / 4;
-		
-		int timeoutBonus = pool.getCurrentFrame() / 2;
-		
-		
-		
-		/**
-		 * Since we dont have savestates with this emulator, fitness is determined by the increase in distance
-		 * 
-		 */
-		if ((timeout + timeoutBonus) <= 0   ) {
-			 
-			
-			int fitness = 25 +  marioDistanceDelta - pool.getCurrentFrame() / 2;
+
+		timeout = timeout - 1;
+
+		int timeoutBonus = pool.getCurrentFrame() / 4;
+
+		if (timeout + timeoutBonus <= 0) {
+
+			int fitness = rightmost - pool.getCurrentFrame() / 2;
 			//if (getRomName().equals("Super Mario World (USA)") && rightmost > 4816) {
 			//	fitness = fitness + 1000;
 			//}
 
-			if (getRomName().startsWith("Super Mario Bros.") && marioDistanceRight > 3186) {
+			if (getRomName().startsWith("Super Mario Bros.") && rightmost > 3186) {
 				fitness = fitness + 1000;
 			}
-			
-			//the amount that this genome contributed to the fitness
-			 
-			
+
 			if (fitness == 0) {
-				//make sure we mark that we did actually measure fitness so we can move on
 				fitness = -1;
 			}
-			
 			genome.setFitness(fitness);
-			
-		 
+
 			if (fitness > pool.getMaxFitness()) {
 				pool.setMaxFitness(fitness);
-				
-				//save the genome since it is good
 				// forms.settext(maxFitnessLabel, "Max Fitness: " ..
 				// math.floor(pool.maxFitness))
 				// writeFile("backup." .. pool.generation .. "." ..
@@ -215,10 +182,8 @@ public class SuperBrain {
 
 			while ( pool.getCurrentSpecies().getGenomes().isEmpty() || fitnessAlreadyMeasured() ) {
 				nextGenome();
-			 
 			}
 
-		 
 			initializeRun();
 		}
 
@@ -283,18 +248,15 @@ public class SuperBrain {
 
 	int timeout;
 	int rightmost = 0; // the most right that we ever got so far
-	
-	int runStartingMarioX;
+	 
 
 	public void initializeRun() {
 		
 		getNES().loadState( 0 );
 		 
-		runStartingMarioX= getGameDataManager().getMarioPos().getX();
-		///rightmost = 0;
-		
+		rightmost = 0;
 		pool.setCurrentFrame(0);
-		timeout = TimeoutConstant; //reset the timer for the next genome
+		timeout = TimeoutConstant;
 		
 		gamepad.clear();
 
@@ -332,11 +294,7 @@ public class SuperBrain {
 		}
 
 		
-		if( gamePadOutputs.containsKey("P1 Right")  && gamePadOutputs.get("P1 Right") )
-		{
-			//should assign fitness to the previous dudes not immediate ones ? probs..
-			System.out.println( "current right fitness " +  pool.getCurrentGenome().getFitness() );
-		}
+		 
 		
 		gamepad.setOutputs(gamePadOutputs);
 
