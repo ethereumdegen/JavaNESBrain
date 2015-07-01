@@ -273,7 +273,7 @@ public class SuperBrain {
 
 	public void initializePool() {
 		
-		//getNES().saveSram("run");
+		getNES().saveState( 0 );
 		
 		pool = new GenePool(gameData);
 
@@ -288,7 +288,7 @@ public class SuperBrain {
 
 	public void initializeRun() {
 		
-		//getNES().loadSram("run");
+		getNES().loadState( 0 );
 		 
 		runStartingMarioX= getGameDataManager().getMarioPos().getX();
 		///rightmost = 0;

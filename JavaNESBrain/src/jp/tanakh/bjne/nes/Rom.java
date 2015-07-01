@@ -6,6 +6,10 @@ import java.io.IOException;
 import java.util.HashMap;
 
 public class Rom {
+	
+	public Rom() {
+	}
+
 	public Rom(Nes n) {
 	}
 
@@ -75,26 +79,24 @@ public class Rom {
 		System.out.printf("four screen : %s\n", fourScreen ? "Y" : "N");
 	}
 
-	HashMap <String , byte[] > saveStates = new HashMap <String , byte[] > ();
 	
 	
-	public void saveSram(String fname) {
+	
+	
+	public void loadState(SaveState saveState) {
 		
-		byte[] backup = new byte[0x2000];
-		
-		System.arraycopy(sram, 0, backup, 0, 0x2000);
-		
-		saveStates.put(fname, backup);		
-	}
 
-	public void loadSram(String fname) {	
+		if (romSize() > 0)
+			System.arraycopy(saveState.getRom().romDat, 16, romDat, 0, romSize());
+		if (chrSize() > 0)
+			System.arraycopy(saveState.getRom().chrDat, 16 + romSize(),  chrDat, 0, chrSize() );
 		
-		System.arraycopy(saveStates.get(fname), 0, sram, 0, 0x2000);
+			System.arraycopy(saveState.getRom().sram, 0, sram, 0, 0x2000);
 		
-		System.out.println("loaded state " + sram);
+			System.arraycopy(saveState.getRom().vram, 0, vram, 0, 0x2000);
+		
 		
 	}
-	
 	
 
 	public byte[] getRom() {
@@ -156,5 +158,41 @@ public class Rom {
 	{
 		return filename;
 	}
-	
+
+	public Rom getCopy()
+	{
+		Rom copy = new Rom();
+		
+
+		
+		copy.prgPageCnt = this.prgPageCnt; 
+		copy.chrPageCnt = this.chrPageCnt;  
+		copy.mirroring = this.mirroring;  
+		 
+		copy.sramEnable = this.sramEnable;
+		copy.trainerEnable = this.trainerEnable;
+		copy.fourScreen = this.fourScreen;
+		
+		copy.mapper = this.mapper;
+ 
+		int romSize = 0x4000 * copy.prgPageCnt;
+		int chrSize = 0x2000 * copy.chrPageCnt;
+
+		copy.romDat = new byte[romSize];		
+		if (chrSize != 0)
+			copy.chrDat = new byte[chrSize];
+		copy.sram = new byte[0x2000];
+		copy.vram = new byte[0x2000];
+
+		if (romSize > 0)
+			System.arraycopy(this.romDat, 0, copy.romDat, 0, romSize);
+		if (chrSize > 0)
+			System.arraycopy(this.chrDat, 0 , copy.chrDat, 0, chrSize);
+		
+			System.arraycopy(this.sram, 0, copy.sram, 0, 0x2000);
+		
+			System.arraycopy(this.vram, 0, copy.vram, 0, 0x2000);
+		
+		return copy;		
+	}
 }

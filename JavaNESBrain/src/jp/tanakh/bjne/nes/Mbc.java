@@ -178,4 +178,20 @@ public class Mbc {
 	private boolean sramEnabled;
 
 	private Nes nes;
+
+	
+	
+	public byte[] getRamCopy() {
+		byte[] ramCopy = new byte[0x800];
+		
+		System.arraycopy(ram, 0, ramCopy, 0, 0x800);
+		
+		return ramCopy;
+	}
+
+	public void loadState(SaveState saveState) {
+		 
+		System.arraycopy(saveState.ramData, 0, ram, 0, 0x800);
+		
+	}
 }

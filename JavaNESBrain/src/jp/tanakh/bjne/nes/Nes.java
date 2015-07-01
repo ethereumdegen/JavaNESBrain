@@ -1,6 +1,7 @@
 package jp.tanakh.bjne.nes;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 public class Nes {
 	public Nes(Renderer r) {
@@ -28,20 +29,21 @@ public class Nes {
 		return mapper != null;
 	}
 
-	public void saveSram(String fname) {
-		rom.saveSram(fname);
+	
+
+	 
+	SaveState[] saveStates = new SaveState[5];
+	
+	public void saveState(int stateNumber) {
+		saveStates[stateNumber] = new SaveState(rom,mbc);
+		 
 	}
 
-	public void loadSram(String fname) {
-		rom.loadSram(fname);
-	}
-
-	public void saveState(String fname) {
-		// TODO
-	}
-
-	public void loadState(String fname) {
-		// TODO
+	public void loadState(int stateNumber) {
+		rom.loadState( saveStates[stateNumber] );
+		mbc.loadState( saveStates[stateNumber] );
+		
+		
 	}
 
 	public void reset() {
