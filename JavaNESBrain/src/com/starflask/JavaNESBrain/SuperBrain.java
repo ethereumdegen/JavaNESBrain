@@ -332,7 +332,11 @@ public class SuperBrain {
 		}
 
 		
-	  
+		if( gamePadOutputs.containsKey("P1 Right")  && gamePadOutputs.get("P1 Right") )
+		{
+			//should assign fitness to the previous dudes not immediate ones ? probs..
+			System.out.println( "current right fitness " +  pool.getCurrentGenome().getFitness() );
+		}
 		
 		gamepad.setOutputs(gamePadOutputs);
 
