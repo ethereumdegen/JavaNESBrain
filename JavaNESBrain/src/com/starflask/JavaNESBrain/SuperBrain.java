@@ -39,6 +39,8 @@ import com.starflask.JavaNESBrain.utils.FastMath;
 
 
 /**
+ * BUG: Never presses A ! like .. ever.. prob since it is index 0 and there is a typo
+ * 
  * why doesnt the environment draw nicely  in the debug window?
  * 
 
@@ -405,6 +407,7 @@ public class SuperBrain {
 
 			if (network.getNeurons().get(MaxNodes + o).getValue() > 0) {
 				gamepadOutputs.put(button, true);
+			 
 			} else {
 				gamepadOutputs.put(button, false);
 			}

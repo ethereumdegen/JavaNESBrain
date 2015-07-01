@@ -137,7 +137,7 @@ private void pointMutate(Genome genome)
 {
         float step = genome.mutationRates.get("step") ;
        
-        for (int i=1; i <genome.genes.size(); i++ )
+        for (int i=0; i <genome.genes.size(); i++ )
         {
                 Gene gene = genome.genes.get(i) ;
                 if (rand.nextFloat() < PerturbChance) { 
@@ -156,6 +156,8 @@ private void linkMutate(Genome genome, boolean forceBias)
     int neuron1Index = randomNeuronIndex(genome.genes, false) ; 
     int neuron2Index = randomNeuronIndex(genome.genes, true) ;
      
+   
+    
     Gene newLink = new Gene();
     
     //if the index of the neuron is less than num inputs then it must be an input-neuron.. i should change this architecture
@@ -175,6 +177,9 @@ private void linkMutate(Genome genome, boolean forceBias)
 
     newLink.setInto(neuron1Index) ; 
     newLink.setOut(neuron2Index) ;
+    
+
+
     
     if (forceBias)
     	{
@@ -240,7 +245,7 @@ for (int i=0; i < genes.size(); i++){
 
 int numNeurons = neuronMatchesInputState.size();
 
-int randomIndex  = rand.nextInt(numNeurons);
+int randomIndex  = rand.nextInt(numNeurons+1);
 
 //stop in a random place in the index hashmap and then give out that index
 for (Integer key : neuronMatchesInputState.keySet() ) 
@@ -249,6 +254,7 @@ for (Integer key : neuronMatchesInputState.keySet() )
 	
 	if (randomIndex == 0 )
 	{
+		 
             return key;
 	}
 	

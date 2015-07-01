@@ -120,9 +120,8 @@ public class BrainInfoWindow extends Frame{
 
 	private void drawInfoElements(Graphics g) {
 				
-		
-		drawTiles(g);
-		
+
+
 		
 		drawNeurons(g);
 		
@@ -165,7 +164,7 @@ public class BrainInfoWindow extends Frame{
 	    {
 	    	for(int dx = -getGameData().getBoxRadius()*16 ; dx <= getGameData().getBoxRadius()*16  ; dx+= 16)
 	        {
-	    		Vector2Int deltaPos = new Vector2Int(dx, dy);
+	    		//Vector2Int deltaPos = new Vector2Int(dx, dy);
 	    			    		    		
 	    		 int tile = cellValueInterator.next();
 			 
@@ -372,12 +371,8 @@ public class BrainInfoWindow extends Frame{
 		return SuperBrain.MaxNodes;
 	}
 
-	private void drawTiles(Graphics g) {
-		
-		
 
-}
-	
+
 	private GameDataManager getGameData() {
 		 
 		return gameDataManager;
