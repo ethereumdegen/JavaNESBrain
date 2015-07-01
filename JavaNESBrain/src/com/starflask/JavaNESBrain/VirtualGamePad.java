@@ -39,10 +39,10 @@ public class VirtualGamePad  {
 	
 	 
 	private void setKeyState(String keyname, Boolean pressed) {
-		if(pressed)
-		{
-		System.out.println("pressing " + keyname );
-		}
+		//if(pressed)
+		//{
+		//System.out.println("pressing " + keyname );
+		//}
 		
 		int keyIndex = KEYNAMEMAP.get(keyname);
 		

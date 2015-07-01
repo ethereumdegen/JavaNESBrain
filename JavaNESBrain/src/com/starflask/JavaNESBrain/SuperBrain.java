@@ -39,8 +39,7 @@ import com.starflask.JavaNESBrain.utils.FastMath;
 
 
 /**
- * 
- * BUG: Every species only has a single genome..?
+ * why doesnt the environment draw nicely  in the debug window?
  * 
 
  */
@@ -239,6 +238,8 @@ public class SuperBrain {
 	public void initializePool() {
 		
 		getNES().saveState( 0 );
+		
+		getNES().audioEnabled = false;
 		
 		pool = new GenePool(gameData);
 
