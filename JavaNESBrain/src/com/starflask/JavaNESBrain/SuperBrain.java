@@ -407,7 +407,9 @@ public class SuperBrain {
 
 			if (network.getNeurons().get(MaxNodes + o).getValue() > 0) {
 				gamepadOutputs.put(button, true);
-			 
+				
+				if(o == 0){System.out.println(" button press " + button);}
+				
 			} else {
 				gamepadOutputs.put(button, false);
 			}
