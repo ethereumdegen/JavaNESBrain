@@ -276,4 +276,23 @@ public class Ppu {
 	private byte[] buf = new byte[256 + 16];
 
 	Nes nes;
+
+	public Ppu getCopy() {
+		
+		Ppu copy = new Ppu(nes);
+		
+		System.arraycopy(sprram, 0, copy.sprram, 0, sprram.length);
+		System.arraycopy(palette, 0, copy.palette, 0, palette.length);
+		System.arraycopy(nesPalette24, 0, copy.nesPalette24, 0, nesPalette24.length);
+		System.arraycopy(nesPalette24, 0, copy.nesPalette24, 0, nesPalette24.length);
+		System.arraycopy(buf, 0, copy.buf, 0, buf.length);
+		
+		return copy;
+	}
+
+	public void loadState(SaveState saveState) {
+		Ppu copy =saveState.getPpuData();
+
+		
+	}
 }

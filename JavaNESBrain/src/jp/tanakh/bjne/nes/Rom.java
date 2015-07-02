@@ -85,7 +85,7 @@ public class Rom {
 	
 	public void loadState(SaveState saveState) {
 		
-
+		/*
 		if (romSize() > 0)
 			System.arraycopy(saveState.getRom().romDat, 16, romDat, 0, romSize());
 		if (chrSize() > 0)
@@ -94,7 +94,7 @@ public class Rom {
 			System.arraycopy(saveState.getRom().sram, 0, sram, 0, 0x2000);
 		
 			System.arraycopy(saveState.getRom().vram, 0, vram, 0, 0x2000);
-		
+		*/
 		
 	}
 	

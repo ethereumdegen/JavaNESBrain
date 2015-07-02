@@ -537,4 +537,20 @@ public class Apu {
 	private long befSync;
 
 	private Nes nes;
+
+	
+	
+	public Apu getCopy() {
+		
+
+		
+		
+		
+		return null;
+	}
+
+	public void loadState(SaveState saveState) {
+		Apu copy = saveState.getApuData();
+		
+	}
 }

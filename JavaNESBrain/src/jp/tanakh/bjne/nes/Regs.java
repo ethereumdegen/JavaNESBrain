@@ -324,6 +324,88 @@ public class Regs {
 	private int frameIrq;
 
 	private boolean[][] padDat = new boolean[2][8];
+	
+	
+	
+	
+	
 
 	private Nes nes;
+
+
+
+	public Regs getCopy() {
+		
+		Regs copy = new Regs(nes);
+		
+		copy.nmiEnable = this.nmiEnable;
+		copy.spriteSize = this.spriteSize;
+		copy.bgPatAdr = this.bgPatAdr;
+		copy.spritePatAdr = this.spritePatAdr;
+		copy.ppuAdrIncr = this.ppuAdrIncr;
+		copy.nameTblAdr = this.nameTblAdr;
+		
+		
+		copy.bgColor = this.bgColor;
+		copy.spriteVisible = this.spriteVisible;
+		copy.bgVisible = this.bgVisible;
+		copy.spriteClip = this.spriteClip;
+		copy.bgClip = this.bgClip;
+		copy.colorDisplay = this.colorDisplay;
+
+		copy.isVBlank = this.isVBlank;
+		copy.sprite0Occur = this.sprite0Occur;
+		copy.spriteOver = this.spriteOver;
+		copy.vramWriteFlag = this.vramWriteFlag;
+ 
+		copy.sprramAdr = this.sprramAdr;
+		copy.ppuAdrT = this.ppuAdrT;
+		copy.ppuAdrV = this.ppuAdrV;
+		copy.ppuAdrX = this.ppuAdrX;
+		copy.ppuAdrToggle = this.ppuAdrToggle;
+		copy.ppuReadBuf = this.ppuReadBuf;
+		
+		copy.joypadStrobe = this.joypadStrobe;
+		copy.frameIrq = this.frameIrq;
+		
+		
+		 
+		return copy;
+	}
+
+	public void loadState(SaveState saveState) {
+		Regs copy = saveState.getRegsData();
+		
+		this.nmiEnable = copy.nmiEnable;
+		this.spriteSize = copy.spriteSize;
+		this.bgPatAdr = copy.bgPatAdr;
+		this.spritePatAdr = copy.spritePatAdr;
+		this.ppuAdrIncr = copy.ppuAdrIncr;
+		this.nameTblAdr = copy.nameTblAdr;
+		
+		
+		this.bgColor = copy.bgColor;
+		this.spriteVisible = copy.spriteVisible;
+		this.bgVisible = copy.bgVisible;
+		this.spriteClip = copy.spriteClip;
+		this.bgClip = copy.bgClip;
+		this.colorDisplay = copy.colorDisplay;
+
+		this.isVBlank = copy.isVBlank;
+		this.sprite0Occur = copy.sprite0Occur;
+		this.spriteOver = copy.spriteOver;
+		this.vramWriteFlag = copy.vramWriteFlag;
+ 
+		this.sprramAdr = copy.sprramAdr;
+		this.ppuAdrT = copy.ppuAdrT;
+		this.ppuAdrV = copy.ppuAdrV;
+		this.ppuAdrX = copy.ppuAdrX;
+		this.ppuAdrToggle = copy.ppuAdrToggle;
+		this.ppuReadBuf = copy.ppuReadBuf;
+		
+		this.joypadStrobe = copy.joypadStrobe;
+		this.frameIrq = copy.frameIrq;
+		
+		
+	}
 }
