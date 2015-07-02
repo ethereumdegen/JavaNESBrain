@@ -1,10 +1,16 @@
 package com.starflask.JavaNESBrain.data;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.image.BufferedImage;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List; 
  
+
+
+
+
 
 
 
@@ -17,6 +23,8 @@ import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
+import org.newdawn.slick.TrueTypeFont;
+import org.newdawn.slick.util.ResourceLoader;
 
 import com.starflask.JavaNESBrain.SuperBrain;
 import com.starflask.JavaNESBrain.VirtualGamePad;
@@ -71,7 +79,7 @@ public class BrainInfoWindow  {
 		this.pool=pool;
 		this.gamepad=gamepad;
 		
-	 
+		loadAssets();
 		
 		/*
 		addWindowListener(new WindowAdapter() {
@@ -97,6 +105,29 @@ public class BrainInfoWindow  {
 		});
 		 */
 
+	}
+
+	TrueTypeFont font;
+	
+ 	
+	
+	private void loadAssets() {
+
+		Font awtFont = new Font("Times New Roman", Font.BOLD, 24);
+		font = new TrueTypeFont(awtFont, false);
+	 
+		/*// load font from a .ttf file
+		try {
+			InputStream inputStream	= ResourceLoader.getResourceAsStream("myfont.ttf");
+	 
+			Font awtFont2 = Font.createFont(Font.TRUETYPE_FONT, inputStream);
+			awtFont2 = awtFont2.deriveFont(24f); // set font size
+			font2 = new TrueTypeFont(awtFont2, false);
+	 
+		} catch (Exception e) {
+			e.printStackTrace();
+		}	*/
+		
 	}
 
 	private void onExit() {
@@ -148,11 +179,11 @@ public class BrainInfoWindow  {
 		setColor(Color.BLACK);
 		
 		
-		drawString("Generation #" + getPool().getGeneration(), 10, 50);
-		drawString("Species:" + getPool().getCurrentSpecies().toString(), 200, 50);
-		drawString("Genome:" + getPool().getCurrentGenome().toString(), 10, 80);
-		drawString("Fitness:" + getPool().getCurrentGenome().getFitness(), 200, 80);
-		drawString("Max Fitness:" + getPool().getMaxFitness(), 290, 80);
+		font.drawString(10, 50, "Generation #" + getPool().getGeneration());
+		font.drawString(200, 50,"Species:" + getPool().getCurrentSpecies().toString() );
+		font.drawString(10, 80, "Genome:" + getPool().getCurrentGenome().toString() );
+		font.drawString(200, 80, "Fitness:" + getPool().getCurrentGenome().getFitness() );
+		font.drawString(290, 80, "Max Fitness:" + getPool().getMaxFitness() );
 		
 		NeuralNetwork network = getPool().getCurrentGenome().getNetwork();
 		
@@ -163,7 +194,7 @@ public class BrainInfoWindow  {
 		
 		setColor(Color.GRAY);
 		 
-		 drawString("Grid Map (AI Inputs)", 80, 110);
+		font.drawString(40, 110, "Grid Map (AI Inputs)" );
 		
 		List<Integer> cellValues = getGameData().getBrainSystemInputs();
 		
@@ -232,7 +263,7 @@ public class BrainInfoWindow  {
 			
 			
 			
-			drawString( button , 365, 120 + 12 +  16 * o);
+			font.drawString( 365, 120 + 12 +  16 * o , button );
 			fillRect(350 ,120 +  16 * o, 12, 12);
 			
 			
@@ -401,10 +432,7 @@ public class BrainInfoWindow  {
 		drawLine(x,y+h,x,y);
 	}
 
-	private void drawString(String string, int x, int y) {
-		// TODO Auto-generated method stub
-		
-	}
+	
 
 	private void setColor(Color color) {
 		GL11.glColor3f(color.getRed()/255f,color.getGreen()/255f,color.getBlue()/255f);
