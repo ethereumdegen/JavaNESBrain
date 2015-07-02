@@ -113,20 +113,11 @@ public class BrainInfoWindow extends Frame{
 		//g.drawImage(image, left, top, left + SCREEN_WIDTH*SCREEN_SIZE_MULTIPLIER, top + SCREEN_HEIGHT*SCREEN_SIZE_MULTIPLIER, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, this);
 		g.clearRect(left, top, left + SCREEN_WIDTH*SCREEN_SIZE_MULTIPLIER, top + SCREEN_HEIGHT*SCREEN_SIZE_MULTIPLIER);
 		
-		drawInfoElements( g );			 
 		
+		drawNeurons(g);
 	 	 
 	}
 
-	private void drawInfoElements(Graphics g) {
-				
-
-
-		
-		drawNeurons(g);
-		
-		
-	}
 
 	private void drawNeurons(Graphics g) {
 		 
@@ -156,7 +147,7 @@ public class BrainInfoWindow extends Frame{
 		
 		List<Integer> cellValues = getGameData().getBrainSystemInputs();
 		
-		Iterator<Integer> cellValueInterator = cellValues.iterator();
+		//Iterator<Integer> cellValueInterator = cellValues.iterator();
 		
 		int inputCount = 0;
 
@@ -166,7 +157,7 @@ public class BrainInfoWindow extends Frame{
 	        {
 	    		//Vector2Int deltaPos = new Vector2Int(dx, dy);
 	    			    		    		
-	    		 int tile = cellValueInterator.next();
+	    		 int tile = cellValues.get(inputCount);
 			 
 	    		 g.setColor(Color.GRAY);
 	    		 

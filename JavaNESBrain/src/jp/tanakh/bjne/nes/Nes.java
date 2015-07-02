@@ -40,7 +40,7 @@ public class Nes {
 	}
 
 	public void loadState(int stateNumber) {
-		rom.loadState( saveStates[stateNumber] );
+		//rom.loadState( saveStates[stateNumber] );
 		mbc.loadState( saveStates[stateNumber] );
 		
 		

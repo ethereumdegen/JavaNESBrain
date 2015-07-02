@@ -140,16 +140,19 @@ public class SuperBrain {
 	//	emulator.setControllers(getController(), getController());
 		getGameDataManager().getPositions();
 
-		// if mario gets farther than he has ever been...
+		// if mario gets farther than he has ever been this run...
 		if (getGameDataManager().getMarioPos().getX() > rightmost) {
 			rightmost = (int) getGameDataManager().getMarioPos().getX();
-			timeout = TimeoutConstant;
+			timeout = TimeoutConstant; //also reset the timeout
+			
 		}
 
 		timeout = timeout - 1;
 
-		int timeoutBonus = pool.getCurrentFrame() / 4;
+		int timeoutBonus = pool.getCurrentFrame() / 2;
 
+		//why are good 'right' marios prematurely dying  and going to next run ???
+		
 		if (timeout + timeoutBonus <= 0) {
 
 			int fitness = rightmost - pool.getCurrentFrame() / 2;
