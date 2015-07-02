@@ -177,8 +177,8 @@ public class SuperBrain {
 				// forms.gettext(saveLoadFile))
 			}
 
+			
 			infoWindow.outputScreen();
-
 
 
 			pool.setCurrentSpecies(0);
@@ -191,23 +191,9 @@ public class SuperBrain {
 			initializeRun();
 		}
 
-	/*	int measured = 0;
-		int total = 0;
-
-		// for every genome in every species increment total and if fitness is
-		// not zero then increment measured
-
-		for (Species s : pool.getSpecies()) {
-			for (Genome g : s.getGenomes()) {
-				total++;
-				if (g.getFitness() != 0) {
-					measured++;
-				}
-
-			}
-		}*/
-
-	
+		//too laggy- switch this render to opengl
+		//infoWindow.outputScreen();
+		
 
 		pool.setCurrentFrame(pool.getCurrentFrame() + 1);
 

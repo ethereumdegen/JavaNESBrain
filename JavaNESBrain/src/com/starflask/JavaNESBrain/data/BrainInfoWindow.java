@@ -11,12 +11,28 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.io.File;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
+import java.util.List; 
+ 
+
+
+
+
+
 
 import javax.imageio.ImageIO;
+
+
+
+
+
+
+import org.lwjgl.LWJGLException;
+import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.DisplayMode;
 
 import jp.tanakh.bjne.ui.AWTRenderer;
 
@@ -30,7 +46,7 @@ import com.starflask.JavaNESBrain.utils.FastMath;
 import com.starflask.JavaNESBrain.utils.Vector2Int;
 import com.starflask.JavaNESBrain.utils.Vector2f;
 
-public class BrainInfoWindow extends Frame{
+public class BrainInfoWindow  {
 	
 	static final int SCREEN_SIZE_MULTIPLIER = 2;
 	
@@ -45,7 +61,22 @@ public class BrainInfoWindow extends Frame{
 	GenePool pool;
 	
 	public BrainInfoWindow(VirtualGamePad gamepad,	GameDataManager gameDataManager, GenePool pool) {
-		super("NESBrain Info");
+		 
+		
+		try {			
+		
+			Display.setDisplayMode(new DisplayMode(SCREEN_WIDTH*SCREEN_SIZE_MULTIPLIER,SCREEN_HEIGHT*SCREEN_SIZE_MULTIPLIER));
+						
+			Display.create();
+			
+			Display.setTitle("NES Brain Info");
+			
+		} catch (LWJGLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		 
 		
 		this.gameDataManager=gameDataManager;
 		
@@ -54,15 +85,9 @@ public class BrainInfoWindow extends Frame{
 		this.pool=pool;
 		this.gamepad=gamepad;
 		
-		BufferedImage img = null;
-		try {
-		    img = ImageIO.read(new File("src/icon.png"));
-		    this.setIconImage( img  );			
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	 
 		
-		
+		/*
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
@@ -71,11 +96,7 @@ public class BrainInfoWindow extends Frame{
 		});
 
 		
-		setVisible(true);
-		setVisible(false);
-		setSize(SCREEN_WIDTH*SCREEN_SIZE_MULTIPLIER  + getInsets().left + getInsets().right, SCREEN_HEIGHT*SCREEN_SIZE_MULTIPLIER + getInsets().top + getInsets().bottom);
-		setVisible(true);
-		
+		 
 		
 		this.addKeyListener(new KeyAdapter() {
 			@Override
@@ -88,7 +109,7 @@ public class BrainInfoWindow extends Frame{
 				onHardwareKey(e.getKeyCode(), false);
 			}
 		});
-
+		 */
 
 	}
 
@@ -122,17 +143,16 @@ public class BrainInfoWindow extends Frame{
 			
 		}
 
-		int left = getInsets().left;
-		int top = getInsets().top;
-		Graphics g = getGraphics();
+	 
 		
 		
-		//g.drawImage(image, left, top, left + SCREEN_WIDTH*SCREEN_SIZE_MULTIPLIER, top + SCREEN_HEIGHT*SCREEN_SIZE_MULTIPLIER, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, this);
-		g.clearRect(left, top, left + SCREEN_WIDTH*SCREEN_SIZE_MULTIPLIER, top + SCREEN_HEIGHT*SCREEN_SIZE_MULTIPLIER);
+		// g.clearRect(left, top, left + SCREEN_WIDTH*SCREEN_SIZE_MULTIPLIER, top + SCREEN_HEIGHT*SCREEN_SIZE_MULTIPLIER);
 		
 		
-		drawNeurons(g);
+		//REWRITE THE DRAW FUNCTION
+		//drawNeurons(g);
 	 	 
+		 
 	}
 
 
