@@ -1,29 +1,12 @@
 package com.starflask.JavaNESBrain.data;
 
 import java.awt.Color;
-import java.awt.Frame;
-import java.awt.Graphics;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
-import java.io.File;
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List; 
  
 
 
-
-
-
-
-import javax.imageio.ImageIO;
 
 
 
@@ -33,8 +16,7 @@ import javax.imageio.ImageIO;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
-
-import jp.tanakh.bjne.ui.AWTRenderer;
+import org.lwjgl.opengl.GL11;
 
 import com.starflask.JavaNESBrain.SuperBrain;
 import com.starflask.JavaNESBrain.VirtualGamePad;
@@ -43,8 +25,6 @@ import com.starflask.JavaNESBrain.evolution.GenePool;
 import com.starflask.JavaNESBrain.evolution.NeuralNetwork;
 import com.starflask.JavaNESBrain.evolution.Neuron;
 import com.starflask.JavaNESBrain.utils.FastMath;
-import com.starflask.JavaNESBrain.utils.Vector2Int;
-import com.starflask.JavaNESBrain.utils.Vector2f;
 
 public class BrainInfoWindow  {
 	
@@ -71,9 +51,15 @@ public class BrainInfoWindow  {
 			
 			Display.setTitle("NES Brain Info");
 			
+			// init OpenGL
+		    GL11.glMatrixMode(GL11.GL_PROJECTION);
+		    GL11.glLoadIdentity();
+		    GL11.glOrtho(0, SCREEN_WIDTH*SCREEN_SIZE_MULTIPLIER, SCREEN_HEIGHT*SCREEN_SIZE_MULTIPLIER, 0, 1, -1);
+		    GL11.glMatrixMode(GL11.GL_MODELVIEW);
+			
 		} catch (LWJGLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			 System.exit(0);
 		}
 		
 		 
@@ -129,47 +115,44 @@ public class BrainInfoWindow  {
 	
 	public void outputScreen() {
 		
-		byte[] bgr = ((DataBufferByte) image.getRaster().getDataBuffer())
-				.getData();
-
-		for (int i = 0; i < SCREEN_WIDTH * SCREEN_HEIGHT; i++) {
-			//bgr[i * 3] = info.buf[i * 3 + 2];
-			//bgr[i * 3 + 1] = info.buf[i * 3 + 1];
-			//bgr[i * 3 + 2] = info.buf[i * 3 + 0];
-			
-			bgr[i * 3] = 0;
-			bgr[i * 3 + 1] = 0;
-			bgr[i * 3 + 2] = 0;
-			
-		}
-
-	 
 		
+		 // Clear the screen and depth buffer
+        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);  
+         
+         
+        setColor(Color.white);
+        fillRect(0,0,SCREEN_WIDTH*SCREEN_SIZE_MULTIPLIER,SCREEN_HEIGHT*SCREEN_SIZE_MULTIPLIER);
+        
+        
+        drawNeurons();
+        
+        
+  
+        Display.update();
 		
-		// g.clearRect(left, top, left + SCREEN_WIDTH*SCREEN_SIZE_MULTIPLIER, top + SCREEN_HEIGHT*SCREEN_SIZE_MULTIPLIER);
-		
+		  
 		
 		//REWRITE THE DRAW FUNCTION
-		//drawNeurons(g);
+		
 	 	 
 		 
 	}
 
 
-	private void drawNeurons(Graphics g) {
+	private void drawNeurons() {
 		 
 		
 		HashMap<Integer,DebugCell> cells = new HashMap<Integer,DebugCell>();
 		
 		
-		g.setColor(Color.BLACK);
+		setColor(Color.BLACK);
 		
 		
-		g.drawString("Generation #" + getPool().getGeneration(), 10, 50);
-		g.drawString("Species:" + getPool().getCurrentSpecies().toString(), 200, 50);
-		g.drawString("Genome:" + getPool().getCurrentGenome().toString(), 10, 80);
-		g.drawString("Fitness:" + getPool().getCurrentGenome().getFitness(), 200, 80);
-		g.drawString("Max Fitness:" + getPool().getMaxFitness(), 290, 80);
+		drawString("Generation #" + getPool().getGeneration(), 10, 50);
+		drawString("Species:" + getPool().getCurrentSpecies().toString(), 200, 50);
+		drawString("Genome:" + getPool().getCurrentGenome().toString(), 10, 80);
+		drawString("Fitness:" + getPool().getCurrentGenome().getFitness(), 200, 80);
+		drawString("Max Fitness:" + getPool().getMaxFitness(), 290, 80);
 		
 		NeuralNetwork network = getPool().getCurrentGenome().getNetwork();
 		
@@ -178,36 +161,34 @@ public class BrainInfoWindow  {
 		//draw inputs
 		
 		
-		g.setColor(Color.GRAY);
+		setColor(Color.GRAY);
 		 
-		 g.drawString("Grid Map (AI Inputs)", 80, 110);
+		 drawString("Grid Map (AI Inputs)", 80, 110);
 		
 		List<Integer> cellValues = getGameData().getBrainSystemInputs();
 		
-		 
-		
-		//Iterator<Integer> cellValueInterator = cellValues.iterator();
-		
+
+
 		int inputCount = 0;
 
 	    for(int dy = -getGameData().getBoxRadius()*16 ; dy <= getGameData().getBoxRadius()*16  ; dy+= 16)
 	    {
 	    	for(int dx = -getGameData().getBoxRadius()*16 ; dx <= getGameData().getBoxRadius()*16  ; dx+= 16)
 	        {
-	    		//Vector2Int deltaPos = new Vector2Int(dx, dy);
+	    
 	    			    		    		
 	    		 int tile = cellValues.get(inputCount);
 			  
-	    		 g.setColor(Color.GRAY);
+	    		 setColor(Color.GRAY);
 	    		 
 	    		 if(tile < 0) //enemy
 	    		 {
-	    		 g.setColor(Color.RED);
+	    		 setColor(Color.RED);
 	    		 }
 	    		 
 	    		 if(tile > 0) //tile
 	    		 {
-	    		 g.setColor(Color.BLACK);   
+	    		 setColor(Color.BLACK);   
 	    		 }
 	    		
 	    		 
@@ -221,7 +202,7 @@ public class BrainInfoWindow  {
 	    				
 	    			inputCount++;
 	    			
-	    			g.fillRect((int) inputCell.x,(int)  inputCell.y, 8, 8);
+	    			fillRect((int) inputCell.x,(int)  inputCell.y, 8, 8);
 			 
 			 
 		 }
@@ -236,7 +217,7 @@ public class BrainInfoWindow  {
 			
 			String button = this.getGameData().getButtonNames()[o];
 
-			g.setColor(Color.GRAY);
+			setColor(Color.GRAY);
 			
 			DebugCell outputCell = new DebugCell();
 			outputCell.x = 350;
@@ -246,13 +227,13 @@ public class BrainInfoWindow  {
 			
 			
 			if (network.getNeurons().get( SuperBrain.MaxNodes + o).getValue() > 0) {
-				g.setColor(Color.RED);
+				setColor(Color.RED);
 			}
 			
 			
 			
-			g.drawString( button , 365, 120 + 12 +  16 * o);
-			g.fillRect(350 ,120 +  16 * o, 12, 12);
+			drawString( button , 365, 120 + 12 +  16 * o);
+			fillRect(350 ,120 +  16 * o, 12, 12);
 			
 			
 			cells.put(SuperBrain.MaxNodes + o, outputCell );
@@ -358,8 +339,8 @@ public class BrainInfoWindow  {
     		   
     		   Color color = new Color(colordarkness / 255f, 0.2f, 0.2f, opacity);
     		   
-    		   g.setColor(color);
-    		   g.drawRect((int) cell.x , (int) cell.y  , (int) (4 * opacity),(int)  (4 * opacity));
+    		   setColor(color);
+    		   drawRect((int) cell.x , (int) cell.y  , (int) (4 * opacity),(int)  (4 * opacity));
 
     	   }
     	   
@@ -380,9 +361,9 @@ public class BrainInfoWindow  {
 			   
 			   Color color = new Color(colorDarkness,colorDarkness,colorDarkness,opacity);
 			   
-			   g.setColor(color);
+			   setColor(color);
 			   
-			   g.drawLine((int) cellIn.x,(int)cellIn.y,(int) cellOut.x,(int) cellOut.y);
+			   drawLine((int) cellIn.x,(int)cellIn.y,(int) cellOut.x,(int) cellOut.y);
 			   
 		   }
     	   
@@ -390,6 +371,43 @@ public class BrainInfoWindow  {
      
        
        
+		
+	}
+
+	
+
+	private void fillRect(int x, int y, int w, int h) {
+		 // draw quad
+        GL11.glBegin(GL11.GL_QUADS);
+        GL11.glVertex2f(x,y);
+        GL11.glVertex2f(x+w,y);
+        GL11.glVertex2f(x+w,y+h);
+        GL11.glVertex2f(x,y+h);
+        GL11.glEnd();
+		
+	}
+
+	private void drawLine(int x, int y, int x2, int y2) {
+		 GL11.glBegin(GL11.GL_LINE_STRIP );
+	        GL11.glVertex2f(x,y);
+	        GL11.glVertex2f(x2,y2);
+	        GL11.glEnd();		
+	}
+
+	private void drawRect(int x, int y, int w, int h) {
+		drawLine(x,y,x+w,y);
+		drawLine(x+w,y,x+w,y+h);
+		drawLine(x+w,y+h,x,y+h);
+		drawLine(x,y+h,x,y);
+	}
+
+	private void drawString(String string, int x, int y) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void setColor(Color color) {
+		GL11.glColor3f(color.getRed()/255f,color.getGreen()/255f,color.getBlue()/255f);
 		
 	}
 

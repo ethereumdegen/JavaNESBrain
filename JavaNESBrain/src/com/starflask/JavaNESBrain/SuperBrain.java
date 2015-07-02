@@ -178,7 +178,7 @@ public class SuperBrain {
 			}
 
 			
-			infoWindow.outputScreen();
+			
 
 
 			pool.setCurrentSpecies(0);
@@ -191,9 +191,8 @@ public class SuperBrain {
 			initializeRun();
 		}
 
-		//too laggy- switch this render to opengl
-		//infoWindow.outputScreen();
-		
+		//too laggy?	 
+		infoWindow.outputScreen();
 
 		pool.setCurrentFrame(pool.getCurrentFrame() + 1);
 
