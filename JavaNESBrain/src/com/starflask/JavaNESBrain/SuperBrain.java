@@ -80,8 +80,8 @@ public class SuperBrain {
 	public void start() {
 		
 		gameData = new GameDataManager(this);
-
 		 
+		System.out.println(" GD " + gameData);
 
 		while (true) {
 
@@ -122,7 +122,7 @@ public class SuperBrain {
 			 
 			emulator.setGamepadInput( gamepad.getIntegerBuffer() );
 			
-			infoWindow = new BrainInfoWindow( gamepad , getGameDataManager() , pool );
+			infoWindow = new BrainInfoWindow( gamepad , gameData , pool );
 			
 		}
 

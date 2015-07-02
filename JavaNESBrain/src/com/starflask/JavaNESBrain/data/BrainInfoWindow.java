@@ -48,6 +48,9 @@ public class BrainInfoWindow extends Frame{
 		super("NESBrain Info");
 		
 		this.gameDataManager=gameDataManager;
+		
+		System.out.println(" GD " + gameDataManager);
+		
 		this.pool=pool;
 		this.gamepad=gamepad;
 		
@@ -161,6 +164,8 @@ public class BrainInfoWindow extends Frame{
 		
 		List<Integer> cellValues = getGameData().getBrainSystemInputs();
 		
+		 
+		
 		//Iterator<Integer> cellValueInterator = cellValues.iterator();
 		
 		int inputCount = 0;
@@ -172,7 +177,7 @@ public class BrainInfoWindow extends Frame{
 	    		//Vector2Int deltaPos = new Vector2Int(dx, dy);
 	    			    		    		
 	    		 int tile = cellValues.get(inputCount);
-			 
+			  
 	    		 g.setColor(Color.GRAY);
 	    		 
 	    		 if(tile < 0) //enemy
@@ -182,9 +187,9 @@ public class BrainInfoWindow extends Frame{
 	    		 
 	    		 if(tile > 0) //tile
 	    		 {
-	    		 g.setColor(Color.BLACK);
+	    		 g.setColor(Color.BLACK);   
 	    		 }
-	    		 
+	    		
 	    		 
 	    			DebugCell inputCell = new DebugCell();
 	    			inputCell.x = 30 + (getGameData().getBoxRadius())*16/2 + dx/2;

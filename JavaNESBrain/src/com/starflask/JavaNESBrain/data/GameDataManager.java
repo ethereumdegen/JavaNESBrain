@@ -196,6 +196,7 @@ public List<Integer> getBrainSystemInputs()
                      if (tile == 1 && marioPos.getY() + dy < 0x1B0 )
                      {
                     	 cellValue = 1;
+                    	 
                      }
                             
                      
