@@ -4,7 +4,7 @@ public class SaveState {
 
 	Cpu cpuData;
 	//Rom romData;
-	byte[] ramData = new byte[0x800];
+	Mbc mbcData;
 	
 	Regs regsData;
 	Apu apuData;
@@ -16,7 +16,7 @@ public class SaveState {
 	public SaveState(Regs regs, Mbc mbc, Cpu cpu, Apu apu, Ppu ppu) {
 		cpuData = cpu.getCopy();
 		regsData = regs.getCopy();		
-		ramData = mbc.getRamCopy();
+		mbcData = mbc.getCopy();
 		apuData = apu.getCopy();		
 		ppuData = ppu.getCopy();		
 	}
@@ -27,10 +27,7 @@ public class SaveState {
 		return cpuData;
 	}
 	
-	public byte[] getRamData() {
-		return ramData;
-	}
-
+ 
 
 
 	public Regs getRegsData() {
@@ -47,6 +44,12 @@ public class SaveState {
 
 	public Ppu getPpuData() {
 		return ppuData;
+	}
+
+
+	public Mbc getMbc() {
+		 
+		return mbcData;
 	}
 
 }

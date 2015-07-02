@@ -181,17 +181,61 @@ public class Mbc {
 
 	
 	
-	public byte[] getRamCopy() {
-		byte[] ramCopy = new byte[0x800];
+	public Mbc getCopy() {
+		Mbc copy = new Mbc(nes);
 		
-		System.arraycopy(ram, 0, ramCopy, 0, 0x800);
+		 
 		
-		return ramCopy;
+		System.arraycopy(ram, 0, copy.ram, 0, copy.ram.length);
+		System.arraycopy(romPage, 0, copy.romPage, 0, copy.romPage.length);
+		System.arraycopy(chrPage, 0, copy.chrPage, 0, copy.chrPage.length);
+		
+		
+		copy.rom = new byte[rom.length];		
+		System.arraycopy(rom, 0, copy.rom, 0, copy.rom.length);
+		
+		copy.vrom = new byte[vrom.length];		
+		System.arraycopy(vrom, 0, copy.vrom, 0, copy.vrom.length);
+		
+		copy.sram = new byte[sram.length];		
+		System.arraycopy(sram, 0, copy.sram, 0, copy.sram.length);
+		
+		copy.vram = new byte[vram.length];		
+		System.arraycopy(vram, 0, copy.vram, 0, copy.vram.length);
+		 
+		copy.isVram = this.isVram;
+		copy.sramEnabled = this.sramEnabled;
+		 
+		
+		return copy;
 	}
 
 	public void loadState(SaveState saveState) {
-		 
-		System.arraycopy(saveState.ramData, 0, ram, 0, 0x800);
+		Mbc copy = saveState.getMbc();
 		
+		System.arraycopy(copy.ram, 0, ram, 0, copy.ram.length);
+		System.arraycopy(copy.romPage, 0, romPage, 0, copy.romPage.length);
+		System.arraycopy(copy.chrPage, 0, chrPage, 0, copy.chrPage.length);
+		
+		
+		
+		System.arraycopy(copy.rom, 0, rom, 0, copy.rom.length);
+		System.arraycopy(copy.vrom, 0, vrom, 0, copy.vrom.length);
+		System.arraycopy(copy.sram, 0, sram, 0, copy.sram.length);
+		System.arraycopy(copy.vram, 0, vram, 0, copy.vram.length);
+		 
+		
+		for (int i = 0; i < 4; i++)
+			mapRom(i, i);
+		if (vrom != null)
+			for (int i = 0; i < 8; i++)
+				mapVrom(i, i);
+		else
+			for (int i = 0; i < 8; i++)
+				mapVram(i, i);
+		
+		
+		this.isVram = copy.isVram;
+		this.sramEnabled = copy.sramEnabled;
 	}
 }

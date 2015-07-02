@@ -46,7 +46,7 @@ public class Nes {
 		regs.loadState( saveStates[stateNumber] );
 		apu.loadState( saveStates[stateNumber] );
 		ppu.loadState( saveStates[stateNumber] );
-		
+		 
 	}
 
 	public void reset() {

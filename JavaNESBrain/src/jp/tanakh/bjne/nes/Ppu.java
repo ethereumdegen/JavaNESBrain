@@ -287,12 +287,34 @@ public class Ppu {
 		System.arraycopy(nesPalette24, 0, copy.nesPalette24, 0, nesPalette24.length);
 		System.arraycopy(buf, 0, copy.buf, 0, buf.length);
 		
+		for(int i=0;i<4;i++)
+		{
+			System.arraycopy(nameTable[i], 0, copy.nameTable[i], 0, nameTable[i].length);
+			
+		//	System.arraycopy(namePage[i], 0, copy.namePage[i], 0, namePage[i].length);
+		}
+		
+		
+		
 		return copy;
 	}
 
 	public void loadState(SaveState saveState) {
 		Ppu copy =saveState.getPpuData();
 
+		System.arraycopy(copy.sprram, 0, sprram, 0, copy.sprram.length);
+		System.arraycopy(copy.palette, 0,  palette, 0, copy.palette.length);
+		System.arraycopy(copy.nesPalette24, 0,  nesPalette24, 0, copy.nesPalette24.length);
+		System.arraycopy(copy.nesPalette24, 0,  nesPalette24, 0, copy.nesPalette24.length);
+		System.arraycopy(copy.buf, 0,  buf, 0, copy.buf.length);
+		
+		
+		for(int i=0;i<4;i++)
+		{
+			System.arraycopy(copy.nameTable[i], 0, nameTable[i], 0, copy.nameTable[i].length);
+		//	System.arraycopy(copy.namePage[i], 0,  namePage[i], 0, copy.namePage[i].length);
+		}
+		
 		
 	}
 }
