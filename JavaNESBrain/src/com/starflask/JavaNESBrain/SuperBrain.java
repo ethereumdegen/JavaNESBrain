@@ -39,7 +39,7 @@ import com.starflask.JavaNESBrain.utils.FastMath;
 
 
 /**
- * BUG: Never presses A ! like .. ever.. prob since it is index 0 and there is a typo
+ * BUG: loading the state sometimes messes with the tile pattern ?
  * 
  * why doesnt the environment draw nicely  in the debug window?
  * 
@@ -258,7 +258,7 @@ public class SuperBrain {
 
 	public void initializeRun() {
 		
-	//	getNES().loadState( 0 );
+		getNES().loadState( 0 );
 		 
 		rightmost = 0;
 		pool.setCurrentFrame(0);
