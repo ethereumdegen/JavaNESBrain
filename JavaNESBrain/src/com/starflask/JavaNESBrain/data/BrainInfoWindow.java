@@ -5,6 +5,8 @@ import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.io.File;
@@ -58,6 +60,14 @@ public class BrainInfoWindow extends Frame{
 		}
 		
 		
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				onExit();
+			}
+		});
+
+		
 		setVisible(true);
 		setVisible(false);
 		setSize(SCREEN_WIDTH*SCREEN_SIZE_MULTIPLIER  + getInsets().left + getInsets().right, SCREEN_HEIGHT*SCREEN_SIZE_MULTIPLIER + getInsets().top + getInsets().bottom);
@@ -77,6 +87,10 @@ public class BrainInfoWindow extends Frame{
 		});
 
 
+	}
+
+	private void onExit() {
+		System.exit(0);
 	}
 
 	protected void onHardwareKey(int keyCode, boolean pressed) {
@@ -161,20 +175,20 @@ public class BrainInfoWindow extends Frame{
 			 
 	    		 g.setColor(Color.GRAY);
 	    		 
-	    		 if(tile < 0)
+	    		 if(tile < 0) //enemy
+	    		 {
+	    		 g.setColor(Color.RED);
+	    		 }
+	    		 
+	    		 if(tile > 0) //tile
 	    		 {
 	    		 g.setColor(Color.BLACK);
 	    		 }
 	    		 
-	    		 if(tile > 0)
-	    		 {
-	    		 g.setColor(Color.BLUE);
-	    		 }
-	    		 
 	    		 
 	    			DebugCell inputCell = new DebugCell();
-	    			inputCell.x = 30 + (getGameData().getBoxRadius())*16 + dx;
-	    			inputCell.y = 120 +  (getGameData().getBoxRadius())*16 + dy;
+	    			inputCell.x = 30 + (getGameData().getBoxRadius())*16/2 + dx/2;
+	    			inputCell.y = 120 +  (getGameData().getBoxRadius())*16/2 + dy/2;
 	    			inputCell.value = tile;
 	    			
 	    			cells.put(inputCount, inputCell  );
@@ -182,16 +196,12 @@ public class BrainInfoWindow extends Frame{
 	    				
 	    			inputCount++;
 	    			
-	    			g.fillRect((int) inputCell.x,(int)  inputCell.y, 12, 12);
+	    			g.fillRect((int) inputCell.x,(int)  inputCell.y, 8, 8);
 			 
 			 
 		 }
 		
 	}
-		
-		
-		
-		
 		
 		
 		

@@ -92,15 +92,19 @@ int getTile(Vector2Int delta)
 			{
 	  
 			
-			int x = (int) (marioPos.getX() + delta.getX() + 8);
-			int y = (int) (marioPos.getY() + delta.getY() - 16);
+			int x = (marioPos.getX() + delta.getX() + 8);
+			int y = (marioPos.getY() + delta.getY() - 16);
              
-            int page = (int) (FastMath.floor(x/256)%2);
+			
+			//is this math right?
+            int page = (int) (FastMath.floor(x/256f)%2);
 
-            int subx = (int) FastMath.floor((x%256)/16);
-            int suby = (int) FastMath.floor((y - 32)/16);
+            int subx = (int) FastMath.floor((x%256)/16f);
+            int suby = (int) FastMath.floor((y - 32)/16f);
             int addr = 0x500 + page*13*16+suby*16+subx ;
            
+            
+          
             if (suby >= 13 || suby < 0 )
             {
                     return 0;
@@ -183,7 +187,7 @@ public List<Integer> getBrainSystemInputs()
     	for(int dx = -BoxRadius*16 ; dx <= BoxRadius*16  ; dx+= 16)
         {
     		Vector2Int deltaPos = new Vector2Int(dx, dy);
-    		
+    		 
     		int cellValue = 0;	
     		
     		

@@ -258,7 +258,7 @@ public class SuperBrain {
 
 	public void initializeRun() {
 		
-		getNES().loadState( 0 );
+	//	getNES().loadState( 0 );
 		 
 		rightmost = 0;
 		pool.setCurrentFrame(0);
