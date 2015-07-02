@@ -35,14 +35,14 @@ public class Nes {
 	SaveState[] saveStates = new SaveState[5];
 	
 	public void saveState(int stateNumber) {
-		saveStates[stateNumber] = new SaveState(rom,mbc);
+		saveStates[stateNumber] = new SaveState(rom,mbc,cpu);
 		 
 	}
 
 	public void loadState(int stateNumber) {
 		//rom.loadState( saveStates[stateNumber] );
 		mbc.loadState( saveStates[stateNumber] );
-		
+		cpu.loadState( saveStates[stateNumber] );
 		
 	}
 

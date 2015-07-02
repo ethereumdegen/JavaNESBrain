@@ -1071,4 +1071,60 @@ public class Cpu {
 
 	private Nes nes;
 	private Mbc mbc;
+
+	public Cpu getCopy() {
+		 
+		Cpu copy = new Cpu(nes);
+		
+		copy.regA = this.regA;
+		copy.regX = this.regX;
+		copy.regY = this.regY;
+		copy.regS = this.regS;
+		copy.regPC = this.regPC;
+		
+		copy.cFlag = this.cFlag;
+		copy.zFlag = this.zFlag;
+		copy.iFlag = this.iFlag;
+		copy.dFlag = this.dFlag;
+		copy.bFlag = this.bFlag;
+		copy.vFlag = this.vFlag;
+		copy.nFlag = this.nFlag;
+		 
+		copy.oprPC = this.oprPC;
+		copy.rest = this.rest;
+		copy.mclock = this.mclock;
+		copy.nmiLine = this.nmiLine;
+		copy.irqLine = this.irqLine;
+		copy.resetLine = this.resetLine;
+				
+		return copy;
+	}
+	
+	
+	public void loadState(SaveState state)
+	{
+		Cpu otherCpu = state.getCpu();
+		
+		this.regA = otherCpu.regA;
+		this.regX = otherCpu.regX;
+		this.regY = otherCpu.regY;
+		this.regS = otherCpu.regS;
+		this.regPC = otherCpu.regPC;
+		
+		this.cFlag = otherCpu.cFlag;
+		this.zFlag = otherCpu.zFlag;
+		this.iFlag = otherCpu.iFlag;
+		this.dFlag = otherCpu.dFlag;
+		this.bFlag = otherCpu.bFlag;
+		this.vFlag = otherCpu.vFlag;
+		this.nFlag = otherCpu.nFlag;
+		 
+		this.oprPC = otherCpu.oprPC;
+		this.rest = otherCpu.rest;
+		this.mclock = otherCpu.mclock;
+		this.nmiLine = otherCpu.nmiLine;
+		this.irqLine = otherCpu.irqLine;
+		this.resetLine = otherCpu.resetLine;
+		
+	}
 }

@@ -444,7 +444,7 @@ public class SuperBrain {
 		return 2 / (1 + FastMath.exp(-4.9f * sum)) - 1;
 	}
 
-	//if pool == nil then initializePool() end
+	 
 
 	public Cpu getCPU()
 	{
