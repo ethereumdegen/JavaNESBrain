@@ -433,10 +433,10 @@ public class SuperBrain {
 	 
 	public void saveGenePoolToFile() throws Exception
 	{
-		FileWriter file = new FileWriter("c:\\test.json");
-		file.write(pool.getAsJson().toJSONString());
-		file.flush();
-		file.close();
+		//FileWriter file = new FileWriter("c:\\test.json");
+		//file.write(pool.getAsJson().toJSONString());
+		//file.flush();
+		//file.close();
 		
 	}
 

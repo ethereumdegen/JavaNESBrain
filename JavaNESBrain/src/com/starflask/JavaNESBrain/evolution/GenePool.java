@@ -2,7 +2,6 @@ package com.starflask.JavaNESBrain.evolution;
 
 import java.util.ArrayList;
 
-import org.json.simple.JSONObject;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -782,7 +781,7 @@ private void removeWeakSpecies()
 public int getPopulation() {
 	return Population;
 }
-
+/*
 	public JSONObject getAsJson() {
 	 
 		JSONObject obj=new JSONObject();
@@ -800,7 +799,7 @@ public int getPopulation() {
 		this.maxFitness = (int) json.get("maxFitness");
 		this.species = (List<Species>) json.get("species");
 	}
-
+*/
 
 
 }
