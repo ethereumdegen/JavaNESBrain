@@ -162,15 +162,15 @@ public class Rambo1 extends MapperAdapter {
 	//fix me!
 	private void setRom() {
 		if (prgSwap) {
-			nes.getMbc().mapRom(0, prgPage[2]);
+			nes.getMbc().mapRom(0, (romSize - 1) * 2);
 			nes.getMbc().mapRom(1, prgPage[1]);
 			nes.getMbc().mapRom(2, prgPage[0]);
-			nes.getMbc().mapRom(3, (romSize - 1) * 2 );
+			nes.getMbc().mapRom(3, (romSize - 1) * 2 +1);
 		} else {
 			nes.getMbc().mapRom(0, prgPage[0]);
 			nes.getMbc().mapRom(1, prgPage[1]);
-			nes.getMbc().mapRom(2, prgPage[2]);
-			nes.getMbc().mapRom(3, (romSize - 1) * 2 );
+			nes.getMbc().mapRom(2, (romSize - 1) * 2);
+			nes.getMbc().mapRom(3, (romSize - 1) * 2 + 1);
 		}
 	}
 

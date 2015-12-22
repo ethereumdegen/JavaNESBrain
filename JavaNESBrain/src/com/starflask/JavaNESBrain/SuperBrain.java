@@ -13,10 +13,13 @@ import javax.swing.UIManager;
 
 import jp.tanakh.bjne.nes.Cpu;
 import jp.tanakh.bjne.nes.Nes;
+import jp.tanakh.bjne.nes.ROMEventListener;
 import jp.tanakh.bjne.ui.BJNEmulator;
 
 import com.starflask.JavaNESBrain.data.BrainInfoWindow;
+import com.starflask.JavaNESBrain.data.GalagaGameDataManager;
 import com.starflask.JavaNESBrain.data.GameDataManager;
+import com.starflask.JavaNESBrain.data.MarioGameDataManager;
 import com.starflask.JavaNESBrain.evolution.Gene;
 import com.starflask.JavaNESBrain.evolution.GenePool;
 import com.starflask.JavaNESBrain.evolution.Genome;
@@ -46,7 +49,7 @@ import com.starflask.JavaNESBrain.utils.FastMath;
 
  */
 
-public class SuperBrain {
+public class SuperBrain implements ROMEventListener {
 
 	VirtualGamePad gamepad = new VirtualGamePad();
 
@@ -57,6 +60,8 @@ public class SuperBrain {
 	public SuperBrain() {
 
 		emulator = new BJNEmulator( "" );
+		
+		emulator.addROMEventListener(this);
 
 		// emulator.run(); do not run continuously.. this class updates each
 		// frame manually
@@ -68,7 +73,7 @@ public class SuperBrain {
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (Exception e) {
-			System.err.println("Could not set system look and feel. Meh.");
+			System.err.println("Could not set system look and feel. ");
 		}
 
 		SuperBrain brain = new SuperBrain();
@@ -79,7 +84,9 @@ public class SuperBrain {
 	boolean firstUpdateOccured = false;
 	public void start() {
 		
-		gameData = new GameDataManager(this);
+		 
+		 loadGameDataManager();
+		
 		 
 		System.out.println(" GD " + gameData);
 
@@ -92,16 +99,15 @@ public class SuperBrain {
 			 
 			 
 			}
-			 
-			
-			
 			emulator.stepEmulation(); 
 			
 		}
 
 	}
 
-	int TimeoutConstant = 20;
+	
+
+
 
 	public static final int MaxNodes = 1000000;
 
@@ -140,29 +146,14 @@ public class SuperBrain {
 	//	emulator.setControllers(getController(), getController());
 		getGameDataManager().getPositions();
 
-		// if mario gets farther than he has ever been this run...
-		if (getGameDataManager().getMarioPos().getX() > rightmost) {
-			rightmost = (int) getGameDataManager().getMarioPos().getX();
-			timeout = TimeoutConstant; //also reset the timeout
-			
-		}
-
-		timeout = timeout - 1;
-
-		int timeoutBonus = pool.getCurrentFrame() / 2;
-
-		//why are good 'right' marios prematurely dying  and going to next run ???
+	 
+		boolean giveUp = getGameDataManager().updateGiveUpTimer(   );
 		
-		if (timeout + timeoutBonus <= 0) {
+	
+		if ( giveUp ) {
 
-			int fitness = rightmost - pool.getCurrentFrame() / 2;
-			//if (getRomName().equals("Super Mario World (USA)") && rightmost > 4816) {
-			//	fitness = fitness + 1000;
-			//}
-
-			if (getRomName().startsWith("Super Mario Bros.") && rightmost > 3186) {
-				fitness = fitness + 1000;
-			}
+			int fitness = getGameDataManager().getCurrentFitness() ;
+			
 
 			if (fitness == 0) {
 				fitness = -1;
@@ -251,18 +242,17 @@ public class SuperBrain {
 		initializeRun();
 
 	}
-
-	int timeout;
-	int rightmost = 0; // the most right that we ever got so far
-	 
+	
 
 	public void initializeRun() {
 		
 		getNES().loadState( 0 ); // resets the game
 		 
-		rightmost = 0;
+		
 		pool.setCurrentFrame(0);
-		timeout = TimeoutConstant;
+		
+		
+		getGameDataManager().initializeRun();
 		
 		gamepad.clear();
 
@@ -460,4 +450,23 @@ public class SuperBrain {
 		return emulator.getNES();
 	}
 
+	public GenePool getPool() {
+		return pool;
+	}
+
+	@Override
+	public void onLoad() {
+		loadGameDataManager();
+		
+	}
+
+	private void loadGameDataManager() {
+		if (getRomName().startsWith("Super Mario Bros."))
+		{
+			gameData = new MarioGameDataManager(this);
+		}else{
+			gameData = new GalagaGameDataManager(this);
+		}
+		
+	}
 }

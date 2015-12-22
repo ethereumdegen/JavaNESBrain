@@ -19,6 +19,7 @@ import javax.sound.sampled.LineUnavailableException;
 
 import jp.tanakh.bjne.nes.Cpu;
 import jp.tanakh.bjne.nes.Nes;
+import jp.tanakh.bjne.nes.ROMEventListener;
 
 public class BJNEmulator extends Frame {
 
@@ -204,6 +205,8 @@ public class BJNEmulator extends Frame {
 			try {
 				nes = new Nes(r);
 				nes.load(file);
+				
+				romEventListener.onLoad();
 			} catch (IOException e) {
 				System.out.println("error: loading " + file + " ("
 						+ e.getMessage() + ")");
@@ -284,6 +287,13 @@ public class BJNEmulator extends Frame {
 		}
 		
 		return "none";
+	}
+
+	ROMEventListener romEventListener;
+	
+	public void addROMEventListener(ROMEventListener listener) {
+		romEventListener = listener;
+		
 	}
 
 }
