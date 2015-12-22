@@ -6,6 +6,10 @@ import jp.tanakh.bjne.nes.Ppu;
 
 /**
  * Mapper 64: Tengen Rambo
+ * 
+ * PRG is memory for the CPU 
+ * CHR is memory for the picture processing unit 
+ * 
  */
 public class Rambo1 extends MapperAdapter {
 	public Rambo1(Nes n) {
@@ -19,6 +23,7 @@ public class Rambo1 extends MapperAdapter {
 
 	@Override
 	public void reset() {
+		 
 		romSize = nes.getRom().romSize();
 		prgPage[0] = 0;
 		prgPage[1] = 1;
@@ -98,11 +103,11 @@ public class Rambo1 extends MapperAdapter {
 				prgPage[1] = dat;
 				setRom();
 				break;
-			case 8: //Select 1K VROM page at PPU $0400 
+			case 8: //Select 1K VROM page at PPU $0400   
 				chrPage[8] = dat;
 				setVrom();
 				break;
-			case 9: //Select 1K VROM page at PPU $0C00 
+			case 9: //Select 1K VROM page at PPU $0C00  
 				chrPage[9] = dat;
 				setVrom();
 				break;
@@ -157,15 +162,15 @@ public class Rambo1 extends MapperAdapter {
 	//fix me!
 	private void setRom() {
 		if (prgSwap) {
-			nes.getMbc().mapRom(0, (romSize - 1) * 2);
+			nes.getMbc().mapRom(0, prgPage[2]);
 			nes.getMbc().mapRom(1, prgPage[1]);
 			nes.getMbc().mapRom(2, prgPage[0]);
-			nes.getMbc().mapRom(3, (romSize - 1) * 2 + 1);
+			nes.getMbc().mapRom(3, (romSize - 1) * 2 );
 		} else {
 			nes.getMbc().mapRom(0, prgPage[0]);
 			nes.getMbc().mapRom(1, prgPage[1]);
-			nes.getMbc().mapRom(2, (romSize - 1) * 2);
-			nes.getMbc().mapRom(3, (romSize - 1) * 2 + 1);
+			nes.getMbc().mapRom(2, prgPage[2]);
+			nes.getMbc().mapRom(3, (romSize - 1) * 2 );
 		}
 	}
 
