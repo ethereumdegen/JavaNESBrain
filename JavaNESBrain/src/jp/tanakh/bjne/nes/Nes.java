@@ -98,7 +98,7 @@ public class Nes {
 
 		regs.setVBlank(false, true);
 		regs.startFrame();
-		for (int i = 0; i < 240; i++) {
+		for (int i = 0; i < 240; i++) {  
 			if (mapper != null)
 				mapper.hblank(i);
 			regs.startScanline();

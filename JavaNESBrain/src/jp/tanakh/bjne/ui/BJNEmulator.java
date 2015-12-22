@@ -155,7 +155,7 @@ public class BJNEmulator extends Frame {
 	}
 
 	public void stepEmulation() {
-	 
+		
 		synchronized (nesLock) {
 			if (nes == null)
 			{

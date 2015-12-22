@@ -84,7 +84,7 @@ public class SuperBrain {
 		System.out.println(" GD " + gameData);
 
 		while (true) {
-
+			
 		 
 			if(getCPU()!=null && emulator.isAiEnabled())
 			{			
