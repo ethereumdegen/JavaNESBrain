@@ -1,14 +1,24 @@
 package com.starflask.JavaNESBrain.data;
 
+import java.awt.Color;
+import java.awt.Graphics;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import com.starflask.JavaNESBrain.SuperBrain;
+import com.starflask.JavaNESBrain.evolution.GenePool;
 import com.starflask.JavaNESBrain.utils.FastMath;
 import com.starflask.JavaNESBrain.utils.Vector2Int;
 
 public class MarioGameDataManager extends GameDataManager{
 
+
+	int BoxRadius = 6;
+
+	int InputSize = (BoxRadius*2+1)*(BoxRadius*2+1);
+ 
+	int numInputs = InputSize+1;
 
 	Vector2Int marioPos = new Vector2Int(0,0);
 	Vector2Int screenPos = new Vector2Int(0,0);
@@ -140,5 +150,134 @@ public int getCurrentScore() {
 	return (int) getMarioPos().getX();  //for mario, how 'right' he is. for galaga, the score
 }
 
+public int getNumInputs() {
+	 
+	return numInputs;
+}
+
+public int getBoxRadius() {
+	return BoxRadius;
+}
+
+@Override
+protected int getTimeoutConstant()
+{
+	return 500;
+}
+
+
+protected Sprite[] getSprites()
+{
+	 Sprite[] sprites = new Sprite[5];
+	 
+	  
+		 
+		 for(int slot=0;slot<=4;slot++)
+		 {
+			  
+			int enemy = readbyte(0xF+slot) ;
+                    if (enemy != 0) 
+                    {
+                            int ex = readbyte(0x6E + slot)*0x100 + readbyte(0x87+slot);
+                           int ey = readbyte(0xCF + slot)+24;
+                            sprites[ slot ] = new Sprite(ex,ey);
+                    }  
+                    
+                    
+                    
+		 }
+		 
+	 
+
+	 return sprites;
+}
+	 
+protected Sprite[] getExtendedSprites()
+{
+	 
+	 
+	 return null;
+}
+
+
+public HashMap<Integer,DebugCell> drawNeurons(Graphics g, GenePool pool) {
+	 
+	
+	HashMap<Integer,DebugCell> cells = new HashMap<Integer,DebugCell>();
+	
+	
+	g.setColor(Color.BLACK);
+	
+	
+	g.drawString("Generation #" + pool.getGeneration(), 10, 50);
+	g.drawString("Species:" + pool.getCurrentSpecies().toString(), 200, 50);
+	g.drawString("Genome:" + pool.getCurrentGenome().toString(), 10, 80);
+	g.drawString("Fitness:" + pool.getCurrentGenome().getFitness(), 200, 80);
+	g.drawString("Max Fitness:" + pool.getMaxFitness(), 290, 80);
+	
+	
+	
+	
+	
+	//draw inputs
+	
+	
+	g.setColor(Color.GRAY);
+	 
+	 g.drawString("Grid Map (AI Inputs)", 80, 110);
+	
+	List<Integer> cellValues = getBrainSystemInputs();
+	
+	 
+	
+	//Iterator<Integer> cellValueInterator = cellValues.iterator();
+	
+	int inputCount = 0;
+
+    for(int dy = -getBoxRadius()*16 ; dy <= getBoxRadius()*16  ; dy+= 16)
+    {
+    	for(int dx = -getBoxRadius()*16 ; dx <= getBoxRadius()*16  ; dx+= 16)
+        {
+    		//Vector2Int deltaPos = new Vector2Int(dx, dy);
+    			    		    		
+    		 int tile = cellValues.get(inputCount);
+		  
+    		 g.setColor(Color.GRAY);
+    		 
+    		 if(tile < 0) //enemy
+    		 {
+    		 g.setColor(Color.RED);
+    		 }
+    		 
+    		 if(tile > 0) //tile
+    		 {
+    		 g.setColor(Color.BLACK);   
+    		 }
+    		
+    		 
+    			DebugCell inputCell = new DebugCell();
+    			inputCell.x = 30 + (getBoxRadius())*16/2 + dx/2;
+    			inputCell.y = 120 +  (getBoxRadius())*16/2 + dy/2;
+    			inputCell.value = tile;
+    			
+    			cells.put(inputCount, inputCell  );
+    		
+    				
+    			inputCount++;
+    			
+    			g.fillRect((int) inputCell.x,(int)  inputCell.y, 8, 8);
+		 
+		 
+	 }
+	
+}
+	
+	
+	return cells;
+   
+   
+	
+}
+	 
 
 }

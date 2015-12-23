@@ -130,84 +130,19 @@ public class BrainInfoWindow extends Frame{
 		//g.drawImage(image, left, top, left + SCREEN_WIDTH*SCREEN_SIZE_MULTIPLIER, top + SCREEN_HEIGHT*SCREEN_SIZE_MULTIPLIER, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, this);
 		g.clearRect(left, top, left + SCREEN_WIDTH*SCREEN_SIZE_MULTIPLIER, top + SCREEN_HEIGHT*SCREEN_SIZE_MULTIPLIER);
 		
-		
-		drawNeurons(g);
-	 	 
+		HashMap<Integer,DebugCell>  cells = gameDataManager.drawNeurons(g, pool);
+		//drawNeurons(g);
+	 	 drawOutputs(g, cells);
 	}
 
 
-	private void drawNeurons(Graphics g) {
-		 
-		
-		HashMap<Integer,DebugCell> cells = new HashMap<Integer,DebugCell>();
-		
-		
-		g.setColor(Color.BLACK);
-		
-		
-		g.drawString("Generation #" + getPool().getGeneration(), 10, 50);
-		g.drawString("Species:" + getPool().getCurrentSpecies().toString(), 200, 50);
-		g.drawString("Genome:" + getPool().getCurrentGenome().toString(), 10, 80);
-		g.drawString("Fitness:" + getPool().getCurrentGenome().getFitness(), 200, 80);
-		g.drawString("Max Fitness:" + getPool().getMaxFitness(), 290, 80);
+	private void drawOutputs(Graphics g, HashMap<Integer,DebugCell> cells) {
+		if(cells == null || cells.isEmpty())
+		{
+			return;
+		}
 		
 		NeuralNetwork network = getPool().getCurrentGenome().getNetwork();
-		
-		
-		
-		//draw inputs
-		
-		
-		g.setColor(Color.GRAY);
-		 
-		 g.drawString("Grid Map (AI Inputs)", 80, 110);
-		
-		List<Integer> cellValues = getGameData().getBrainSystemInputs();
-		
-		 
-		
-		//Iterator<Integer> cellValueInterator = cellValues.iterator();
-		
-		int inputCount = 0;
-
-	    for(int dy = -getGameData().getBoxRadius()*16 ; dy <= getGameData().getBoxRadius()*16  ; dy+= 16)
-	    {
-	    	for(int dx = -getGameData().getBoxRadius()*16 ; dx <= getGameData().getBoxRadius()*16  ; dx+= 16)
-	        {
-	    		//Vector2Int deltaPos = new Vector2Int(dx, dy);
-	    			    		    		
-	    		 int tile = cellValues.get(inputCount);
-			  
-	    		 g.setColor(Color.GRAY);
-	    		 
-	    		 if(tile < 0) //enemy
-	    		 {
-	    		 g.setColor(Color.RED);
-	    		 }
-	    		 
-	    		 if(tile > 0) //tile
-	    		 {
-	    		 g.setColor(Color.BLACK);   
-	    		 }
-	    		
-	    		 
-	    			DebugCell inputCell = new DebugCell();
-	    			inputCell.x = 30 + (getGameData().getBoxRadius())*16/2 + dx/2;
-	    			inputCell.y = 120 +  (getGameData().getBoxRadius())*16/2 + dy/2;
-	    			inputCell.value = tile;
-	    			
-	    			cells.put(inputCount, inputCell  );
-	    		
-	    				
-	    			inputCount++;
-	    			
-	    			g.fillRect((int) inputCell.x,(int)  inputCell.y, 8, 8);
-			 
-			 
-		 }
-		
-	}
-		
 		
 		
 		//draw outputs
@@ -235,7 +170,7 @@ public class BrainInfoWindow extends Frame{
 			g.fillRect(350 ,120 +  16 * o, 12, 12);
 			
 			
-			cells.put(SuperBrain.MaxNodes + o, outputCell );
+				cells.put(SuperBrain.MaxNodes + o, outputCell );
 			
 		}
 		
@@ -245,7 +180,7 @@ public class BrainInfoWindow extends Frame{
 		{
 			Neuron neuron = network.getNeurons().get(key);
 			
-			if(key > getGameData().numInputs && key <= SuperBrain.MaxNodes)
+			if(key > getGameData().getNumInputs() && key <= SuperBrain.MaxNodes)
 			{
 				DebugCell cell = new DebugCell();
 				cell.x = 260;
@@ -368,10 +303,10 @@ public class BrainInfoWindow extends Frame{
     	   
        }
      
-       
-       
 		
 	}
+
+
 
 	private int getMaxNodes() { 
 		return SuperBrain.MaxNodes;
