@@ -1,6 +1,9 @@
 package com.starflask.JavaNESBrain.data;
 
+import java.awt.Color;
+import java.awt.Graphics;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import com.starflask.JavaNESBrain.SuperBrain;
@@ -74,54 +77,7 @@ public List<Integer> getBrainSystemInputs()
     	}
     }
     
-     /*
-    sprites = getSprites();
-   
-    extendedSprites = getExtendedSprites();
-
-    
-    for(int dy = -BoxRadius*16 ; dy <= BoxRadius*16  ; dy+= 16)
-    {
-    	for(int dx = -BoxRadius*16 ; dx <= BoxRadius*16  ; dx+= 16)
-        {
-    		Vector2Int deltaPos = new Vector2Int(dx, dy);
-    		 
-    		int cellValue = 0;	
-    		
-    		
-    		 int tile = getTile( deltaPos );
-    		 
-                     if (tile == 1 && marioPos.getY() + dy < 0x1B0 )
-                     {
-                    	 cellValue = 1;
-                    	 
-                     }
-                            
-                     
-                 for(int i=1; i < sprites.length; i++)
-                 { 
-                	 if(sprites[i] != null)
-                	 {
-                        float distx = FastMath.abs(sprites[i].getPos().getX() - (marioPos.getX()+dx) )  ;
-                        float disty = FastMath.abs(sprites[i].getPos().getY() - (marioPos.getY()+dy) )  ;
-                         
-                         if (distx <= 8 && disty <= 8 )
-                         {
-                        	 cellValue = -1;
-                         }
-                	 }
-                 }
-                 
-                
-    		
-                 inputs.add(cellValue); 
-                 // 0 means nothing
-                 // 1 means a tile , white in color on the grid
-                 // -1 mean a baddie, black in color on the grid
-    		
-        }
-    
-    }*/
+      
     
     
   // velocity of mario ??? this was commented out anyways
@@ -132,10 +88,83 @@ public List<Integer> getBrainSystemInputs()
     
 }
 
+
+
+
+public HashMap<Integer,DebugCell> drawNeurons(Graphics g ) {
+	 
+	
+	HashMap<Integer,DebugCell> cells = new HashMap<Integer,DebugCell>();
+	
+	
+	
+	
+	//draw inputs
+	
+	
+	g.setColor(Color.GRAY);
+	 
+	 g.drawString("Grid Map (AI Inputs)", 80, 110);
+	
+	List<Integer> cellValues = getBrainSystemInputs();
+	
+	 
+	
+	//Iterator<Integer> cellValueInterator = cellValues.iterator();
+	
+	int inputCount = 0;
+	
+	for(int row =0;row<5;row++)
+    {
+    	for(int column =0; column < 10; column++)
+    	{
+    		int enemyInPosition = readbyte(0x0400 + column + row*0x10) ;
+    		
+		  
+    		 g.setColor(Color.GRAY);
+    		 
+    		 if(enemyInPosition < 0) //enemy
+    		 {
+    		 g.setColor(Color.RED);
+    		 }
+    		 
+    		 if(enemyInPosition > 0) //tile
+    		 {
+    		 g.setColor(Color.BLACK);   
+    		 }
+    		
+    		 
+    			DebugCell inputCell = new DebugCell();
+    			inputCell.x = 30 + (10)*16/2 + column*16;
+    			inputCell.y = 120 +  (5)*16/2 + row*16;
+    			inputCell.value = enemyInPosition;
+    			
+    			cells.put(inputCount, inputCell  );
+    		
+    				
+    			inputCount++;
+    			
+    			g.fillRect((int) inputCell.x,(int)  inputCell.y, 8, 8);
+		 
+		 
+	 }
+	
+}
+	
+	
+	return cells;
+   
+   
+	
+}
+
+
+
 @Override
 protected int getTimeoutConstant()
 {
-	return 1500;
+	 
+	return 3500;
 }
 
 public int getNumInputs() {

@@ -143,7 +143,7 @@ public class GameDataManager {
 		return superBrain.getPool().getCurrentFrame();
 	}
 
-	public HashMap<Integer, DebugCell> drawNeurons(Graphics g, GenePool pool) {
+	public HashMap<Integer, DebugCell> drawNeurons(Graphics g) {
 
 		return null;
 	}

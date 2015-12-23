@@ -130,11 +130,29 @@ public class BrainInfoWindow extends Frame{
 		//g.drawImage(image, left, top, left + SCREEN_WIDTH*SCREEN_SIZE_MULTIPLIER, top + SCREEN_HEIGHT*SCREEN_SIZE_MULTIPLIER, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, this);
 		g.clearRect(left, top, left + SCREEN_WIDTH*SCREEN_SIZE_MULTIPLIER, top + SCREEN_HEIGHT*SCREEN_SIZE_MULTIPLIER);
 		
-		HashMap<Integer,DebugCell>  cells = gameDataManager.drawNeurons(g, pool);
+		
+		drawHeaderInfo(g);
+		HashMap<Integer,DebugCell>  cells = gameDataManager.drawNeurons(g);
 		//drawNeurons(g);
 	 	 drawOutputs(g, cells);
 	}
 
+
+	private void drawHeaderInfo(Graphics g) {
+
+		
+		g.setColor(Color.BLACK);
+		
+		
+		g.drawString("Generation #" + getPool().getGeneration(), 10, 50);
+		g.drawString("Species:" + getPool().getCurrentSpecies().toString(), 200, 50);
+		g.drawString("Genome:" + getPool().getCurrentGenome().toString(), 10, 80);
+		g.drawString("Fitness:" + getPool().getCurrentGenome().getFitness(), 200, 80);
+		g.drawString("Max Fitness:" + getPool().getMaxFitness(), 290, 80);
+		
+		
+		
+	}
 
 	private void drawOutputs(Graphics g, HashMap<Integer,DebugCell> cells) {
 		if(cells == null || cells.isEmpty())
@@ -288,12 +306,17 @@ public class BrainInfoWindow extends Frame{
     	   if(gene.isEnabled() && cellIn!=null && cellOut!=null )
 		   {
 			   
+			   Color lowColor = Color.darkGray;
+			   Color highColor = Color.green;
 			   
-			   
-			   float opacity = cellIn.value == 0 ? 0.2f : 0.8f ;
+			   boolean triggered = cellIn.value <= 0   ;
 			   float colorDarkness = 0.5f - FastMath.floor(FastMath.abs(SuperBrain.sigmoid(gene.getWeight())*0.5f  ));
 			   
-			   Color color = new Color(colorDarkness,colorDarkness,colorDarkness,opacity);
+			   Color color = lowColor;
+			   
+			   if(triggered){
+				   color = highColor ;
+			   }
 			   
 			   g.setColor(color);
 			   

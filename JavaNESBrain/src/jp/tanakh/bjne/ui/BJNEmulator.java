@@ -178,7 +178,12 @@ public class BJNEmulator extends Frame {
 			
 			long start = System.nanoTime();
 			nes.execFrame();
-			 
+		 
+			if(!nes.audioEnabled)
+			{
+				return;
+			}
+			
 
 			for (;;) {
 				int bufStat = r.getSoundBufferState();

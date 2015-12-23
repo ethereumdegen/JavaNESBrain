@@ -200,21 +200,10 @@ protected Sprite[] getExtendedSprites()
 }
 
 
-public HashMap<Integer,DebugCell> drawNeurons(Graphics g, GenePool pool) {
+public HashMap<Integer,DebugCell> drawNeurons(Graphics g ) {
 	 
 	
 	HashMap<Integer,DebugCell> cells = new HashMap<Integer,DebugCell>();
-	
-	
-	g.setColor(Color.BLACK);
-	
-	
-	g.drawString("Generation #" + pool.getGeneration(), 10, 50);
-	g.drawString("Species:" + pool.getCurrentSpecies().toString(), 200, 50);
-	g.drawString("Genome:" + pool.getCurrentGenome().toString(), 10, 80);
-	g.drawString("Fitness:" + pool.getCurrentGenome().getFitness(), 200, 80);
-	g.drawString("Max Fitness:" + pool.getMaxFitness(), 290, 80);
-	
 	
 	
 	
