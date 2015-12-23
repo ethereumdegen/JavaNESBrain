@@ -1,6 +1,6 @@
 # JavaNESBrain
 
-[Visit the github pages](https://admazzola.github.io/javanesbrain)
+[Visit the github pages](https://admazzola.github.io/JavaNESBrain)
 
 A fork of the BJNE Java NES Emulator that includes a Neural Network learning algorithm based on SethBling's MarI/O Lua script to enable the emulator to learn how to play itself.  (Eclipse .project file already included, but you can use any IDE)
 
