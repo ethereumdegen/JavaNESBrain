@@ -68,7 +68,7 @@ public class SuperBrain implements Runnable, ROMEventListener {
  
 	boolean built = false;
 	boolean firstUpdateOccured = false;
-	public void build() {
+	public  void build() {
 		
 		 
 		 loadGameDataManager();
@@ -80,10 +80,11 @@ public class SuperBrain implements Runnable, ROMEventListener {
 	}
 
 	@Override
-	public void run() {
+	public  void run() {
 		
 		while(true)
 		{
+			//System.out.println("looping");
 			if (built) {
 			
 		 
@@ -94,7 +95,18 @@ public class SuperBrain implements Runnable, ROMEventListener {
 			
 			 
 			
+			}else{
+				try {
+					//give a chance for the 'built' boolean to be written TRUE to on faster PCs (i hate you sometimes java)
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
+			
+			
+			
+			
 		}
 		
 	}
