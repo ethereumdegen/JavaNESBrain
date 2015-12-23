@@ -20,7 +20,7 @@ public class MarioGameDataManager extends GameDataManager{
 	}
 	
 	@Override
-	public void getPositions()
+	public void siphonData()
 	{
 				 
 	        	marioPos.setX( readbyte(0x6D)*0x100 + readbyte(0x86)) ;
@@ -68,7 +68,7 @@ public class MarioGameDataManager extends GameDataManager{
 @Override
 public List<Integer> getBrainSystemInputs()
 {
-	getPositions();
+	siphonData();
     
     sprites = getSprites();
     extendedSprites = getExtendedSprites();

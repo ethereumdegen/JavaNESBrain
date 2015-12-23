@@ -69,7 +69,7 @@ private void init() {
     
 	}
 
-public void getPositions()
+public void siphonData()
 {
 			
 }
@@ -140,7 +140,7 @@ Integer[] inputs;
 
 public List<Integer> getBrainSystemInputs()
 {
-	getPositions();
+	siphonData();
     
     sprites = getSprites();
     extendedSprites = getExtendedSprites();

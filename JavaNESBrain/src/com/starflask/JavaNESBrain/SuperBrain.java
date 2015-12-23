@@ -135,7 +135,7 @@ public class SuperBrain implements Runnable, ROMEventListener {
 		
 
 	//	emulator.setControllers(getController(), getController());
-		getGameDataManager().getPositions();
+		getGameDataManager().siphonData();
 
 	 
 		boolean giveUp = getGameDataManager().updateGiveUpTimer(   );

@@ -17,14 +17,23 @@ public class GalagaGameDataManager extends GameDataManager{
 	}
 	
 	int gamescore = 0;
-
+	int[] gameScoreDigits = new int[7];
+	
+	
 	@Override
-	public void getPositions()
+	public void siphonData()
 	{
-				 
-		gamescore = ( readbyte(0x6D)*0x100 + readbyte(0x86)) ;
-	     
-	               
+		gamescore = 0;
+		for(int i=0;i<7;i++)
+		{
+			gameScoreDigits[i] = readbyte(0xE0 + 6-i);
+			gamescore += gameScoreDigits[i] * (Math.pow(10, i));
+		}
+			 
+	     System.out.println(gamescore);
+	    
+    	//screenPos.setX( readbyte(0x03AD) );   //Mbc.ram[941] decimal
+    	//screenPos.setY( readbyte(0x03B8) );   //Mbc.ram[952]  decimal    
 	        	 
 	         
 	}
