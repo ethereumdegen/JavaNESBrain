@@ -7,8 +7,14 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.starflask.JavaNESBrain.SuperBrain;
-import com.starflask.JavaNESBrain.utils.FastMath;
-import com.starflask.JavaNESBrain.utils.Vector2Int;
+
+
+/*
+ * Need to feed inputs for the divebombing enemies and their projectiles
+ * need to feed the enemy row offsets in as inputs
+ * need to make the neurons operate like floating points, not just binary 0s and 1s (continuous nn)
+ * 
+ */
 
 public class GalagaGameDataManager extends GameDataManager{
 

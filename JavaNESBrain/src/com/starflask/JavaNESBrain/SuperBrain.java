@@ -159,7 +159,7 @@ public class SuperBrain implements Runnable, ROMEventListener {
 				// forms.gettext(saveLoadFile))
 			}
 
-			infoWindow.outputScreen();
+			
 
 
 
@@ -172,6 +172,9 @@ public class SuperBrain implements Runnable, ROMEventListener {
 
 			initializeRun();
 		}
+		
+		infoWindow.update();
+		
 		
 	}
 
@@ -401,9 +404,10 @@ public class SuperBrain implements Runnable, ROMEventListener {
 			String button = "P1 " + this.getGameDataManager().getButtonNames()[o];
 
 			if (network.getNeurons().get(MaxNodes + o).getValue() > 0) {
+				
 				gamepadOutputs.put(button, true);
 				
-				if(o == 0){System.out.println(" button press " + button);}
+				//if(o == 0){System.out.println(" button press " + button);}
 				
 			} else {
 				gamepadOutputs.put(button, false);
