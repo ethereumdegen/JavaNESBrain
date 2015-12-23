@@ -1,5 +1,7 @@
 # JavaNESBrain
 
+[Visit the github pages](https://admazzola.github.io/javanesbrain)
+
 A fork of the BJNE Java NES Emulator that includes a Neural Network learning algorithm based on SethBling's MarI/O Lua script to enable the emulator to learn how to play itself.  (Eclipse .project file already included, but you can use any IDE)
 
 At this time, the only supported ROM is 'Super Mario Bros' for the NES.  Support for different ROMs can be added by altering the GameDataManager class and telling it which memory addresses to suck the 'tile map' inputs from.
