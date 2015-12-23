@@ -16,6 +16,9 @@ import java.awt.event.WindowEvent;
 import java.io.IOException;
 
 import javax.sound.sampled.LineUnavailableException;
+import javax.swing.UIManager;
+
+import com.starflask.JavaNESBrain.SuperBrain;
 
 import jp.tanakh.bjne.nes.Cpu;
 import jp.tanakh.bjne.nes.Nes;
@@ -30,8 +33,19 @@ public class BJNEmulator extends Frame {
 	private FPSTimer timer = new FPSTimer();
 
 	private Object nesLock = new Object();
+	
+	SuperBrain superBrain  ;
 
 	public static void main(String[] args) {
+		
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (Exception e) {
+			System.err.println("Could not set system look and feel. ");
+		}
+
+		
+		
 		new BJNEmulator(args.length == 1 ? args[0] : null);
 	}
 
@@ -40,6 +54,13 @@ public class BJNEmulator extends Frame {
 
 		super("Nes Emulator");
 
+		
+		superBrain = new SuperBrain(this);
+		
+		Thread aiThread = new Thread(superBrain, "AI Thread");  
+		aiThread.start(); // Start the thread 
+		
+		
 		MenuBar menuBar = new MenuBar();
 		setMenuBar(menuBar);
 
@@ -124,8 +145,11 @@ public class BJNEmulator extends Frame {
 		setVisible(true);
 
 		
+		while(true)
+		{
+			stepEmulation(); 
+		}
 		
-		//loop();
 	}
 
 	
@@ -133,27 +157,16 @@ public class BJNEmulator extends Frame {
 		nes.audioEnabled = !nes.audioEnabled;
 	}
 
-
-	boolean aiEnabled = false;
-	public boolean isAiEnabled() {
-		return aiEnabled;
-	}
+ 
 
 	protected void startAI() {
-		aiEnabled = true;
+		 
+		superBrain.build();
 	}
 
 	final int FPS = 60;
 	
-	private void loop() {
-		
-
-		while(true) {
-			
-			stepEmulation(); 
-			
-		}
-	}
+	
 
 	public void stepEmulation() {
 		
@@ -165,6 +178,7 @@ public class BJNEmulator extends Frame {
 			
 			long start = System.nanoTime();
 			nes.execFrame();
+			 
 
 			for (;;) {
 				int bufStat = r.getSoundBufferState();
@@ -206,7 +220,7 @@ public class BJNEmulator extends Frame {
 				nes = new Nes(r);
 				nes.load(file);
 				
-				romEventListener.onLoad();
+				//romEventListener.onLoad();
 			} catch (IOException e) {
 				System.out.println("error: loading " + file + " ("
 						+ e.getMessage() + ")");

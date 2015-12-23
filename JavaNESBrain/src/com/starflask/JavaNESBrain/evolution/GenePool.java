@@ -489,6 +489,11 @@ public void newGeneration() {
      //make new children from the previous best child
      while (children.size() + getSpecies().size() < Population) 
      {
+    	 	//sometimes species size is zero !
+    	 
+    	 if( getSpecies().size() > 0 )
+    	 {
+    	 
     	 	int randIndex = rand.nextInt( getSpecies().size() ) ; 
              Species specie = getSpecies().get(randIndex);
              
@@ -496,6 +501,8 @@ public void newGeneration() {
         	 {
             	 children.add(breedChild(specie));
         	 }
+             
+    	 }
      }
      
      //place those children into species that are most similar to them.. or maybe they are new unique species

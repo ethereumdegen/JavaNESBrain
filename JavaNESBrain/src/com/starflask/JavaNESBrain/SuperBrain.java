@@ -49,7 +49,7 @@ import com.starflask.JavaNESBrain.utils.FastMath;
 
  */
 
-public class SuperBrain implements ROMEventListener {
+public class SuperBrain implements Runnable, ROMEventListener {
 
 	VirtualGamePad gamepad = new VirtualGamePad();
 
@@ -57,54 +57,47 @@ public class SuperBrain implements ROMEventListener {
 
 	GameDataManager gameData;
 
-	public SuperBrain() {
+	public SuperBrain(BJNEmulator emulator) {
 
-		emulator = new BJNEmulator( "" );
+		this.emulator=emulator;
 		
 		emulator.addROMEventListener(this);
 
-		// emulator.run(); do not run continuously.. this class updates each
-		// frame manually
-
-		start();
+		  
 	}
-
-	public static void main(String[] args) throws IOException {
-		try {
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch (Exception e) {
-			System.err.println("Could not set system look and feel. ");
-		}
-
-		SuperBrain brain = new SuperBrain();
-
-	}
-
-	
+ 
+	boolean built = false;
 	boolean firstUpdateOccured = false;
-	public void start() {
+	public void build() {
 		
 		 
 		 loadGameDataManager();
+		 System.out.println(" GD " + gameData);
+		 
+		 built = true;
+		 
 		
-		 
-		System.out.println(" GD " + gameData);
-
-		while (true) {
-			
-		 
-			if(getCPU()!=null && emulator.isAiEnabled())
-			{			
-			 update(); 
-			}
-			
-			emulator.stepEmulation(); 
-			
-		}
-
 	}
 
-	
+	@Override
+	public void run() {
+		
+		while(true)
+		{
+			if (built) {
+			
+		 
+				if(getCPU()!=null  )
+				{			
+					update(); 
+				}
+			
+			 
+			
+			}
+		}
+		
+	}
 
 
 
@@ -137,10 +130,10 @@ public class SuperBrain implements ROMEventListener {
 		/*
 		 * if forms.ischecked(showNetwork) then displayGenome(genome) end
 		 */
-
+		System.out.println("current frame "+ pool.getCurrentFrame());
 		if (pool.getCurrentFrame() % 5 == 0) {
 			evaluateCurrent();
-		}
+		
 
 	//	emulator.setControllers(getController(), getController());
 		getGameDataManager().getPositions();
@@ -180,6 +173,8 @@ public class SuperBrain implements ROMEventListener {
 
 			initializeRun();
 		}
+		
+	}
 
 	/*	int measured = 0;
 		int total = 0;
@@ -197,13 +192,16 @@ public class SuperBrain implements ROMEventListener {
 			}
 		}*/
 
-	
-
-		pool.setCurrentFrame(pool.getCurrentFrame() + 1);
+	 
+		pool.setCurrentFrame( getRunFrameCount() );
 
 		
 		
 
+	}
+
+	private int getRunFrameCount() {
+		return (int) (getNES().getFrameCount() - runInitFrameCount);
 	}
 
 	private void nextGenome() {
@@ -242,11 +240,17 @@ public class SuperBrain implements ROMEventListener {
 
 	}
 	
-
+	long runInitFrameCount = 0;
+	
 	public void initializeRun() {
 		
-		getNES().loadState( 0 ); // resets the game
+		 getNES().requestLoadState( 0 );
+			
 		 
+		
+		 // resets the game
+		 
+		runInitFrameCount = getNES().getFrameCount();
 		
 		pool.setCurrentFrame(0);
 		
@@ -468,4 +472,6 @@ public class SuperBrain implements ROMEventListener {
 		}
 		
 	}
+
+	
 }

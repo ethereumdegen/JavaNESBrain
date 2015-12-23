@@ -47,6 +47,23 @@ public class Mbc {
 	}
 
 	public byte read(short adr) {
+		
+		//this ram dump is for debugging only
+				boolean printRAM = false;
+				
+				if(printRAM)
+				{
+					printRAM = false;
+					System.out.println("--RAM DUMP BEGIN--");
+					for(int i=0;i<ram.length;i++)
+					{
+						System.out.println(ram[i]);
+					}
+					System.out.println("--RAM DUMP END--");
+				}
+				
+				
+		
 		switch ((adr & 0xffff) >> 11) {
 		case 0x00:
 		case 0x01:

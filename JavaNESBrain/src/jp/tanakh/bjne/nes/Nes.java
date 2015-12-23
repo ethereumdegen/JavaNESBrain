@@ -39,14 +39,27 @@ public class Nes {
 		 
 	}
 
+	
+	public int requestedLoadState = -1;
+	
+	public void requestLoadState(int state) {
+		requestedLoadState = state;
+		
+	}
+	
 	public void loadState(int stateNumber) {
-		//rom.loadState( saveStates[stateNumber] );
-		mbc.loadState( saveStates[stateNumber] );
-		cpu.loadState( saveStates[stateNumber] );
-		regs.loadState( saveStates[stateNumber] );
-		apu.loadState( saveStates[stateNumber] );
-		ppu.loadState( saveStates[stateNumber] );
-		 
+		
+		if(requestedLoadState >= 0)
+		{
+			//rom.loadState( saveStates[stateNumber] );
+			mbc.loadState( saveStates[stateNumber] );
+			cpu.loadState( saveStates[stateNumber] );
+			regs.loadState( saveStates[stateNumber] );
+			apu.loadState( saveStates[stateNumber] );
+			ppu.loadState( saveStates[stateNumber] );
+
+			requestedLoadState = -1;
+		}
 	}
 
 	public void reset() {
@@ -66,12 +79,27 @@ public class Nes {
 		System.out.println("Reset virtual machine ...");
 	}
 
+	long frameCount = 0;
+	
+	
+	
+	public long getFrameCount() {
+		return frameCount;
+	}
+	
 	public void execFrame() {
 		// CPU clock is 1.7897725MHz
 		// 1789772.5 / 60 / 262 = 113.85...
 		// 114 cycles per line?
 		// 1789772.5 / 262 / 114 = 59.922 fps ?
 
+		
+		
+		 if(requestedLoadState > -1)
+		 {			  
+			 loadState(requestedLoadState);
+		 }
+		
 		Renderer.ScreenInfo scri = renderer.requestScreen(256, 240);
 		Renderer.SoundInfo sndi = renderer.requestSound();
 		Renderer.InputInfo inpi = renderer.requestInput(2, 8);
@@ -127,7 +155,12 @@ public class Nes {
 		}
 
 		if (scri != null)
+		{
 			renderer.outputScreen(scri);
+			 
+		}
+		
+		frameCount++;
 	}
 
 	public Rom getRom() {
@@ -173,4 +206,6 @@ public class Nes {
 	{
 		externalGamepadBuffer =  buf ; 
 	}
+
+	
 }

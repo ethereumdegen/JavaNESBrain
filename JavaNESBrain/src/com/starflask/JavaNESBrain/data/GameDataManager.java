@@ -10,7 +10,7 @@ import com.starflask.JavaNESBrain.utils.Vector2Int;
 public class GameDataManager {
 
 	
-	final static int TIMEOUT_CONSTANT = 20;
+	final static int TIMEOUT_CONSTANT = 500;
 	int timeout;
 	int bestFitnessThisRun = 0; // the most right that we ever got so far
 	 
