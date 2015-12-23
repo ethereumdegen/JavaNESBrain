@@ -129,8 +129,7 @@ public class SuperBrain implements Runnable, ROMEventListener {
 
 		/*
 		 * if forms.ischecked(showNetwork) then displayGenome(genome) end
-		 */
-		System.out.println("current frame "+ pool.getCurrentFrame());
+		 */ 
 		if (pool.getCurrentFrame() % 5 == 0) {
 			evaluateCurrent();
 		

@@ -12,7 +12,7 @@ public class GameDataManager {
 	
 	final static int TIMEOUT_CONSTANT = 500;
 	int timeout;
-	int bestFitnessThisRun = 0; // the most right that we ever got so far
+	int bestScoreThisRun = 0; // the most right that we ever got so far
 	 
 
 
@@ -195,7 +195,7 @@ public int getCurrentFitness() {
 
 public void initializeRun() {
 	
-	bestFitnessThisRun = 0;
+	bestScoreThisRun = 0;
 	timeout = TIMEOUT_CONSTANT;
 	
 }
@@ -205,8 +205,8 @@ public boolean updateGiveUpTimer() {
 	int timeoutBonus= getCurrentFrame() / 2;
 
 	// if mario gets farther than he has ever been this run...
-	if (getCurrentFitness() > bestFitnessThisRun) {
-		bestFitnessThisRun =   getCurrentFitness();
+	if (getCurrentScore() > bestScoreThisRun) {
+		bestScoreThisRun =   getCurrentScore();
 		timeout = TIMEOUT_CONSTANT; //also reset the timeout
 		
 	}

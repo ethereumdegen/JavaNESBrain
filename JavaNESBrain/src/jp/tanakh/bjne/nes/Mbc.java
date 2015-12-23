@@ -1,5 +1,10 @@
 package jp.tanakh.bjne.nes;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.Arrays;
 
 public class Mbc {
@@ -48,20 +53,18 @@ public class Mbc {
 
 	public byte read(short adr) {
 		
-		//this ram dump is for debugging only
-				boolean printRAM = false;
-				
-				if(printRAM)
-				{
-					printRAM = false;
-					System.out.println("--RAM DUMP BEGIN--");
-					for(int i=0;i<ram.length;i++)
-					{
-						System.out.println(ram[i]);
-					}
-					System.out.println("--RAM DUMP END--");
-				}
-				
+		
+		/*
+		//this ram dump is for debugging only		
+		//if this is uncommented for more than one frame the emulator will run too slow to draw
+		
+		try{
+			dumpRAM(ram);
+		}catch(IOException e)
+		{
+			e.printStackTrace();
+		}
+		*/
 				
 		
 		switch ((adr & 0xffff) >> 11) {
@@ -113,6 +116,42 @@ public class Mbc {
 		}
 		return 0x00;
 	}
+
+	private synchronized void dumpRAM(byte[] ram) throws IOException{
+		
+		File fout = new File("ramdump.txt");
+		
+		if (!fout.exists()) {
+			fout.createNewFile();
+		}
+		
+		FileOutputStream fos = new FileOutputStream(fout);
+	 
+		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
+	 		
+		bw.write( byteArrayToHex(ram) );
+		
+		
+		/*for (int i = 0; i < ram.length; i++) {
+			bw.write(ram[i]);
+			bw.newLine();
+		}
+	 */
+		
+		bw.close();
+		
+		System.out.println("Done with RAM dump");
+	}
+	
+	public static String byteArrayToHex(byte[] a) {
+		   StringBuilder sb = new StringBuilder(a.length * 2);
+		   for(byte b: a)
+		   {
+		      sb.append(String.format("%02x", b & 0xff));
+		      sb.append(' ');
+		   }
+		   return sb.toString();
+		}
 
 	public void write(short adr, byte dat) {
 		switch ((adr & 0xffff) >> 11) {
