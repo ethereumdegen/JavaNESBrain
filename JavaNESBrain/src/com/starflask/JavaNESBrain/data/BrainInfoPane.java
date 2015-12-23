@@ -129,7 +129,7 @@ public class BrainInfoPane extends JPanel {
 			
 			NeuralNetwork network = getPool().getCurrentGenome().getNetwork();
 			
-			if(cells == null || cells.isEmpty() || network == null)
+			if(cells == null || cells.isEmpty() || network == null || network.getNeurons().isEmpty())
 			{
 				return;
 			}
@@ -146,8 +146,18 @@ public class BrainInfoPane extends JPanel {
 				DebugCell outputCell = new DebugCell();
 				outputCell.x = 350;
 				outputCell.y = 120 +  16 * o;
-				outputCell.value = network.getNeurons().get( SuperBrain.MaxNodes + o) .getValue();
 				
+				try
+				{
+					outputCell.value = network.getNeurons().get( SuperBrain.MaxNodes + o) .getValue();
+				}catch(Exception e)
+				{
+					e.printStackTrace();
+					System.out.println( network );
+					System.out.println( network.getNeurons() );
+					System.out.println( SuperBrain.MaxNodes + o );
+					System.out.println( network.getNeurons().get( SuperBrain.MaxNodes + o) );
+				}
 				
 				
 				if (network.getNeurons().get( SuperBrain.MaxNodes + o).getValue() > 0) {

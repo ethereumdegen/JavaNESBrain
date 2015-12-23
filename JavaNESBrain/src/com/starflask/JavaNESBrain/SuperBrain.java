@@ -140,17 +140,15 @@ public class SuperBrain implements Runnable, ROMEventListener {
 	 
 		boolean giveUp = getGameDataManager().updateGiveUpTimer(   );
 		
-	
-		if ( giveUp ) {
-
 			int fitness = getGameDataManager().getCurrentFitness() ;
 			
-
 			if (fitness == 0) {
 				fitness = -1;
 			}
 			genome.setFitness(fitness);
 
+			if ( giveUp ) {
+				
 			if (fitness > pool.getMaxFitness()) {
 				pool.setMaxFitness(fitness);
 				// forms.settext(maxFitnessLabel, "Max Fitness: " ..
