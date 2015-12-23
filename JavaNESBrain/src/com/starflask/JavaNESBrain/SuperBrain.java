@@ -95,10 +95,9 @@ public class SuperBrain implements ROMEventListener {
 		 
 			if(getCPU()!=null && emulator.isAiEnabled())
 			{			
-			 update();   
-			 
-			 
+			 update(); 
 			}
+			
 			emulator.stepEmulation(); 
 			
 		}

@@ -9,7 +9,7 @@ import com.starflask.JavaNESBrain.utils.Vector2Int;
 
 public class GalagaGameDataManager extends GameDataManager{
 
-	 
+	 //figure out where in the memory the sprites and the score is ..
 	
 	public GalagaGameDataManager(SuperBrain superBrain) {
 		super(superBrain);

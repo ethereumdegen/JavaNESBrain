@@ -26,8 +26,8 @@ public class MarioGameDataManager extends GameDataManager{
 	        	marioPos.setX( readbyte(0x6D)*0x100 + readbyte(0x86)) ;
 	        	marioPos.setY( readbyte(0x03B8) + 16 );
 	               
-	        	screenPos.setX( readbyte(0x03AD) );
-	        	screenPos.setY( readbyte(0x03B8) ); 
+	        	screenPos.setX( readbyte(0x03AD) );   //Mbc.ram[941] decimal
+	        	screenPos.setY( readbyte(0x03B8) );   //Mbc.ram[952]  decimal
 	         
 	}
 	int getTile(Vector2Int delta)
