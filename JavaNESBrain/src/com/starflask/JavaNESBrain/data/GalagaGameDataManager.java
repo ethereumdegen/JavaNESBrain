@@ -215,7 +215,7 @@ public HashMap<Integer,DebugCell> drawNeurons(Graphics g ) {
     		int enemyInPosition = tile.grayscaleValue ; 
     		//int enemyInPosition = readbyte(0x0400 + column + row*0x10) ;
     		
-		  System.out.println( enemyInPosition ); 
+		    
     		 g.setColor(Color.GRAY);
     		 
     		 if(enemyInPosition < 5) //enemy
@@ -253,6 +253,8 @@ public HashMap<Integer,DebugCell> drawNeurons(Graphics g ) {
 	
 }
 
+int bonusTime = 0;
+
 /**
  * A genome will give up if it has not scored for 15 seconds or if it loses a life
  */
@@ -261,15 +263,15 @@ public boolean updateGiveUpTimer() {
 	//int timeoutBonus = getCurrentFrame() / 2;
 
 	// if mario gets farther than he has ever been this run...
-	if (getCurrentScore() > bestScoreThisRun) {
+	if (getCurrentScore() > bestScoreThisRun) {   
 		bestScoreThisRun = getCurrentScore();
 		
-		startTime = System.currentTimeMillis();  // also reset the timeout
+		bonusTime+=1; 
 	}
 
 	int timeElapsed = (int) (System.currentTimeMillis() - startTime);
-
-	return timeElapsed <= 0 || playerLives < initLives; // should give up
+	 
+	return timeElapsed   >= getTimeoutConstant()+ bonusTime || playerLives < initLives; // should give up
 
 }
 

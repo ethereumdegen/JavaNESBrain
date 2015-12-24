@@ -134,7 +134,7 @@ public class GameDataManager implements PixelDataListener{
 	}
 		
 	
-	public boolean updateGiveUpTimer() {
+	public boolean updateGiveUpTimer() {  //totally broken, use galagas algo
 		int timeoutBonus = getCurrentFrame() / 2;
 
 		// if mario gets farther than he has ever been this run...

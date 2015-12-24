@@ -272,7 +272,7 @@ public class SuperBrain implements Runnable, ROMEventListener {
 		pool.setCurrentFrame(0);
 		
 		
-		getGameDataManager().initializeRun();
+		
 		
 		gamepad.clear();
 
@@ -288,6 +288,7 @@ public class SuperBrain implements Runnable, ROMEventListener {
 	public void onStateLoaded() {
 		//loadGameDataManager();
 		alreadyGivenUp = false;
+		getGameDataManager().initializeRun();
 	}
 
 	public void evaluateCurrent() {
