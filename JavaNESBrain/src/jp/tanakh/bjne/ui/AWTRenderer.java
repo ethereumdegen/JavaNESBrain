@@ -100,6 +100,8 @@ public class AWTRenderer implements Renderer {
 			bgr[i * 3] = info.buf[i * 3 + 2];
 			bgr[i * 3 + 1] = info.buf[i * 3 + 1];
 			bgr[i * 3 + 2] = info.buf[i * 3 + 0];
+			
+			 //System.out.println(info.buf[1600]);
 		}
 
 		int left = frame.getInsets().left;

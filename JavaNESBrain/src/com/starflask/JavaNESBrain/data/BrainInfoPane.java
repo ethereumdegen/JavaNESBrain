@@ -291,7 +291,7 @@ public class BrainInfoPane extends JPanel {
 				   Color lowColor = Color.darkGray;
 				   Color highColor = Color.green;
 				   
-				   boolean triggered = cellIn.value <= 0   ;
+				   boolean triggered = cellIn.value >= 0f;
 				   float colorDarkness = 0.5f - FastMath.floor(FastMath.abs(SuperBrain.sigmoid(gene.getWeight())*0.5f  ));
 				   
 				   Color color = lowColor;

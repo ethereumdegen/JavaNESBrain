@@ -8,15 +8,18 @@ import java.util.List;
 
 import com.starflask.JavaNESBrain.SuperBrain;
 
+import jp.tanakh.bjne.nes.Renderer.ScreenInfo;
+
 
 /*
  * Need to feed inputs for the divebombing enemies and their projectiles
  * need to feed the enemy row offsets in as inputs
  * need to make the neurons operate like floating points, not just binary 0s and 1s (continuous nn)
  * 
+ * http://www.thealmightyguru.com/Games/Hacking/Wiki/index.php?title=Galaga
  */
 
-public class GalagaGameDataManager extends GameDataManager{
+public class GalagaGameDataManager extends GameDataManager {
 
 	 //figure out where in the memory the sprites and the score is ..
 	
@@ -27,7 +30,7 @@ public class GalagaGameDataManager extends GameDataManager{
 	
  
 
-	int InputSize = 50 + 1;
+	int InputSize = 240 + 1;
  
 	int numInputs = InputSize+1;
 
@@ -35,8 +38,19 @@ public class GalagaGameDataManager extends GameDataManager{
 	int[] gameScoreDigits = new int[7];
 	
 	int playerXpos =0;
+	int playerLives =0;
 	
+	int initLives = 0;
 	
+	@Override
+	public void initializeRun() {		
+		super.initializeRun();
+
+		initLives = readbyte(0x487);
+		playerLives = readbyte(0x487);
+		
+		System.out.println("initializing run");
+	}
 	
 	@Override
 	public void siphonData()
@@ -53,7 +67,7 @@ public class GalagaGameDataManager extends GameDataManager{
 	     playerXpos = readbyte(0x203);
 	     
 	      
-	        	 
+	     playerLives = readbyte(0x487);
 	         
 	}
 
@@ -79,11 +93,30 @@ public List<Integer> getBrainSystemInputs()
     	{
     		int enemyInPosition = readbyte(0x0400 + column + row*0x10) ;
     		
-    		 inputs.add(enemyInPosition); 
+    		// inputs.add(enemyInPosition); 
     	}
     }
     
-      
+    //screen is 256 by 256.. lets make it into 16-pixel large squares 
+    if(screenPixelData!=null)
+    {
+    	///System.out.println("can process pixels");
+    	//should average / blur colors together
+    	
+    	//height is 15 x 16
+    	//width is 16 x 16
+    	
+    	for(int row = 0; row < 15 ; row++)
+    	{
+    		for(int column =0; column < 16; column++)
+        	{
+        		PixelTile tile = new PixelTile(screenPixelData,row,column);
+        		 inputs.add(tile.grayscaleValue); 
+        	}
+    	}
+    	
+    	
+    }
     
     
   // velocity of mario ??? this was commented out anyways
@@ -94,6 +127,59 @@ public List<Integer> getBrainSystemInputs()
     
 }
 
+class PixelTile
+{
+	/*
+	 * 
+	 * for (int i = 0; i < SCREEN_WIDTH * SCREEN_HEIGHT; i++) {
+			bgr[i * 3] = info.buf[i * 3 + 2];
+			bgr[i * 3 + 1] = info.buf[i * 3 + 1];
+			bgr[i * 3 + 2] = info.buf[i * 3 + 0];
+		}
+		
+	 */
+	int grayscaleValue;
+	
+	public PixelTile(ScreenInfo screenPixelData, int row, int column) {
+		grayscaleValue = 0;
+		
+		//the 3 is for the bgr
+		int index = (column*240 + row )* 16 * 3 ;
+		
+		int sum = 0;
+		for(int x = 0; x < 16; x++)
+		{
+			for(int y = 0; y < 16; y++)
+			{
+				sum += (int) screenPixelData.buf[index + x*16 + y + 0];
+				sum += (int) screenPixelData.buf[index + x*16 + y + 1];
+				sum += (int) screenPixelData.buf[index + x*16 + y + 2];
+			}
+		}
+		
+		byte val = screenPixelData.buf[index+2];		
+		//System.out.println("meep" +  sum);
+		grayscaleValue = (int) val;
+	}
+
+
+}
+
+
+
+/**
+ * 
+ */
+@Override
+public int getCurrentFitness() {
+
+	if (getCurrentScore() > 3186) { // mario only
+		return getCurrentScore() - (getCurrentFrame() / 200) + 1000;
+	}
+
+	return getCurrentScore() - (getCurrentFrame() / 200);
+
+}
 
 
 
@@ -120,28 +206,31 @@ public HashMap<Integer,DebugCell> drawNeurons(Graphics g ) {
 	
 	int inputCount = 0;
 	
-	for(int row =0;row<5;row++)
-    {
-    	for(int column =0; column < 10; column++)
+	for(int row = 0; row < 15 ; row++)
+	{
+		for(int column =0; column < 16; column++)
     	{
-    		int enemyInPosition = readbyte(0x0400 + column + row*0x10) ;
+    		PixelTile tile = new PixelTile(screenPixelData,row,column);
     		
-		  
+    		int enemyInPosition = tile.grayscaleValue ; 
+    		//int enemyInPosition = readbyte(0x0400 + column + row*0x10) ;
+    		
+		  System.out.println( enemyInPosition ); 
     		 g.setColor(Color.GRAY);
     		 
-    		 if(enemyInPosition < 0) //enemy
+    		 if(enemyInPosition < 5) //enemy
     		 {
     		 g.setColor(Color.RED);
     		 }
     		 
-    		 if(enemyInPosition > 0) //tile
+    		 if(enemyInPosition > 5 ) //tile
     		 {
     		 g.setColor(Color.BLACK);   
     		 }
     		
     		 
     			DebugCell inputCell = new DebugCell();
-    			inputCell.x = 30 + (10)*16/2 + column*16;
+    			inputCell.x = -40 + (10)*16/2 + column*16;
     			inputCell.y = 120 +  (5)*16/2 + row*16;
     			inputCell.value = enemyInPosition;
     			
@@ -164,18 +253,44 @@ public HashMap<Integer,DebugCell> drawNeurons(Graphics g ) {
 	
 }
 
+/**
+ * A genome will give up if it has not scored for 15 seconds or if it loses a life
+ */
+@Override
+public boolean updateGiveUpTimer() {
+	//int timeoutBonus = getCurrentFrame() / 2;
 
+	// if mario gets farther than he has ever been this run...
+	if (getCurrentScore() > bestScoreThisRun) {
+		bestScoreThisRun = getCurrentScore();
+		
+		startTime = System.currentTimeMillis();  // also reset the timeout
+	}
+
+	int timeElapsed = (int) (System.currentTimeMillis() - startTime);
+
+	return timeElapsed <= 0 || playerLives < initLives; // should give up
+
+}
 
 @Override
 protected int getTimeoutConstant()
 {
 	 
-	return 3500;
+	return 15000;
 }
 
 public int getNumInputs() {
 	 
 	return numInputs;
+}
+
+ScreenInfo screenPixelData;
+
+@Override
+public void outputScreen(ScreenInfo scri) {
+	this.screenPixelData=scri;
+	
 }
 
 

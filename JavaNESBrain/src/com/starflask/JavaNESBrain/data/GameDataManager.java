@@ -10,10 +10,13 @@ import com.starflask.JavaNESBrain.evolution.GenePool;
 import com.starflask.JavaNESBrain.utils.FastMath;
 import com.starflask.JavaNESBrain.utils.Vector2Int;
 
-public class GameDataManager {
+import jp.tanakh.bjne.nes.Renderer.ScreenInfo;
+
+public class GameDataManager implements PixelDataListener{
 
 	//final static int TIMEOUT_CONSTANT = 1500;
-	int timeout;
+	//int timeout;
+	long startTime;
 	int bestScoreThisRun = 0; // the most right that we ever got so far
 
 	SuperBrain superBrain;
@@ -109,13 +112,22 @@ public class GameDataManager {
 
 	}
 
+	
+	
+	
 	public void initializeRun() {
+		
+		
 
 		bestScoreThisRun = 0;
-		timeout = getTimeoutConstant();
-
+		 
+		startTime = System.currentTimeMillis();
 	}
 
+	/**
+	 * Milliseconds
+	 * 
+	 */
 	protected int getTimeoutConstant()
 	{
 		return 1000;
@@ -128,17 +140,17 @@ public class GameDataManager {
 		// if mario gets farther than he has ever been this run...
 		if (getCurrentScore() > bestScoreThisRun) {
 			bestScoreThisRun = getCurrentScore();
-			timeout = getTimeoutConstant(); // also reset the timeout
-
+			
+			startTime = System.currentTimeMillis();  // also reset the timeout
 		}
 
-		timeout = timeout - 1;
+		int timeElapsed = (int) (System.currentTimeMillis() - startTime);
 
-		return timeout + timeoutBonus <= 0; // should give up
+		return timeElapsed + timeoutBonus <= 0; // should give up
 
 	}
 
-	private int getCurrentFrame() {
+	protected int getCurrentFrame() {
 
 		return superBrain.getPool().getCurrentFrame();
 	}
@@ -146,6 +158,12 @@ public class GameDataManager {
 	public HashMap<Integer, DebugCell> drawNeurons(Graphics g) {
 
 		return null;
+	}
+
+	@Override
+	public void outputScreen(ScreenInfo scri) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

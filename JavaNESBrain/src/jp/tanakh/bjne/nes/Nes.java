@@ -3,6 +3,10 @@ package jp.tanakh.bjne.nes;
 import java.io.IOException;
 import java.util.HashMap;
 
+import com.starflask.JavaNESBrain.data.PixelDataListener;
+
+import jp.tanakh.bjne.nes.Renderer.ScreenInfo;
+
 public class Nes {
 	public Nes(Renderer r) {
 		renderer = r;
@@ -47,6 +51,8 @@ public class Nes {
 		
 	}
 	
+	ROMEventListener romEventListener;
+	
 	public void loadState(int stateNumber) {
 		
 		if(requestedLoadState >= 0)
@@ -59,9 +65,20 @@ public class Nes {
 			ppu.loadState( saveStates[stateNumber] );
 
 			requestedLoadState = -1;
+			
+			if(romEventListener!=null)
+			{
+				romEventListener.onStateLoaded();
+			}
 		}
+		
 	}
 
+	public void registerROMEventListener(ROMEventListener romEventListener)
+	{
+		this.romEventListener=romEventListener;
+	}
+	
 	public void reset() {
 		// reset rom & mbc first
 		rom.reset();
@@ -157,10 +174,25 @@ public class Nes {
 		if (scri != null)
 		{
 			renderer.outputScreen(scri);
-			 
+			
+			broadcastScreenOutputData(scri);
 		}
 		
 		frameCount++;
+	}
+
+	
+	PixelDataListener pixelDataListener;
+	private void broadcastScreenOutputData(ScreenInfo scri) {
+		if(pixelDataListener!=null)
+		{
+			pixelDataListener.outputScreen(scri);
+		}
+	}
+	
+	public void registerPixelDataListener(PixelDataListener pixelDataListener)
+	{
+		this.pixelDataListener=pixelDataListener;
 	}
 
 	public Rom getRom() {

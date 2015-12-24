@@ -119,7 +119,9 @@ public class SuperBrain implements Runnable, ROMEventListener {
 
 	BrainInfoWindow infoWindow;
 	 
-		
+	
+	boolean alreadyGivenUp = false;
+	
 	private void update() {
 		
 		
@@ -159,15 +161,17 @@ public class SuperBrain implements Runnable, ROMEventListener {
 			}
 			genome.setFitness(fitness);
 
-			if ( giveUp ) {
+			if ( giveUp && !alreadyGivenUp ) { 
+
+				alreadyGivenUp = true;
 				
-			if (fitness > pool.getMaxFitness()) {
-				pool.setMaxFitness(fitness);
-				// forms.settext(maxFitnessLabel, "Max Fitness: " ..
-				// math.floor(pool.maxFitness))
-				// writeFile("backup." .. pool.generation .. "." ..
-				// forms.gettext(saveLoadFile))
-			}
+				if (fitness > pool.getMaxFitness()) {
+					pool.setMaxFitness(fitness);
+					// forms.settext(maxFitnessLabel, "Max Fitness: " ..
+					// math.floor(pool.maxFitness))
+					// writeFile("backup." .. pool.generation .. "." ..
+					// forms.gettext(saveLoadFile))
+				}
 
 			
 
@@ -243,6 +247,7 @@ public class SuperBrain implements Runnable, ROMEventListener {
 	public void initializePool() {
 		
 		getNES().saveState( 0 );
+		getNES().registerROMEventListener(this);
 		
 		getNES().audioEnabled = false;
 		
@@ -277,8 +282,13 @@ public class SuperBrain implements Runnable, ROMEventListener {
 		evaluateCurrent();
 
 	}
-
+ 
 	
+	 
+	public void onStateLoaded() {
+		//loadGameDataManager();
+		alreadyGivenUp = false;
+	}
 
 	public void evaluateCurrent() {
 		Species species = pool.getCurrentSpecies();
@@ -470,11 +480,7 @@ public class SuperBrain implements Runnable, ROMEventListener {
 		return pool;
 	}
 
-	@Override
-	public void onLoad() {
-		loadGameDataManager();
-		
-	}
+
 
 	private void loadGameDataManager() {
 		if (getRomName().startsWith("Super Mario Bros."))
@@ -483,6 +489,8 @@ public class SuperBrain implements Runnable, ROMEventListener {
 		}else{
 			gameData = new GalagaGameDataManager(this);
 		}
+		
+		getNES().registerPixelDataListener(gameData);
 		
 	}
 
